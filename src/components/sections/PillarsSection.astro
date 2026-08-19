@@ -1,0 +1,105 @@
+---
+import Section from '../layout/Section.astro';
+
+const pillars = [
+	{ n: '01', title: 'Lugar asignado', copy: 'Con tu nombre, independiente y siempre libre para vos.' },
+	{
+		n: '02',
+		title: 'Acceso digital personal',
+		copy: 'QR o código personal. Entrás y salís sin depender de nadie.',
+	},
+	{ n: '03', title: 'Acceso amplio', copy: 'Todos los días, con horario amplio según el hub.¹' },
+	{
+		n: '04',
+		title: 'Cerrado, seco y limpio',
+		copy: 'Sin lluvia, sin humedad de vereda, sin polvo. Mantenimiento periódico.',
+	},
+	{
+		n: '05',
+		title: 'Vigilancia y registro',
+		copy: 'Cámaras y registro individual de cada ingreso y egreso.',
+	},
+	{
+		n: '06',
+		title: 'Retiro sin mover otras bicis',
+		copy: 'Cada lugar es independiente: sacás la tuya sin tocar la del vecino.',
+	},
+	{
+		n: '07',
+		title: 'Inventario por número de cuadro',
+		copy: 'Marca, modelo y número de cuadro registrados al ingresar.',
+	},
+	{
+		n: '08',
+		title: 'Membresía mensual',
+		copy: 'Sin garantía, sin contrato anual, sin comisión inmobiliaria.',
+	},
+];
+---
+
+<Section id="solucion" tone="elevated" eyebrow="Infraestructura de barrio" heading="Siempre el mismo lugar. Siempre listo para vos.">
+	<p slot="lede" class="body-lg">
+		Convertimos un espacio seguro del barrio en infraestructura pensada desde cero para bicicletas y
+		micromovilidad.
+	</p>
+
+	<ol class="pillars">
+		{
+			pillars.map((pillar) => (
+				<li class="pillars__item">
+					<span class="pillars__number caption">{pillar.n}</span>
+					<p class="heading-h4">{pillar.title}</p>
+					<p class="body-md">{pillar.copy}</p>
+				</li>
+			))
+		}
+	</ol>
+
+	<p class="caption pillars__footnote">
+		¹ El horario definitivo se confirma al abrir cada hub y puede tener restricciones puntuales por mantenimiento o
+		feriados, informadas con anticipación.
+	</p>
+</Section>
+
+<style>
+	.pillars {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-4);
+	}
+
+	.pillars__item {
+		padding: var(--space-6);
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-lg);
+		background: var(--bg-base);
+		box-shadow: var(--shadow-e1);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.pillars__number {
+		color: var(--accent);
+		font-family: var(--font-mono);
+	}
+
+	.pillars__footnote {
+		max-width: 70ch;
+	}
+
+	@media (min-width: 640px) {
+		.pillars {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.pillars {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+</style>

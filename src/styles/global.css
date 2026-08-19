@@ -1,0 +1,271 @@
+/*
+  Global stylesheet entry point.
+
+  Design tokens are the approved CLAVERA design system, supplied at
+  docs/design-system/tokens/. They are imported directly (not copied) so the
+  site and the documentation never drift out of sync.
+*/
+@import '../../docs/design-system/tokens/fonts.css';
+@import '../../docs/design-system/tokens/colors.css';
+@import '../../docs/design-system/tokens/typography.css';
+@import '../../docs/design-system/tokens/spacing.css';
+@import '../../docs/design-system/tokens/radius.css';
+@import '../../docs/design-system/tokens/shadow.css';
+@import '../../docs/design-system/tokens/motion.css';
+@import '../../docs/design-system/tokens/base.css';
+
+/* ---------------------------------------------------------------------- */
+/* Base document behaviour                                                */
+/* ---------------------------------------------------------------------- */
+
+html {
+	color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+img,
+picture,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Layout utilities                                                       */
+/* ---------------------------------------------------------------------- */
+
+.container {
+	width: 100%;
+	max-width: 1200px;
+	margin-inline: auto;
+	padding-inline: var(--space-6);
+}
+
+@media (min-width: 640px) {
+	.container {
+		padding-inline: var(--space-8);
+	}
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip-link {
+	position: absolute;
+	top: var(--space-2);
+	left: var(--space-2);
+	z-index: 100;
+	padding: var(--space-2) var(--space-4);
+	background: var(--bg-elevated-2);
+	color: var(--text-primary);
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border-hairline-strong);
+	transform: translateY(-150%);
+	transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.skip-link:focus {
+	transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Typography utilities (map the type tokens to reusable classes)         */
+/* ---------------------------------------------------------------------- */
+
+.eyebrow {
+	display: block;
+	font-family: var(--font-sans);
+	font-size: var(--text-eyebrow-size);
+	line-height: var(--text-eyebrow-line);
+	letter-spacing: var(--text-eyebrow-tracking);
+	font-weight: var(--text-eyebrow-weight);
+	text-transform: uppercase;
+	color: var(--accent);
+	margin: 0 0 var(--space-3);
+}
+
+.heading-display {
+	font-family: var(--font-display);
+	font-size: var(--text-display-lg-size);
+	line-height: var(--text-display-lg-line);
+	letter-spacing: var(--text-display-lg-tracking);
+	font-weight: var(--text-display-lg-weight);
+	margin: 0;
+}
+
+@media (min-width: 900px) {
+	.heading-display {
+		font-size: var(--text-display-xl-size);
+		line-height: var(--text-display-xl-line);
+		letter-spacing: var(--text-display-xl-tracking);
+		font-weight: var(--text-display-xl-weight);
+	}
+}
+
+.heading-h2 {
+	font-family: var(--font-display);
+	font-size: var(--text-h2-size);
+	line-height: var(--text-h2-line);
+	letter-spacing: var(--text-h2-tracking);
+	font-weight: var(--text-h2-weight);
+	margin: 0;
+}
+
+.heading-h3 {
+	font-family: var(--font-display);
+	font-size: var(--text-h3-size);
+	line-height: var(--text-h3-line);
+	letter-spacing: var(--text-h3-tracking);
+	font-weight: var(--text-h3-weight);
+	margin: 0;
+}
+
+.heading-h4 {
+	font-family: var(--font-display);
+	font-size: var(--text-h4-size);
+	line-height: var(--text-h4-line);
+	letter-spacing: var(--text-h4-tracking);
+	font-weight: var(--text-h4-weight);
+	margin: 0;
+}
+
+.body-lg {
+	font-family: var(--font-sans);
+	font-size: var(--text-body-lg-size);
+	line-height: var(--text-body-lg-line);
+	font-weight: var(--text-body-lg-weight);
+	color: var(--text-secondary);
+	margin: 0;
+}
+
+.body-md {
+	font-family: var(--font-sans);
+	font-size: var(--text-body-md-size);
+	line-height: var(--text-body-md-line);
+	font-weight: var(--text-body-md-weight);
+	color: var(--text-secondary);
+	margin: 0;
+}
+
+.caption {
+	font-family: var(--font-sans);
+	font-size: var(--text-caption-size);
+	line-height: var(--text-caption-line);
+	letter-spacing: var(--text-caption-tracking);
+	font-weight: var(--text-caption-weight);
+	color: var(--text-tertiary);
+	margin: 0;
+}
+
+.label-lg {
+	font-family: var(--font-sans);
+	font-size: var(--text-label-lg-size);
+	line-height: var(--text-label-lg-line);
+	letter-spacing: var(--text-label-lg-tracking);
+	font-weight: var(--text-label-lg-weight);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Buttons                                                                */
+/* ---------------------------------------------------------------------- */
+
+.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	font-family: var(--font-sans);
+	font-size: var(--text-label-lg-size);
+	line-height: var(--text-label-lg-line);
+	letter-spacing: var(--text-label-lg-tracking);
+	font-weight: var(--text-label-lg-weight);
+	padding: var(--space-3) var(--space-6);
+	border-radius: var(--radius-sm);
+	border: 1px solid transparent;
+	cursor: pointer;
+	text-decoration: none;
+	transition:
+		background-color var(--duration-fast) var(--ease-standard),
+		box-shadow var(--duration-fast) var(--ease-standard),
+		transform var(--duration-fast) var(--ease-standard);
+}
+
+.button--primary {
+	background: var(--accent);
+	color: var(--accent-on);
+}
+
+.button--primary:hover {
+	background: var(--accent-hover);
+	box-shadow: var(--shadow-glow-accent);
+}
+
+.button--primary:active {
+	background: var(--accent-press);
+	transform: scale(0.97);
+}
+
+.button--ghost {
+	background: transparent;
+	border-color: var(--border-hairline-strong);
+	color: var(--text-primary);
+}
+
+.button--ghost:hover {
+	color: var(--accent);
+	border-color: var(--accent);
+}
+
+.button--ghost:active {
+	transform: scale(0.97);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Badges                                                                 */
+/* ---------------------------------------------------------------------- */
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	padding: var(--space-1) var(--space-3);
+	border-radius: var(--radius-pill);
+	border: 1px solid var(--border-hairline-strong);
+	font-family: var(--font-sans);
+	font-size: var(--text-label-sm-size);
+	line-height: var(--text-label-sm-line);
+	letter-spacing: var(--text-label-sm-tracking);
+	font-weight: var(--text-label-sm-weight);
+	color: var(--text-secondary);
+}
+
+.badge--accent {
+	border-color: transparent;
+	background: var(--accent-subtle);
+	color: var(--accent);
+}

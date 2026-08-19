@@ -1,0 +1,46 @@
+---
+/**
+ * Reserved boundary for the Typeform lead-capture embed.
+ *
+ * Lead capture is intentionally not implemented yet (PROJECT_DECISIONS.md:
+ * "Do not implement Typeform yet"). This component exists so the rest of
+ * the page has a stable, single place to render the embed once
+ * src/config/typeform.ts is filled in — nothing else should change.
+ */
+import { typeformConfig } from '../../config/typeform';
+
+interface Props {
+	ctaLabel: string;
+}
+
+const { ctaLabel } = Astro.props;
+const isConfigured = typeformConfig.foundersFormUrl.length > 0;
+---
+
+<div class="typeform-boundary" data-typeform-boundary>
+	{
+		isConfigured ? (
+			<a class="button button--primary" href={typeformConfig.foundersFormUrl}>
+				{ctaLabel}
+			</a>
+		) : (
+			<button class="button button--primary" type="button" disabled>
+				{ctaLabel}
+			</button>
+		)
+	}
+</div>
+
+<style>
+	.typeform-boundary {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-2);
+	}
+
+	.button:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+</style>

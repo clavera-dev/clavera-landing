@@ -1,0 +1,30 @@
+---
+import Section from '../layout/Section.astro';
+
+const vehicles = ['Bicicleta urbana', 'Ruta y MTB', 'E-bike', 'Cargo', 'Plegable', 'Monopatín eléctrico'];
+---
+
+<Section id="vehiculos" tone="elevated" eyebrow="Tu movilidad, bien cuidada" heading="Diseñado para lo que realmente usás.">
+	<ul class="vehicles">
+		{vehicles.map((vehicle) => <li class="badge vehicles__item">{vehicle}</li>)}
+	</ul>
+	<p class="body-md">
+		Lockers individuales opcionales para casco y equipo. Por seguridad, no se cargan baterías dentro del hub.
+	</p>
+</Section>
+
+<style>
+	.vehicles {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+	}
+
+	.vehicles__item {
+		font-size: var(--text-label-md-size);
+		padding: var(--space-2) var(--space-4);
+	}
+</style>

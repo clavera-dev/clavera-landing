@@ -1,0 +1,100 @@
+---
+import Section from '../layout/Section.astro';
+
+const columns = ['Calle / balcón', 'Cochera de auto', 'CLAVERA'];
+
+const rows = [
+	{
+		label: 'Seguridad',
+		values: ['Candado y suerte', 'Parcial: espacio compartido, sin lugar propio', 'Lugar asignado + ingreso controlado + registro'],
+	},
+	{
+		label: 'Costo mensual',
+		values: [
+			'«Gratis», hasta el primer robo',
+			'80.000 – 150.000 ARS, más garantía y comisión',
+			'Membresía mensual, sin garantía ni comisión',
+		],
+	},
+	{ label: 'Compromiso', values: ['—', 'Contrato anual', 'Mes a mes'] },
+	{
+		label: 'Pensado para bicis',
+		values: ['No', 'No', 'Sí: cada lugar independiente, retiro sin mover otras bicis'],
+	},
+	{ label: 'Clima', values: ['Lluvia, humedad, óxido', 'Variable', 'Cerrado, seco y limpio'] },
+];
+---
+
+<Section id="comparacion" tone="elevated" eyebrow="Por qué CLAVERA" heading="Ni la calle, ni un lugar pensado para autos.">
+	<div class="table-wrap">
+		<table class="comparison">
+			<caption class="visually-hidden">Comparación entre la calle, una cochera de auto y CLAVERA</caption>
+			<thead>
+				<tr>
+					<th scope="col"></th>
+					{columns.map((column) => <th scope="col">{column}</th>)}
+				</tr>
+			</thead>
+			<tbody>
+				{
+					rows.map((row) => (
+						<tr>
+							<th scope="row">{row.label}</th>
+							{row.values.map((value, i) => (
+								<td class={i === 2 ? 'comparison__clavera' : undefined}>{value}</td>
+							))}
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+	<p class="caption">Valores de referencia de mercado para cocheras en CABA, agosto 2026.</p>
+</Section>
+
+<style>
+	.table-wrap {
+		overflow-x: auto;
+		border-radius: var(--radius-lg);
+		border: 1px solid var(--border-hairline);
+	}
+
+	.comparison {
+		width: 100%;
+		border-collapse: collapse;
+		min-width: 640px;
+	}
+
+	.comparison th,
+	.comparison td {
+		text-align: left;
+		padding: var(--space-4);
+		border-bottom: 1px solid var(--border-hairline);
+		font-family: var(--font-sans);
+		font-size: var(--text-body-md-size);
+		line-height: var(--text-body-md-line);
+		vertical-align: top;
+	}
+
+	.comparison thead th {
+		font-weight: 600;
+		color: var(--text-primary);
+		background: var(--bg-elevated);
+	}
+
+	.comparison tbody th {
+		font-weight: 600;
+		color: var(--text-primary);
+		white-space: nowrap;
+	}
+
+	.comparison tbody tr:last-child th,
+	.comparison tbody tr:last-child td {
+		border-bottom: none;
+	}
+
+	.comparison__clavera {
+		color: var(--text-primary);
+		background: var(--accent-subtle);
+	}
+</style>

@@ -1,0 +1,75 @@
+---
+/**
+ * Reusable landing-page section container.
+ * Gives every section the same anchor/eyebrow/heading/rhythm pattern
+ * described in the brief's section map (Part II, §1).
+ */
+interface Props {
+	id: string;
+	eyebrow?: string;
+	heading?: string;
+	tone?: 'base' | 'elevated';
+	headingLevel?: 2 | 3;
+}
+
+const { id, eyebrow, heading, tone = 'base', headingLevel = 2 } = Astro.props;
+const HeadingTag = headingLevel === 3 ? 'h3' : 'h2';
+const headingId = heading ? `${id}-heading` : undefined;
+---
+
+<section id={id} class={`section section--${tone}`} aria-labelledby={headingId}>
+	<div class="container section__inner">
+		{
+			(eyebrow || heading) && (
+				<header class="section__header">
+					{eyebrow && <p class="eyebrow">{eyebrow}</p>}
+					{heading && (
+						<HeadingTag id={headingId} class="heading-h2">
+							{heading}
+						</HeadingTag>
+					)}
+					<slot name="lede" />
+				</header>
+			)
+		}
+		<div class="section__body">
+			<slot />
+		</div>
+	</div>
+</section>
+
+<style>
+	.section {
+		padding-block: var(--space-16);
+	}
+
+	.section--elevated {
+		background: var(--bg-surface);
+		border-block: 1px solid var(--border-hairline);
+	}
+
+	.section__inner {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+	}
+
+	.section__header {
+		max-width: 64ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	.section__body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+
+	@media (min-width: 900px) {
+		.section {
+			padding-block: var(--space-24);
+		}
+	}
+</style>

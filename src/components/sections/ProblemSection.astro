@@ -1,0 +1,28 @@
+---
+import Section from '../layout/Section.astro';
+---
+
+<Section id="problema" eyebrow="La ciudad cambió" heading="Cada vez más bicis. Cada vez menos lugar para guardarlas.">
+	<p class="body-lg">
+		En los edificios de Buenos Aires no hay lugar seguro para una bici, mucho menos para una e-bike o una cargo. La
+		calle suma candados, óxido y riesgo. El departamento suma ascensores, pasillos y espacio perdido. Las opciones
+		informales están llenas, no dan comprobante y no asumen ningún compromiso.
+	</p>
+	<p class="heading-h3">La ciudad se llenó de bicis. Los edificios no cambiaron.</p>
+	<div class="problem__pair">
+		<p class="body-md"><strong>Cada salida</strong> empieza con el ascensor, el pasillo y la puerta.</p>
+		<p class="body-md"><strong>Cada regreso</strong> termina igual.</p>
+	</div>
+</Section>
+
+<style>
+	.problem__pair {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		padding: var(--space-6);
+		border-left: 2px solid var(--accent);
+		background: var(--bg-elevated);
+		border-radius: var(--radius-md);
+	}
+</style>

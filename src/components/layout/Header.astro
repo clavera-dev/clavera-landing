@@ -1,0 +1,41 @@
+---
+import { logo } from '../../data/media';
+---
+
+<header class="site-header">
+	<div class="container site-header__inner">
+		<a class="site-header__logo" href="#top">
+			<img src={logo.src} alt={logo.alt} width="120" height="28" />
+		</a>
+		<a class="button button--primary" href="#fundadores">Quiero mi lugar</a>
+	</div>
+</header>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 40;
+		background: oklch(15% 0.004 95 / 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.site-header__inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-block: var(--space-4);
+	}
+
+	.site-header__logo {
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.site-header__logo img {
+		height: 28px;
+		width: auto;
+	}
+</style>

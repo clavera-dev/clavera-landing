@@ -1,0 +1,62 @@
+---
+import Section from '../layout/Section.astro';
+import RenderFigure from '../media/RenderFigure.astro';
+import MediaPlaceholder from '../media/MediaPlaceholder.astro';
+import { getRender, type RenderAsset } from '../../data/media';
+
+/**
+ * The approved set is R1–R6 (PROJECT_DECISIONS.md), but no asset exists yet
+ * for R3 (self-service bicycle cleaning zone) — see src/data/media.ts for
+ * why the old "entrance" file must not fill that slot. It renders as a
+ * neutral placeholder here instead of being skipped, so the gallery still
+ * reads as the complete six-part set once R3 is delivered.
+ */
+type GalleryItem = { kind: 'render'; id: RenderAsset['id'] } | { kind: 'placeholder' };
+
+const gallery: GalleryItem[] = [
+	{ kind: 'render', id: 'r1' },
+	{ kind: 'render', id: 'r2' },
+	{ kind: 'placeholder' },
+	{ kind: 'render', id: 'r4' },
+	{ kind: 'render', id: 'r5' },
+	{ kind: 'render', id: 'r6' },
+];
+---
+
+<Section id="hub" eyebrow="El espacio" heading="Así está diseñado un hub CLAVERA.">
+	<p slot="lede" class="body-lg">
+		Cada hub se proyecta con el mismo estándar: lugares independientes, circulación libre, materiales que resisten
+		uso diario.
+	</p>
+	<div class="hub-gallery">
+		{
+			gallery.map((item) =>
+				item.kind === 'render' ? (
+					<RenderFigure id={item.id} caption={getRender(item.id).caption} />
+				) : (
+					<MediaPlaceholder ratio="4 / 5" />
+				)
+			)
+		}
+	</div>
+</Section>
+
+<style>
+	.hub-gallery {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-6);
+	}
+
+	@media (min-width: 640px) {
+		.hub-gallery {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.hub-gallery {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+</style>

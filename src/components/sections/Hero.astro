@@ -1,0 +1,101 @@
+---
+import RenderFigure from '../media/RenderFigure.astro';
+---
+
+<section id="top" class="hero" aria-labelledby="hero-heading">
+	<div class="container hero__inner">
+		<div class="hero__content">
+			<p class="eyebrow">Guarda segura · Buenos Aires</p>
+			<h1 id="hero-heading" class="hero__heading">Tu bici merece un lugar seguro en la ciudad.</h1>
+			<p class="body-lg">
+				CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía. Tu lugar asignado, acceso
+				digital y vigilancia, a minutos de tu casa.
+			</p>
+			<p class="body-lg">Dejá de subir la bici por el ascensor. Dejá de dejarla en la calle.</p>
+
+			<div class="hero__actions">
+				<a class="button button--primary" href="#fundadores">Quiero mi lugar</a>
+				<a class="button button--ghost" href="#works">Ver cómo funciona</a>
+			</div>
+
+			<ul class="hero__badges">
+				<li class="badge">Lugar asignado</li>
+				<li class="badge">Ingreso controlado</li>
+				<li class="badge">Cerrado y seco</li>
+			</ul>
+		</div>
+
+		<div class="hero__media">
+			<RenderFigure id="r1" loading="eager" fetchpriority="high" sizes="(min-width: 900px) 45vw, 100vw" />
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-block: var(--space-12) var(--space-16);
+	}
+
+	.hero__inner {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-10);
+		align-items: center;
+	}
+
+	.hero__content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+	}
+
+	.hero__heading {
+		font-family: var(--font-display);
+		font-size: var(--text-display-lg-size);
+		line-height: var(--text-display-lg-line);
+		letter-spacing: var(--text-display-lg-tracking);
+		font-weight: var(--text-display-lg-weight);
+		margin: 0;
+	}
+
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-4);
+		margin-top: var(--space-2);
+	}
+
+	.hero__badges {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		margin: var(--space-2) 0 0;
+		padding: 0;
+	}
+
+	.hero__media {
+		display: none;
+	}
+
+	@media (min-width: 900px) {
+		.hero {
+			padding-block: var(--space-16) var(--space-24);
+		}
+
+		.hero__inner {
+			grid-template-columns: 1.1fr 1fr;
+		}
+
+		.hero__heading {
+			font-size: var(--text-display-xl-size);
+			line-height: var(--text-display-xl-line);
+			letter-spacing: var(--text-display-xl-tracking);
+			font-weight: var(--text-display-xl-weight);
+		}
+
+		.hero__media {
+			display: block;
+		}
+	}
+</style>

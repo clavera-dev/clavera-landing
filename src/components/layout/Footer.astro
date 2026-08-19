@@ -1,0 +1,89 @@
+---
+import { logo } from '../../data/media';
+---
+
+<footer class="site-footer">
+	<div class="container site-footer__inner">
+		<div class="site-footer__brand">
+			<img src={logo.src} alt={logo.alt} width="120" height="28" />
+			<p class="body-md">Infraestructura urbana de guarda para tu bici.</p>
+			<p class="body-md">Buenos Aires, Argentina.</p>
+			<p class="body-md">
+				<a href="mailto:hola@clavera.ar">hola@clavera.ar</a> ·
+				<a href="https://instagram.com/clavera.ar" rel="me">Instagram</a> ·
+				<a href="https://facebook.com/clavera.ar" rel="me">Facebook</a>
+			</p>
+		</div>
+
+		<nav class="site-footer__b2b" aria-label="Para propietarios y desarrolladores">
+			<p class="caption">Para propietarios y desarrolladores</p>
+			<ul>
+				<li><a href="/espacios">Proponer un espacio</a></li>
+				<li><a href="/desarrolladores">Para desarrolladores</a></li>
+			</ul>
+		</nav>
+
+		<nav class="site-footer__legal" aria-label="Legal">
+			<ul>
+				<li><a href="/privacidad">Política de Privacidad</a></li>
+				<li><a href="/terminos">Términos y Condiciones</a></li>
+				<li><a href="/cookies">Cookies</a></li>
+			</ul>
+		</nav>
+
+		<p class="caption">© 2026 CLAVERA. Todos los derechos reservados.</p>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		border-top: 1px solid var(--border-hairline);
+		background: var(--bg-surface);
+	}
+
+	.site-footer__inner {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+		padding-block: var(--space-16);
+	}
+
+	.site-footer__brand {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	.site-footer__brand a {
+		color: var(--text-secondary);
+	}
+
+	.site-footer__brand a:hover {
+		color: var(--accent);
+	}
+
+	.site-footer__b2b ul,
+	.site-footer__legal ul {
+		list-style: none;
+		margin: var(--space-2) 0 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2) var(--space-6);
+	}
+
+	.site-footer__b2b a {
+		font-size: var(--text-caption-size);
+		color: var(--text-tertiary);
+	}
+
+	.site-footer__legal a {
+		font-size: var(--text-body-md-size);
+		color: var(--text-secondary);
+	}
+
+	.site-footer__b2b a:hover,
+	.site-footer__legal a:hover {
+		color: var(--accent);
+	}
+</style>

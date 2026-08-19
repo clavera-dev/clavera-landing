@@ -1,0 +1,61 @@
+---
+/**
+ * Isolated placeholder for media that is not yet approved for production
+ * (e.g. an unfinished render or video). Deliberately not styled to look like
+ * a broken image — it reads as a clearly-marked reserved slot, per
+ * PROJECT_DECISIONS.md: "If a required video or image is unfinished, use a
+ * clearly isolated placeholder. Do not attempt to repair or silently
+ * replace unfinished media."
+ *
+ * With no `label`, the placeholder is purely visual and conveys no content,
+ * so it is hidden from assistive technology (aria-hidden) and shows no text —
+ * this is the default, used when there is nothing approved to say about what
+ * belongs here yet. Pass `label` only for genuinely useful, user-facing copy.
+ */
+interface Props {
+	label?: string;
+	ratio?: string;
+}
+
+const { label, ratio = '16 / 9' } = Astro.props;
+---
+
+{
+	label ? (
+		<div class="media-placeholder" style={`aspect-ratio: ${ratio};`} role="img" aria-label={label}>
+			<span class="media-placeholder__label">{label}</span>
+		</div>
+	) : (
+		<div class="media-placeholder" style={`aspect-ratio: ${ratio};`} aria-hidden="true" />
+	)
+}
+
+<style>
+	.media-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		border-radius: var(--radius-lg);
+		border: 1px dashed var(--border-hairline-strong);
+		background: repeating-linear-gradient(
+			135deg,
+			var(--bg-elevated) 0px,
+			var(--bg-elevated) 10px,
+			var(--bg-surface) 10px,
+			var(--bg-surface) 20px
+		);
+		padding: var(--space-6);
+		text-align: center;
+	}
+
+	.media-placeholder__label {
+		font-family: var(--font-sans);
+		font-size: var(--text-label-md-size);
+		line-height: var(--text-label-md-line);
+		letter-spacing: var(--text-label-md-tracking);
+		font-weight: var(--text-label-md-weight);
+		color: var(--text-tertiary);
+		max-width: 32ch;
+	}
+</style>

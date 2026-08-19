@@ -1,0 +1,45 @@
+---
+import Section from '../layout/Section.astro';
+
+/**
+ * Zone list per PROJECT_DECISIONS.md "Initial areas" — this overrides the
+ * larger nine-barrio list in the brief (§S10), which is superseded for
+ * phase one.
+ */
+const zones = ['Palermo', 'Chacarita', 'Villa Crespo', 'Recoleta'];
+---
+
+<Section
+	id="zonas"
+	eyebrow="Primeros hubs"
+	heading="Estamos construyendo el mapa de demanda antes de elegir las ubicaciones."
+>
+	<p slot="lede" class="body-lg">
+		Nos interesa saber dónde hace falta. Estas son las zonas donde estamos trabajando.
+	</p>
+
+	<ul class="zones">
+		{zones.map((zone) => <li class="badge badge--accent zones__item">{zone}</li>)}
+	</ul>
+
+	<p class="body-md">
+		Cada zona avanza a su ritmo: en algunas buscamos un hub completo, en otras un espacio más chico dentro de un
+		edificio o un espacio existente. Dejá tu pedido y te contamos qué hay disponible en la tuya.
+	</p>
+</Section>
+
+<style>
+	.zones {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+	}
+
+	.zones__item {
+		font-size: var(--text-label-md-size);
+		padding: var(--space-2) var(--space-4);
+	}
+</style>

@@ -1,0 +1,37 @@
+---
+import Section from '../layout/Section.astro';
+import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
+---
+
+<Section id="fundadores" tone="elevated" eyebrow="Socios Fundadores" heading="Los primeros 40 lugares empiezan acá.">
+	<div slot="lede" class="founders__badges">
+		<span class="badge badge--accent">−20%</span>
+		<span class="badge badge--accent">24 MESES</span>
+	</div>
+
+	<p class="body-lg">
+		<strong>20% de descuento sobre el precio de lista, garantizado por 24 meses.</strong> Los Socios Fundadores eligen
+		su lugar antes que nadie.
+	</p>
+	<p class="body-md">
+		Dejar tus datos no implica ningún pago. Te enviamos el precio de Socio Fundador y la disponibilidad en tu zona.
+	</p>
+
+	<TypeformBoundary ctaLabel="Ver mi precio de Socio Fundador →" />
+
+	<p class="caption founders__disclaimer">
+		El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, con actualización
+		trimestral por IPC/ICL, garantizado por 24 meses desde el alta.
+	</p>
+</Section>
+
+<style>
+	.founders__badges {
+		display: flex;
+		gap: var(--space-2);
+	}
+
+	.founders__disclaimer {
+		max-width: 70ch;
+	}
+</style>

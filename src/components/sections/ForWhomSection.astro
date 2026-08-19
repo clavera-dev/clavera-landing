@@ -1,0 +1,27 @@
+---
+import Section from '../layout/Section.astro';
+
+const cases = [
+	'Tu bici vale más que el candado que la cuida — y duerme en el balcón.',
+	'Tenés una e-bike o una cargo que no entra en el ascensor.',
+	'Usás la bici todos los días y cada salida empieza con el ascensor.',
+	'Sos una familia con más bicis que balcón.',
+	'Tu edificio no tiene bicicletero, o el que hay está lleno.',
+];
+---
+
+<Section id="casos" tone="elevated" eyebrow="Para quién" heading="Si te pasa alguna de estas, CLAVERA es para vos.">
+	<ul class="cases">
+		{cases.map((item) => <li class="body-lg">{item}</li>)}
+	</ul>
+</Section>
+
+<style>
+	.cases {
+		margin: 0;
+		padding-left: var(--space-6);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+</style>

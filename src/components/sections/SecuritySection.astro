@@ -1,0 +1,50 @@
+---
+import Section from '../layout/Section.astro';
+import RenderFigure from '../media/RenderFigure.astro';
+import { getRender } from '../../data/media';
+
+const items = [
+	'Identificación individual con DNI al asociarte',
+	'Acceso digital personal, no transferible',
+	'Cámaras y registro de ingresos y egresos',
+	'Estructuras de guarda profesionales, fijadas e independientes por lugar — sin bicis apoyadas unas sobre otras',
+	'Sin carga de baterías dentro del hub',
+	'Horario amplio, todos los días, según el hub¹',
+];
+---
+
+<Section id="seguridad" eyebrow="Seguridad y acceso" heading="Nadie entra de pasada.">
+	<p slot="lede" class="body-lg">
+		Cada socio se identifica. Cada acceso queda registrado. Cada bici está asociada a su marca, modelo y número de
+		cuadro.
+	</p>
+	<div class="security-grid">
+		<ul class="security-list">
+			{items.map((item) => <li class="body-md">{item}</li>)}
+		</ul>
+		<RenderFigure id="entrance" caption={getRender('entrance').caption} />
+	</div>
+</Section>
+
+<style>
+	.security-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-8);
+		align-items: start;
+	}
+
+	.security-list {
+		margin: 0;
+		padding-left: var(--space-6);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	@media (min-width: 900px) {
+		.security-grid {
+			grid-template-columns: 1.2fr 1fr;
+		}
+	}
+</style>
