@@ -118,3 +118,22 @@ The secondary domain should permanently redirect to the primary domain.
 - Preserve semantic HTML, keyboard navigation and visible focus states.
 - Optimize images, video, fonts and third-party scripts.
 - The landing page must remain useful before JavaScript finishes loading.
+
+## Approved final render set
+
+The final CLAVERA R1–R6 render set delivered on 2026-08-19 is approved for production use and replaces the previous render descriptions in the project brief wherever they conflict.
+
+Approved content:
+
+- R1: general hub overview
+- R2: vertical lifting bicycle storage systems
+- R3: self-service bicycle cleaning zone
+- R4: lockers and family storage module with space for a child bicycle seat
+- R5: cargo and oversized bicycle storage
+- R6: functional zoning scheme
+
+All features shown in these renders are planned parts of the CLAVERA product and are not visual concepts only.
+
+Do not use the brand names `monTEK` or `Hamax` in public-facing copy, metadata, captions, alt text, filenames introduced by the website implementation, or accessibility descriptions. Use generic product descriptions instead.
+
+The final master PNG files will be integrated separately. Until then, continue implementation with the existing optimized media and isolated placeholders.
