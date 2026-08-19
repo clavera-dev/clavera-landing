@@ -1,0 +1,13 @@
+<!-- @dsCard group="Spacing" viewport="700x150" name="Motion" subtitle="Calm ease-out, no bounce — hover to feel the timing" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+body{margin:0;padding:24px;background:var(--bg-base);display:flex;gap:32px;align-items:center;font-family:var(--font-sans);font-size:11px;color:var(--text-tertiary);box-sizing:border-box}
+.demo{display:flex;flex-direction:column;align-items:center;gap:10px}
+.box{width:64px;height:64px;border-radius:var(--radius-md);background:var(--accent)}
+.fast:hover{transform:scale(1.15);transition:transform var(--duration-fast) var(--ease-out)}
+.slow:hover{transform:scale(1.15);transition:transform var(--duration-slow) var(--ease-standard)}
+</style>
+</head><body>
+<div class="demo"><div class="box fast"></div><span>duration-fast · ease-out</span></div>
+<div class="demo"><div class="box slow" style="background:var(--steel-500)"></div><span>duration-slow · ease-standard</span></div>
+</body></html>

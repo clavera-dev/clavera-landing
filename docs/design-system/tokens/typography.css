@@ -1,0 +1,103 @@
+:root{
+--font-display:'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;
+--font-sans:'Onest','Helvetica Neue',Arial,sans-serif;
+--font-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+
+/* All sizes and line-heights sit on the 4px grid. */
+
+/* Display — Plus Jakarta Sans, hero headlines & signage-scale numerals */
+--text-display-2xl-size:72px;
+--text-display-2xl-line:76px;
+--text-display-2xl-tracking:-0.025em;
+--text-display-2xl-weight:800;
+
+--text-display-xl-size:56px;
+--text-display-xl-line:60px;
+--text-display-xl-tracking:-0.02em;
+--text-display-xl-weight:700;
+
+--text-display-lg-size:44px;
+--text-display-lg-line:48px;
+--text-display-lg-tracking:-0.015em;
+--text-display-lg-weight:700;
+
+/* Headings — Plus Jakarta Sans, h1–h5 */
+--text-h1-size:36px;
+--text-h1-line:40px;
+--text-h1-tracking:-0.015em;
+--text-h1-weight:700;
+
+--text-h2-size:28px;
+--text-h2-line:32px;
+--text-h2-tracking:-0.01em;
+--text-h2-weight:700;
+
+--text-h3-size:24px;
+--text-h3-line:28px;
+--text-h3-tracking:-0.005em;
+--text-h3-weight:600;
+
+--text-h4-size:20px;
+--text-h4-line:28px;
+--text-h4-tracking:0em;
+--text-h4-weight:600;
+
+--text-h5-size:16px;
+--text-h5-line:24px;
+--text-h5-tracking:0em;
+--text-h5-weight:600;
+
+/* Body — Onest */
+--text-body-xl-size:24px;
+--text-body-xl-line:36px;
+--text-body-xl-weight:400;
+
+--text-body-lg-size:20px;
+--text-body-lg-line:32px;
+--text-body-lg-weight:400;
+
+--text-body-md-size:16px;
+--text-body-md-line:24px;
+--text-body-md-weight:400;
+
+--text-body-sm-size:12px;
+--text-body-sm-line:16px;
+--text-body-sm-weight:400;
+
+/* Labels — Onest, UI controls, form labels, badges */
+--text-label-lg-size:16px;
+--text-label-lg-line:24px;
+--text-label-lg-tracking:0.005em;
+--text-label-lg-weight:500;
+
+--text-label-md-size:16px;
+--text-label-md-line:20px;
+--text-label-md-tracking:0.01em;
+--text-label-md-weight:500;
+
+--text-label-sm-size:12px;
+--text-label-sm-line:16px;
+--text-label-sm-tracking:0.01em;
+--text-label-sm-weight:500;
+
+--text-eyebrow-size:12px;
+--text-eyebrow-line:16px;
+--text-eyebrow-tracking:0.12em;
+--text-eyebrow-weight:600;
+
+--text-caption-size:12px;
+--text-caption-line:16px;
+--text-caption-tracking:0.01em;
+--text-caption-weight:500;
+
+/* Mono — codes, frame numbers, timestamps, access codes */
+--text-mono-md-size:16px;
+--text-mono-md-line:24px;
+--text-mono-md-tracking:0.02em;
+--text-mono-md-weight:500;
+
+--text-mono-sm-size:12px;
+--text-mono-sm-line:16px;
+--text-mono-sm-tracking:0.03em;
+--text-mono-sm-weight:500;
+}

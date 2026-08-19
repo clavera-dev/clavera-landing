@@ -1,0 +1,92 @@
+:root{
+/* ---- Graphite: base / dark surfaces (matte black) ---- */
+--graphite-950:oklch(15% 0.004 95);
+--graphite-900:oklch(18% 0.004 95);
+--graphite-850:oklch(21% 0.004 92);
+--graphite-800:oklch(25% 0.005 90);
+--graphite-700:oklch(33% 0.006 88);
+--graphite-600:oklch(42% 0.007 85);
+--graphite-500:oklch(52% 0.008 85);
+
+/* ---- Concrete: neutral surfaces & text ---- */
+--concrete-900:oklch(30% 0.004 85);
+--concrete-700:oklch(46% 0.005 85);
+--concrete-500:oklch(60% 0.006 85);
+--concrete-400:oklch(69% 0.006 85);
+--concrete-300:oklch(78% 0.005 85);
+--concrete-200:oklch(86% 0.004 85);
+--concrete-100:oklch(92% 0.003 83);
+--concrete-50:oklch(96.5% 0.002 80);
+
+/* ---- Amber: warm LED accent ---- */
+--amber-700:oklch(52% 0.14 55);
+--amber-600:oklch(62% 0.15 58);
+--amber-500:oklch(72% 0.15 62);
+--amber-400:oklch(80% 0.12 66);
+--amber-200:oklch(90% 0.06 70);
+
+/* ---- Steel: cool secondary (info, dividers, imagery mood) ---- */
+--steel-600:oklch(46% 0.02 240);
+--steel-500:oklch(58% 0.025 240);
+--steel-300:oklch(78% 0.015 240);
+
+/* ---- Wood: physical-material reference for imagery/moodboards — rarely used directly in UI ---- */
+--wood-600:oklch(38% 0.045 55);
+--wood-400:oklch(52% 0.05 58);
+
+/* ---- Moss: success ---- */
+--moss-600:oklch(48% 0.08 145);
+--moss-500:oklch(58% 0.09 145);
+
+/* ---- Rust: danger ---- */
+--rust-600:oklch(46% 0.13 30);
+--rust-500:oklch(56% 0.15 32);
+
+--white:oklch(100% 0 0);
+--black:oklch(0% 0 0);
+
+/* ================= Semantic aliases ================= */
+/* Surfaces — brand is dark-first; "paper" tokens are the secondary light surface */
+--bg-base:var(--graphite-950);
+--bg-surface:var(--graphite-900);
+--bg-elevated:var(--graphite-850);
+--bg-elevated-2:var(--graphite-800);
+--bg-sunken:var(--graphite-950);
+--bg-paper:var(--concrete-50);
+--bg-paper-elevated:var(--white);
+
+/* Borders */
+--border-hairline:oklch(100% 0 0 / 0.08);
+--border-hairline-strong:oklch(100% 0 0 / 0.16);
+--border-on-paper:oklch(0% 0 0 / 0.1);
+--border-on-paper-strong:oklch(0% 0 0 / 0.18);
+
+/* Text */
+--text-primary:var(--concrete-50);
+--text-secondary:var(--concrete-300);
+--text-tertiary:var(--concrete-500);
+--text-on-paper:var(--graphite-950);
+--text-on-paper-secondary:var(--concrete-700);
+--text-on-paper-tertiary:var(--concrete-500);
+--text-inverse:var(--graphite-950);
+
+/* Accent (amber / LED) */
+--accent:var(--amber-500);
+--accent-hover:var(--amber-600);
+--accent-press:var(--amber-700);
+--accent-subtle:oklch(72% 0.15 62 / 0.14);
+--accent-subtle-strong:oklch(72% 0.15 62 / 0.28);
+--accent-on:var(--graphite-950);
+
+/* Status */
+--status-success:var(--moss-500);
+--status-success-subtle:oklch(58% 0.09 145 / 0.14);
+--status-danger:var(--rust-500);
+--status-danger-subtle:oklch(56% 0.15 32 / 0.14);
+--status-info:var(--steel-500);
+--status-info-subtle:oklch(58% 0.025 240 / 0.14);
+--status-warning:var(--amber-500);
+--status-warning-subtle:var(--accent-subtle);
+
+--focus-ring:var(--amber-500);
+}
