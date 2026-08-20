@@ -14,8 +14,8 @@
 export const typeformConfig = {
 	/** Socios Fundadores lead form (S11). Typeform Plus account, TBD. */
 	foundersFormUrl: '',
-	/** Long-form Bike Hub research survey, offered from /gracias. */
+	/** Long-form Bike Hub research survey (S13 / offered from /gracias). Independent of the founders form. */
 	surveyFormUrl: '',
-	/** Typeform redirects here after a successful founders-form submission. */
+	/** Typeform redirects here after a successful *founders*-form submission only. */
 	redirectPath: '/gracias',
 };

@@ -5,15 +5,16 @@ import Section from '../layout/Section.astro';
  * FAQ-09's zone clause is adjusted from the brief's zone-A list to the
  * areas approved in PROJECT_DECISIONS.md ("Initial areas"), which overrides
  * the brief where they conflict — same as src/components/sections/ZonesSection.astro.
+ *
+ * FAQ-02 ("¿Puedo entrar cuando quiera?") is removed: its answer depended on
+ * "horario amplio", an operating-hours claim PROJECT_DECISIONS.md says is
+ * unconfirmed. FAQ-05's insurance wording is untouched — it is the brief's
+ * specifically permitted formulation and is not part of this correction.
  */
 const faqs = [
 	{
 		q: '¿Qué es CLAVERA?',
 		a: 'CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía en Buenos Aires. Cada socio tiene un lugar asignado, acceso digital personal y registro de cada ingreso. No es un taller ni un lugar para autos.',
-	},
-	{
-		q: '¿Puedo entrar cuando quiera?',
-		a: 'Sí. Tenés acceso digital personal y horario amplio, todos los días. El horario definitivo de cada hub se confirma al abrir y puede tener restricciones puntuales por mantenimiento o feriados, informadas con anticipación.',
 	},
 	{
 		q: '¿Cuánto cuesta?',

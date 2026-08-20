@@ -1,6 +1,13 @@
 ---
 import Section from '../layout/Section.astro';
 
+/**
+ * Card 03 ("Acceso amplio" / extended-hours access) stays removed:
+ * PROJECT_DECISIONS.md says operating-hour wording is unconfirmed and must
+ * not be claimed yet. Card 08 ("Zona de limpieza") restores the set to
+ * eight cards using the approved final R3 render (self-service bicycle
+ * cleaning zone) instead — a confirmed, non-hours property.
+ */
 const pillars = [
 	{ n: '01', title: 'Lugar asignado', copy: 'Con tu nombre, independiente y siempre libre para vos.' },
 	{
@@ -8,31 +15,35 @@ const pillars = [
 		title: 'Acceso digital personal',
 		copy: 'QR o código personal. Entrás y salís sin depender de nadie.',
 	},
-	{ n: '03', title: 'Acceso amplio', copy: 'Todos los días, con horario amplio según el hub.¹' },
 	{
-		n: '04',
+		n: '03',
 		title: 'Cerrado, seco y limpio',
 		copy: 'Sin lluvia, sin humedad de vereda, sin polvo. Mantenimiento periódico.',
 	},
 	{
-		n: '05',
+		n: '04',
 		title: 'Vigilancia y registro',
 		copy: 'Cámaras y registro individual de cada ingreso y egreso.',
 	},
 	{
-		n: '06',
+		n: '05',
 		title: 'Retiro sin mover otras bicis',
 		copy: 'Cada lugar es independiente: sacás la tuya sin tocar la del vecino.',
 	},
 	{
-		n: '07',
+		n: '06',
 		title: 'Inventario por número de cuadro',
 		copy: 'Marca, modelo y número de cuadro registrados al ingresar.',
 	},
 	{
-		n: '08',
+		n: '07',
 		title: 'Membresía mensual',
 		copy: 'Sin garantía, sin contrato anual, sin comisión inmobiliaria.',
+	},
+	{
+		n: '08',
+		title: 'Zona de limpieza',
+		copy: 'Un espacio de autoservicio preparado para limpiar tu bicicleta dentro del hub.',
 	},
 ];
 ---
@@ -54,11 +65,6 @@ const pillars = [
 			))
 		}
 	</ol>
-
-	<p class="caption pillars__footnote">
-		¹ El horario definitivo se confirma al abrir cada hub y puede tener restricciones puntuales por mantenimiento o
-		feriados, informadas con anticipación.
-	</p>
 </Section>
 
 <style>
@@ -85,10 +91,6 @@ const pillars = [
 	.pillars__number {
 		color: var(--accent);
 		font-family: var(--font-mono);
-	}
-
-	.pillars__footnote {
-		max-width: 70ch;
 	}
 
 	@media (min-width: 640px) {

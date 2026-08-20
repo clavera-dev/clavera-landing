@@ -17,7 +17,8 @@ interface Props {
 const { id, sizes = '(min-width: 900px) 50vw, 100vw', loading = 'lazy', fetchpriority = 'auto', caption } = Astro.props;
 
 const render = getRender(id);
-const { width, height } = render.dimensions[1280];
+const defaultWidth = render.widths[Math.floor(render.widths.length / 2)];
+const { width, height } = render.dimensions[defaultWidth];
 ---
 
 <figure class="render-figure">
@@ -32,6 +33,7 @@ const { width, height } = render.dimensions[1280];
 			loading={loading}
 			decoding="async"
 			fetchpriority={fetchpriority}
+			style={`object-position: ${render.objectPosition};`}
 		/>
 	</picture>
 	<figcaption>

@@ -136,4 +136,4 @@ All features shown in these renders are planned parts of the CLAVERA product and
 
 Do not use the brand names `monTEK` or `Hamax` in public-facing copy, metadata, captions, alt text, filenames introduced by the website implementation, or accessibility descriptions. Use generic product descriptions instead.
 
-The final master PNG files will be integrated separately. Until then, continue implementation with the existing optimized media and isolated placeholders.
+The final R1–R6 set is integrated. The approved master PNG files are retained outside this repository and outside the public production bundle; the website uses optimized AVIF and WebP derivatives generated from those approved masters. The older entrance render remains a separate access/security image and is not R3.

@@ -2,38 +2,62 @@
  * Central media registry.
  *
  * Every place in the site that needs a CLAVERA render or media placeholder
- * reads from here instead of hard-coding a path. When the final master
- * renders or real hub photography arrive, update this file only.
+ * reads from here instead of hard-coding a path. When new media arrives,
+ * update this file only.
  *
- * Source assets: public/brand/renders/ (see docs/design-system/renders-README.md).
  * Approved content per render: PROJECT_DECISIONS.md § "Approved final render set".
+ *
+ * The approved final R1–R6 set (master 2K PNGs, validated pixel dimensions
+ * confirmed on delivery) lives under public/brand/renders/final/. R3 is the
+ * self-service bicycle-cleaning render, per PROJECT_DECISIONS.md — a real
+ * asset for it now exists and replaces the neutral placeholder that used to
+ * sit in that gallery slot.
+ *
+ * One older asset — the "entrance" render from the previous production
+ * batch — is kept separately under public/brand/renders/ (not final/). It
+ * genuinely shows a controlled-access entrance, so it stays in the
+ * Security section only. It must never be labelled R3 or presented as the
+ * cleaning zone: R3 in the approved set is the vertical self-cleaning bay,
+ * a different scene entirely.
  */
 
-export const RENDER_WIDTHS = [640, 1280, 1920] as const;
-export type RenderWidth = (typeof RENDER_WIDTHS)[number];
+export interface RenderDimensions {
+	width: number;
+	height: number;
+}
 
-/**
- * PROJECT_DECISIONS.md approves R1, R2, R4, R5, R6 and defines R3 as the
- * "self-service bicycle cleaning zone" — but no asset for that content has
- * been delivered. The one file that used to be labelled r3 actually shows
- * the hub entrance, so it is kept under the honest id `entrance` and must
- * never be presented as R3 or as the cleaning zone. It is used only in the
- * security/access section, where an entrance shot is genuinely on-topic.
- * The R3 slot in the hub gallery renders a neutral MediaPlaceholder instead.
- */
 export interface RenderAsset {
-	id: 'r1' | 'r2' | 'entrance' | 'r4' | 'r5' | 'r6';
+	id: 'r1' | 'r2' | 'r3' | 'entrance' | 'r4' | 'r5' | 'r6';
+	/** Directory the width/format variants live in, relative to /public. */
+	basePath: string;
 	/** Filename fragment shared by every width/format variant. */
 	slug: string;
 	/** Spanish alt text describing what is literally visible, per §3.5 of the brief. */
 	alt: string;
 	/** Short visible label shown under the image. Centralized so every use of a render is consistent. */
 	caption: string;
-	/** Pixel dimensions per delivered width, used to set width/height and avoid layout shift. */
-	dimensions: Record<RenderWidth, { width: number; height: number }>;
+	/**
+	 * CSS `object-position` to use if this image is ever shown inside a
+	 * fixed-aspect box with `object-fit: cover`. Nothing in the site does
+	 * that today — every render is laid out at its natural aspect ratio —
+	 * but the value is centralized here so a future crop decision has one
+	 * place to live instead of being re-guessed per component.
+	 */
+	objectPosition: string;
+	/** Native (source) pixel dimensions, before any resizing. */
+	native: RenderDimensions;
+	/**
+	 * Available width variants, ascending. Not every render has the same
+	 * set — R3 is vertical and native-narrower than 2048px, so its top
+	 * variant is its native width (1856px) instead of an upscaled 2048px.
+	 */
+	widths: number[];
+	/** Measured pixel dimensions per generated width (source of truth for width/height attrs). */
+	dimensions: Record<number, RenderDimensions>;
 }
 
-const RENDER_BASE_PATH = '/brand/renders';
+const FINAL_BASE_PATH = '/brand/renders/final';
+const LEGACY_BASE_PATH = '/brand/renders';
 
 /**
  * Required disclosure for digitally generated project renders.
@@ -45,31 +69,67 @@ export const RENDER_DISCLOSURE =
 export const renders: RenderAsset[] = [
 	{
 		id: 'r1',
-		slug: 'clavera-brand-overview-r1',
-		alt: 'Vista general de un hub CLAVERA: hilera de bicicletas en soportes verticales individuales junto a una pared de lockers, con pasillo de circulación.',
+		basePath: FINAL_BASE_PATH,
+		slug: 'clavera-final-r1-overview',
+		alt: 'Vista general de un hub CLAVERA: hilera de bicicletas en soportes verticales numerados, junto a una pared de lockers y un banco de madera.',
 		caption: 'Vista general del hub',
+		objectPosition: 'center',
+		native: { width: 2752, height: 1536 },
+		widths: [640, 960, 1280, 1600, 2048],
 		dimensions: {
 			640: { width: 640, height: 357 },
+			960: { width: 960, height: 536 },
 			1280: { width: 1280, height: 714 },
-			1920: { width: 1920, height: 1072 },
+			1600: { width: 1600, height: 893 },
+			2048: { width: 2048, height: 1143 },
 		},
 	},
 	{
 		id: 'r2',
-		slug: 'clavera-brand-rack-r2',
-		alt: 'Bicicleta en un soporte vertical individual anclado a la pared, con el lugar contiguo libre.',
-		caption: 'Soporte vertical individual',
+		basePath: FINAL_BASE_PATH,
+		slug: 'clavera-final-r2-storage',
+		alt: 'Bicicletas en soportes verticales individuales numerados, cada uno anclado a la pared de un hub CLAVERA.',
+		caption: 'Soportes verticales individuales',
+		objectPosition: 'center',
+		native: { width: 2528, height: 1696 },
+		widths: [640, 960, 1280, 1600, 2048],
 		dimensions: {
 			640: { width: 640, height: 429 },
-			1280: { width: 1280, height: 859 },
-			1920: { width: 1920, height: 1288 },
+			960: { width: 960, height: 644 },
+			1280: { width: 1280, height: 858 },
+			1600: { width: 1600, height: 1073 },
+			2048: { width: 2048, height: 1374 },
+		},
+	},
+	{
+		id: 'r3',
+		basePath: FINAL_BASE_PATH,
+		slug: 'clavera-final-r3-cleaning',
+		alt: 'Zona de autolavado para bicicletas en un hub CLAVERA, con manguera, productos de limpieza y piso con desagüe.',
+		caption: 'Zona de autolavado',
+		// Vertical composition (native 1856×2304) — never force this into a
+		// wide landscape object-fit: cover crop. Its top width variant is
+		// its native width (1856px), not an upscaled 2048px.
+		objectPosition: 'center',
+		native: { width: 1856, height: 2304 },
+		widths: [640, 960, 1280, 1600, 1856],
+		dimensions: {
+			640: { width: 640, height: 794 },
+			960: { width: 960, height: 1191 },
+			1280: { width: 1280, height: 1589 },
+			1600: { width: 1600, height: 1986 },
+			1856: { width: 1856, height: 2304 },
 		},
 	},
 	{
 		id: 'entrance',
+		basePath: LEGACY_BASE_PATH,
 		slug: 'clavera-brand-entrance-r3',
 		alt: 'Ingreso de un hub CLAVERA, con puerta de acceso, panel de acceso digital y cámara de seguridad.',
 		caption: 'Ingreso controlado',
+		objectPosition: 'center',
+		native: { width: 3712, height: 4608 },
+		widths: [640, 1280, 1920],
 		dimensions: {
 			640: { width: 640, height: 794 },
 			1280: { width: 1280, height: 1589 },
@@ -78,35 +138,55 @@ export const renders: RenderAsset[] = [
 	},
 	{
 		id: 'r4',
-		slug: 'clavera-brand-lockers-r4',
-		alt: 'Fila de lockers individuales para casco y equipo, con uno abierto mostrando su interior.',
-		caption: 'Lockers para casco y equipo',
+		basePath: FINAL_BASE_PATH,
+		slug: 'clavera-final-r4-lockers',
+		alt: 'Lockers individuales en un hub CLAVERA, con uno abierto que muestra espacio para una silla portabebé de bicicleta.',
+		caption: 'Lockers y espacio para silla de bebé',
+		objectPosition: 'center',
+		native: { width: 2528, height: 1696 },
+		widths: [640, 960, 1280, 1600, 2048],
 		dimensions: {
 			640: { width: 640, height: 429 },
-			1280: { width: 1280, height: 859 },
-			1920: { width: 1920, height: 1288 },
+			960: { width: 960, height: 644 },
+			1280: { width: 1280, height: 858 },
+			1600: { width: 1600, height: 1073 },
+			2048: { width: 2048, height: 1374 },
 		},
 	},
 	{
 		id: 'r5',
-		slug: 'clavera-brand-cargo-r5',
-		alt: 'Zona para e-bikes y bicicletas cargo, con soportes independientes a nivel de piso.',
-		caption: 'Zona para e-bike y cargo',
+		basePath: FINAL_BASE_PATH,
+		slug: 'clavera-final-r5-cargo',
+		alt: 'Zona para bicicletas cargo y e-bikes de gran tamaño, con lugares delimitados a nivel de piso en un hub CLAVERA.',
+		caption: 'Zona cargo y e-bikes',
+		objectPosition: 'center',
+		native: { width: 2752, height: 1536 },
+		widths: [640, 960, 1280, 1600, 2048],
 		dimensions: {
 			640: { width: 640, height: 357 },
+			960: { width: 960, height: 536 },
 			1280: { width: 1280, height: 714 },
-			1920: { width: 1920, height: 1072 },
+			1600: { width: 1600, height: 893 },
+			2048: { width: 2048, height: 1143 },
 		},
 	},
 	{
 		id: 'r6',
-		slug: 'clavera-brand-zoning-r6',
-		alt: 'Esquema isométrico de zonificación de un hub CLAVERA: ingreso, guarda estándar, zona cargo y lockers.',
+		basePath: FINAL_BASE_PATH,
+		slug: 'clavera-final-r6-zoning',
+		alt: 'Esquema isométrico de zonificación de un hub CLAVERA: ingreso, ocho lugares numerados de guarda, zona cargo, lockers y sala técnica.',
 		caption: 'Esquema de zonificación',
+		// Square, full-scene diagram — must render uncropped so every
+		// zone in the diagram stays legible.
+		objectPosition: 'center',
+		native: { width: 2048, height: 2048 },
+		widths: [640, 960, 1280, 1600, 2048],
 		dimensions: {
 			640: { width: 640, height: 640 },
+			960: { width: 960, height: 960 },
 			1280: { width: 1280, height: 1280 },
-			1920: { width: 1920, height: 1920 },
+			1600: { width: 1600, height: 1600 },
+			2048: { width: 2048, height: 2048 },
 		},
 	},
 ];
@@ -120,15 +200,16 @@ export function getRender(id: RenderAsset['id']): RenderAsset {
 }
 
 export function avifSrcset(render: RenderAsset): string {
-	return RENDER_WIDTHS.map((w) => `${RENDER_BASE_PATH}/${render.slug}-${w}.avif ${w}w`).join(', ');
+	return render.widths.map((w) => `${render.basePath}/${render.slug}-${w}.avif ${w}w`).join(', ');
 }
 
 export function webpSrcset(render: RenderAsset): string {
-	return RENDER_WIDTHS.map((w) => `${RENDER_BASE_PATH}/${render.slug}-${w}.webp ${w}w`).join(', ');
+	return render.widths.map((w) => `${render.basePath}/${render.slug}-${w}.webp ${w}w`).join(', ');
 }
 
-export function webpSrc(render: RenderAsset, width: RenderWidth = 1280): string {
-	return `${RENDER_BASE_PATH}/${render.slug}-${width}.webp`;
+export function webpSrc(render: RenderAsset, width?: number): string {
+	const w = width ?? render.widths[Math.floor(render.widths.length / 2)];
+	return `${render.basePath}/${render.slug}-${w}.webp`;
 }
 
 export const logo = {
