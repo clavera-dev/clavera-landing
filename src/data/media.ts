@@ -7,11 +7,14 @@
  *
  * Approved content per render: PROJECT_DECISIONS.md § "Approved final render set".
  *
- * The approved final R1–R6 set (master 2K PNGs, validated pixel dimensions
- * confirmed on delivery) lives under public/brand/renders/final/. R3 is the
- * self-service bicycle-cleaning render, per PROJECT_DECISIONS.md — a real
- * asset for it now exists and replaces the neutral placeholder that used to
- * sit in that gallery slot.
+ * public/brand/renders/final/ holds ONLY the optimized AVIF and WebP
+ * derivatives of the approved final R1–R6 set. The approved master PNG files
+ * are retained outside this repository and outside the public production
+ * bundle (PROJECT_DECISIONS.md § "Approved final render set"); the `native`
+ * dimensions recorded below describe those masters, not files stored here.
+ * R3 is the self-service bicycle-cleaning render, per PROJECT_DECISIONS.md —
+ * a real asset for it now exists and replaces the neutral placeholder that
+ * used to sit in that gallery slot.
  *
  * One older asset — the "entrance" render from the previous production
  * batch — is kept separately under public/brand/renders/ (not final/). It

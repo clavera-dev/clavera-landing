@@ -1,26 +1,74 @@
 ---
 /**
- * Reusable landing-page section container.
- * Gives every section the same anchor/eyebrow/heading/rhythm pattern
- * described in the brief's section map (Part II, §1).
+ * Landing-page section shell.
+ *
+ * Provides only what every section shares — surface register, vertical
+ * rhythm, the left index rail and an optional header block. Body layout is
+ * deliberately NOT imposed here: each section composes its own, because the
+ * page's design depends on the sections *not* all looking alike.
+ *
+ * The rail is the page's continuity device: a mono sheet index (01, 02, …)
+ * pinned in the left margin on wide screens, borrowed from the numbered bays
+ * visible in the approved renders.
  */
 interface Props {
 	id: string;
+	/** Two-digit sheet index shown in the left rail, e.g. "03". */
+	index?: string;
+	/** Short uppercase label under the rail index. */
+	railLabel?: string;
 	eyebrow?: string;
 	heading?: string;
-	tone?: 'base' | 'elevated';
 	headingLevel?: 2 | 3;
+	/**
+	 * Id of a heading the section renders itself, for sections whose heading is
+	 * part of a custom composition rather than the shared header block.
+	 */
+	labelledby?: string;
+	surface?: 'deep' | 'raised' | 'paper' | 'none';
+	rhythm?: 'tight' | 'default' | 'loose';
+	/** Hairline reveal line along the top edge of the section. */
+	divider?: boolean;
+	class?: string;
 }
 
-const { id, eyebrow, heading, tone = 'base', headingLevel = 2 } = Astro.props;
+const {
+	id,
+	index,
+	railLabel,
+	eyebrow,
+	heading,
+	headingLevel = 2,
+	labelledby,
+	surface = 'none',
+	rhythm = 'default',
+	divider = false,
+	class: className,
+} = Astro.props;
+
 const HeadingTag = headingLevel === 3 ? 'h3' : 'h2';
-const headingId = heading ? `${id}-heading` : undefined;
+const headingId = heading ? `${id}-heading` : labelledby;
+const surfaceClass = surface === 'none' ? '' : `surface-${surface}`;
+const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 ---
 
-<section id={id} class={`section section--${tone}`} aria-labelledby={headingId}>
-	<div class="container section__inner">
+<section
+	id={id}
+	class:list={['section', `section--${rhythm}`, surfaceClass, divider && 'section--divided', className]}
+	aria-labelledby={headingId}
+>
+	<div class="sheet">
 		{
-			(eyebrow || heading) && (
+			index && (
+				<div class="sheet__rail" aria-hidden="true">
+					<span class="sheet__index">{index}</span>
+					{railLabel && <span class="sheet__label">{railLabel}</span>}
+				</div>
+			)
+		}
+
+		{
+			hasHeader && (
 				<header class="section__header">
 					{eyebrow && <p class="eyebrow">{eyebrow}</p>}
 					{heading && (
@@ -32,44 +80,94 @@ const headingId = heading ? `${id}-heading` : undefined;
 				</header>
 			)
 		}
-		<div class="section__body">
-			<slot />
-		</div>
+
+		<slot />
 	</div>
 </section>
 
 <style>
 	.section {
-		padding-block: var(--space-16);
+		position: relative;
+		padding-block: var(--rhythm);
 	}
 
-	.section--elevated {
-		background: var(--bg-surface);
-		border-block: 1px solid var(--border-hairline);
+	.section--tight {
+		padding-block: var(--rhythm-tight);
 	}
 
-	.section__inner {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-8);
+	.section--loose {
+		padding-block: var(--rhythm-loose);
 	}
+
+	.section--divided::before {
+		content: '';
+		position: absolute;
+		inset-inline: var(--gutter);
+		top: 0;
+		height: 1px;
+		background: var(--border-hairline);
+	}
+
+	/* Rail ---------------------------------------------------------------- */
+
+	.sheet__rail {
+		padding-top: var(--space-2);
+		padding-right: var(--space-6);
+	}
+
+	.sheet__index {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-md-size);
+		line-height: 1;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		color: var(--accent);
+	}
+
+	.sheet__label {
+		display: block;
+		margin-top: var(--space-3);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		line-height: var(--text-mono-sm-line);
+		letter-spacing: var(--text-mono-sm-tracking);
+		text-transform: uppercase;
+		color: var(--text-tertiary);
+		/* Reads as a sheet edge-label on an architectural drawing. */
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
+		margin-inline-start: -2px;
+	}
+
+	/* Header -------------------------------------------------------------- */
 
 	.section__header {
-		max-width: 64ch;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-4);
+		gap: var(--space-5);
+		max-width: 26ch;
+		margin-bottom: var(--space-12);
 	}
 
-	.section__body {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-6);
+	.section__header :global(.lede),
+	.section__header :global(.body-lg) {
+		max-width: var(--measure);
+	}
+
+	@media (min-width: 700px) {
+		.section__header {
+			max-width: none;
+		}
+
+		.section__header :global(.heading-h2) {
+			max-width: 20ch;
+		}
 	}
 
 	@media (min-width: 900px) {
-		.section {
-			padding-block: var(--space-24);
+		.section__header {
+			margin-bottom: var(--space-16);
 		}
 	}
 </style>

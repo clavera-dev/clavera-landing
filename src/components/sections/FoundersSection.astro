@@ -1,37 +1,203 @@
 ---
 import Section from '../layout/Section.astro';
 import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
+
+/**
+ * The conversion moment, and the only place on the page that gets full amber
+ * weight: an amber rule across the top edge, the offer set as three large
+ * mono figures, and the page's largest call to action.
+ *
+ * The figures replace the earlier accent pills. Every value here is the
+ * approved offer from PROJECT_DECISIONS.md — 40 places, 20% below list,
+ * guaranteed 24 months — and no monetary price is shown.
+ */
+const figures = [
+	{ value: '40', unit: 'lugares', note: 'Cupo de Socios Fundadores' },
+	{ value: '−20%', unit: '', note: 'Sobre el precio de lista' },
+	{ value: '24', unit: 'meses', note: 'Descuento garantizado' },
+];
 ---
 
-<Section id="fundadores" tone="elevated" eyebrow="Socios Fundadores" heading="Los primeros 40 lugares empiezan acá.">
-	<div slot="lede" class="founders__badges">
-		<span class="badge badge--accent">−20%</span>
-		<span class="badge badge--accent">24 MESES</span>
+<Section
+	id="fundadores"
+	index="10"
+	railLabel="Fundadores"
+	surface="raised"
+	labelledby="fundadores-heading"
+	rhythm="loose"
+	class="founders"
+>
+	<div class="founders__inner">
+		<div class="founders__head">
+			<p class="eyebrow">Socios Fundadores</p>
+			<h2 id="fundadores-heading" class="founders__heading">
+				Los primeros 40 lugares empiezan acá.
+			</h2>
+		</div>
+
+		<dl class="founders__figures">
+			{
+				figures.map((figure) => (
+					<div class="founders__figure">
+						<dt class="mono founders__figure-note">{figure.note}</dt>
+						<dd class="founders__figure-value">
+							{figure.value}
+							{figure.unit && <span class="founders__figure-unit">{figure.unit}</span>}
+						</dd>
+					</div>
+				))
+			}
+		</dl>
+
+		<div class="founders__action">
+			<p class="lede founders__offer">
+				<strong>20% de descuento sobre el precio de lista, garantizado por 24 meses.</strong> Los Socios
+				Fundadores eligen su lugar antes que nadie.
+			</p>
+			<p class="body-md">
+				Dejar tus datos no implica ningún pago. Te enviamos el precio de Socio Fundador y la
+				disponibilidad en tu zona.
+			</p>
+
+			<TypeformBoundary target="founders" ctaLabel="Ver mi precio de Socio Fundador" size="lg" />
+		</div>
+
+		<p class="caption founders__disclaimer">
+			El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, con
+			actualización trimestral por IPC/ICL, garantizado por 24 meses desde el alta.
+		</p>
 	</div>
-
-	<p class="body-lg">
-		<strong>20% de descuento sobre el precio de lista, garantizado por 24 meses.</strong> Los Socios Fundadores eligen
-		su lugar antes que nadie.
-	</p>
-	<p class="body-md">
-		Dejar tus datos no implica ningún pago. Te enviamos el precio de Socio Fundador y la disponibilidad en tu zona.
-	</p>
-
-	<TypeformBoundary target="founders" ctaLabel="Ver mi precio de Socio Fundador →" />
-
-	<p class="caption founders__disclaimer">
-		El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, con actualización
-		trimestral por IPC/ICL, garantizado por 24 meses desde el alta.
-	</p>
 </Section>
 
 <style>
-	.founders__badges {
+	.founders {
+		position: relative;
+	}
+
+	/* The page's single full-width amber rule — the LED turned all the way up,
+	   once. */
+	.founders::before {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		top: 0;
+		height: 2px;
+		background: var(--accent);
+	}
+
+	.founders__inner {
 		display: flex;
+		flex-direction: column;
+		gap: var(--space-12);
+	}
+
+	.founders__head {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+
+	.founders__heading {
+		font-family: var(--font-display);
+		font-size: var(--fluid-display);
+		line-height: 1.04;
+		letter-spacing: var(--text-display-2xl-tracking);
+		font-weight: var(--text-display-2xl-weight);
+		color: var(--text-primary);
+		margin: 0;
+		max-width: 16ch;
+		text-wrap: balance;
+	}
+
+	/* Figures ------------------------------------------------------------- */
+
+	.founders__figures {
+		margin: 0;
+		display: grid;
+		grid-template-columns: 1fr;
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.founders__figure {
+		display: flex;
+		flex-direction: column-reverse;
 		gap: var(--space-2);
+		padding-block: var(--space-6);
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.founders__figure-value {
+		margin: 0;
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-3);
+		font-family: var(--font-mono);
+		font-size: var(--text-display-lg-size);
+		line-height: 1;
+		font-weight: 500;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: -0.02em;
+		color: var(--accent);
+	}
+
+	.founders__figure-unit {
+		font-family: var(--font-sans);
+		font-size: var(--text-h4-size);
+		font-weight: 500;
+		color: var(--text-secondary);
+		letter-spacing: 0;
+	}
+
+	.founders__figure-note {
+		color: var(--text-tertiary);
+	}
+
+	/* Action -------------------------------------------------------------- */
+
+	.founders__action {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		max-width: var(--measure);
+	}
+
+	.founders__offer {
+		color: var(--text-secondary);
+	}
+
+	.founders__action :global(.typeform-boundary) {
+		margin-top: var(--space-4);
 	}
 
 	.founders__disclaimer {
 		max-width: 70ch;
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	@media (min-width: 700px) {
+		.founders__figures {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+
+		.founders__figure {
+			padding-block: var(--space-8);
+			padding-right: var(--space-6);
+		}
+
+		.founders__figure + .founders__figure {
+			padding-left: var(--space-8);
+			border-left: 1px solid var(--border-hairline);
+		}
+	}
+
+	@media (min-width: 900px) {
+		.founders__inner {
+			gap: var(--space-16);
+		}
+
+		.founders__figure-value {
+			font-size: var(--text-display-xl-size);
+		}
 	}
 </style>

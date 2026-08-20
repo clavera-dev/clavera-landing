@@ -2,37 +2,51 @@
 /**
  * Reserved boundary for the Typeform lead-capture embed.
  *
- * Lead capture is intentionally not implemented yet (PROJECT_DECISIONS.md:
- * "Do not implement Typeform yet"). This component is the one place the
- * rest of the page renders a lead-form CTA — nothing else should change
- * once src/config/typeform.ts is filled in.
+ * Lead capture is intentionally not implemented yet. This component is the one
+ * place the rest of the page renders a lead-form CTA — nothing else should
+ * change once src/config/typeform.ts is filled in.
  *
  * There are two independent Typeform targets (S11 Socios Fundadores and the
- * S13 research survey), each with its own URL. `target` selects which
- * config value this instance reads, so the survey CTA can never pick up
- * the founders URL (or vice versa) by accident.
+ * S13 research survey), each with its own URL. `target` selects which config
+ * value this instance reads, so the survey CTA can never pick up the founders
+ * URL (or vice versa) by accident.
+ *
+ * While a URL is empty the control stays inert: it renders as a disabled
+ * button, never as a link to nowhere.
  */
 import { typeformConfig } from '../../config/typeform';
 
 interface Props {
 	target: 'founders' | 'survey';
 	ctaLabel: string;
+	size?: 'md' | 'lg';
+	variant?: 'primary' | 'ghost';
 }
 
-const { target, ctaLabel } = Astro.props;
+const { target, ctaLabel, size = 'md', variant = 'primary' } = Astro.props;
 const formUrl = target === 'founders' ? typeformConfig.foundersFormUrl : typeformConfig.surveyFormUrl;
 const isConfigured = formUrl.length > 0;
+
+const buttonClass = ['button', `button--${variant}`, size === 'lg' && 'button--lg']
+	.filter(Boolean)
+	.join(' ');
 ---
 
 <div class="typeform-boundary" data-typeform-boundary data-typeform-target={target}>
 	{
 		isConfigured ? (
-			<a class="button button--primary" href={formUrl}>
+			<a class={buttonClass} href={formUrl}>
 				{ctaLabel}
+				<span class="typeform-boundary__arrow" aria-hidden="true">
+					→
+				</span>
 			</a>
 		) : (
-			<button class="button button--primary" type="button" disabled>
+			<button class={buttonClass} type="button" disabled>
 				{ctaLabel}
+				<span class="typeform-boundary__arrow" aria-hidden="true">
+					→
+				</span>
 			</button>
 		)
 	}
@@ -46,8 +60,11 @@ const isConfigured = formUrl.length > 0;
 		gap: var(--space-2);
 	}
 
-	.button:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
+	.typeform-boundary__arrow {
+		transition: transform var(--duration-base) var(--ease-out);
+	}
+
+	.button:hover:not(:disabled) .typeform-boundary__arrow {
+		transform: translateX(3px);
 	}
 </style>

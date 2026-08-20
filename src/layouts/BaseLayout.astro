@@ -21,6 +21,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		    does not produce a legible small icon. Add a real one when a proper
 		    mark/monogram is supplied — do not reintroduce the Astro default. */}
 		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#0c0b09" />
+
+		{/* The type tokens pull Plus Jakarta Sans, Onest and IBM Plex Mono from
+		    Google Fonts. Preconnecting saves a round trip on the render-blocking
+		    font request without changing where the tokens live. */}
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
 		<title>{title}</title>
 		<meta name="description" content={description} />

@@ -1,30 +1,137 @@
 ---
 import Section from '../layout/Section.astro';
+import RenderFigure from '../media/RenderFigure.astro';
 
+/**
+ * R5 (cargo and oversized bicycles) becomes the page's first true edge-to-edge
+ * band. It is the render that answers "will my vehicle fit?" literally — three
+ * different machines standing in marked floor bays — so it runs full width and
+ * the list of what fits is set beneath it as one typographic line rather than
+ * a row of tags.
+ */
 const vehicles = ['Bicicleta urbana', 'Ruta y MTB', 'E-bike', 'Cargo', 'Plegable', 'Monopatín eléctrico'];
 ---
 
-<Section id="vehiculos" tone="elevated" eyebrow="Tu movilidad, bien cuidada" heading="Diseñado para lo que realmente usás.">
-	<ul class="vehicles">
-		{vehicles.map((vehicle) => <li class="badge vehicles__item">{vehicle}</li>)}
-	</ul>
-	<p class="body-md">
-		Lockers individuales opcionales para casco y equipo. Por seguridad, no se cargan baterías dentro del hub.
-	</p>
+<Section
+	id="vehiculos"
+	index="04"
+	railLabel="Qué entra"
+	eyebrow="Tu movilidad, bien cuidada"
+	heading="Diseñado para lo que realmente usás."
+	rhythm="tight"
+>
+	<div class="vehicles">
+		<div class="vehicles__band bleed">
+			<RenderFigure
+				id="r5"
+				variant="cover"
+				sizes="100vw"
+				position="50% 55%"
+				caption="Zona cargo y e-bikes"
+			/>
+		</div>
+
+		<ul class="vehicles__list">
+			{
+				vehicles.map((vehicle) => (
+					<li class="vehicles__item">
+						{vehicle}
+					</li>
+				))
+			}
+		</ul>
+
+		<p class="body-md vehicles__note">
+			Lockers individuales opcionales para casco y equipo. Por seguridad, no se cargan baterías dentro
+			del hub.
+		</p>
+	</div>
 </Section>
 
 <style>
 	.vehicles {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-12);
+	}
+
+	.vehicles__band {
+		--figure-ratio: 16 / 10;
+	}
+
+	/* The band runs edge to edge, but its caption belongs back on the page's
+	   content edge with everything else. --edge-inner/--edge measure exactly
+	   that distance from each viewport edge. */
+	.vehicles__band :global(figcaption) {
+		padding-inline: var(--edge-inner) var(--edge);
+	}
+
+	/* One flowing line of what fits, at heading scale, separated by amber
+	   marks — the alternative to six identical pills. */
+	.vehicles__list {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--space-3);
+		align-items: baseline;
+		gap: var(--space-2) 0;
+		font-family: var(--font-display);
+		font-size: var(--fluid-display-sm);
+		line-height: 1.25;
+		letter-spacing: var(--text-display-lg-tracking);
+		font-weight: 600;
+		color: var(--text-primary);
 	}
 
 	.vehicles__item {
-		font-size: var(--text-label-md-size);
-		padding: var(--space-2) var(--space-4);
+		display: inline-flex;
+		align-items: baseline;
+	}
+
+	.vehicles__item:not(:last-child)::after {
+		content: '';
+		display: inline-block;
+		width: 0.34em;
+		height: 0.34em;
+		margin-inline: 0.5em;
+		border-radius: var(--radius-pill);
+		background: var(--accent);
+		/* Sits on the x-height rather than the baseline. */
+		transform: translateY(-0.28em);
+	}
+
+	.vehicles__note {
+		max-width: 52ch;
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	/* The middot run is a desktop device: wrapped on a narrow screen it strands
+	   a separator at the end of a line. On a phone the same list simply stacks. */
+	@media (max-width: 699px) {
+		.vehicles__list {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-1);
+		}
+
+		.vehicles__item:not(:last-child)::after {
+			display: none;
+		}
+	}
+
+	@media (min-width: 900px) {
+		.vehicles {
+			gap: var(--space-16);
+		}
+
+		.vehicles__band {
+			--figure-ratio: 2.35 / 1;
+		}
+
+		.vehicles__list {
+			max-width: 24ch;
+		}
 	}
 </style>

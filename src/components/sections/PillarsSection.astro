@@ -5,9 +5,20 @@ import Section from '../layout/Section.astro';
  * Card 03 ("Acceso amplio" / extended-hours access) stays removed:
  * PROJECT_DECISIONS.md says operating-hour wording is unconfirmed and must
  * not be claimed yet. Card 08 ("Zona de limpieza") restores the set to
- * eight cards using the approved final R3 render (self-service bicycle
+ * eight entries using the approved final R3 render (self-service bicycle
  * cleaning zone) instead — a confirmed, non-hours property.
+ *
+ * Presented as an index, not as eight cards: numbered rows divided by
+ * hairline reveal lines, echoing the numbered bays in the renders. Eight
+ * identical bordered boxes would have flattened the page at exactly the
+ * point where it needs to feel like a specification.
+ *
+ * R2 (vertical lifting storage systems) opens the section, running off the
+ * right edge of the page. It is the render that shows the single idea the
+ * whole product rests on — one numbered, independent bay per member — so it
+ * introduces the list rather than sitting inside it.
  */
+import RenderFigure from '../media/RenderFigure.astro';
 const pillars = [
 	{ n: '01', title: 'Lugar asignado', copy: 'Con tu nombre, independiente y siempre libre para vos.' },
 	{
@@ -48,19 +59,44 @@ const pillars = [
 ];
 ---
 
-<Section id="solucion" tone="elevated" eyebrow="Infraestructura de barrio" heading="Siempre el mismo lugar. Siempre listo para vos.">
-	<p slot="lede" class="body-lg">
-		Convertimos un espacio seguro del barrio en infraestructura pensada desde cero para bicicletas y
-		micromovilidad.
-	</p>
+<Section
+	id="solucion"
+	index="02"
+	railLabel="La solución"
+	surface="raised"
+	labelledby="solucion-heading"
+	rhythm="loose"
+	divider
+>
+	<div class="solution__intro">
+		<div class="solution__text">
+			<p class="eyebrow">Infraestructura de barrio</p>
+			<h2 id="solucion-heading" class="heading-h2">Siempre el mismo lugar. Siempre listo para vos.</h2>
+			<p class="lede">
+				Convertimos un espacio seguro del barrio en infraestructura pensada desde cero para bicicletas
+				y micromovilidad.
+			</p>
+		</div>
 
-	<ol class="pillars">
+		<div class="solution__media bleed-right">
+			<RenderFigure
+				id="r2"
+				variant="plain"
+				sizes="(min-width: 900px) 60vw, 100vw"
+				caption="Soportes verticales individuales"
+			/>
+		</div>
+	</div>
+
+	<ol class="index">
 		{
 			pillars.map((pillar) => (
-				<li class="pillars__item">
-					<span class="pillars__number caption">{pillar.n}</span>
-					<p class="heading-h4">{pillar.title}</p>
-					<p class="body-md">{pillar.copy}</p>
+				<li class="index__row">
+					<span class="index__n numeral">{pillar.n}</span>
+					<div class="index__text">
+						<h3 class="heading-h4">{pillar.title}</h3>
+						<p class="body-md">{pillar.copy}</p>
+					</div>
 				</li>
 			))
 		}
@@ -68,40 +104,90 @@ const pillars = [
 </Section>
 
 <style>
-	.pillars {
+	.solution__intro {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-10);
+		margin-bottom: var(--space-16);
+	}
+
+	.solution__text {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		max-width: var(--measure);
+	}
+
+	/* The bleeding image loses its right-hand radius: it is running off the
+	   page, not sitting in a frame. */
+	.solution__media :global(picture) {
+		border-start-end-radius: 0;
+		border-end-end-radius: 0;
+	}
+
+	@media (min-width: 900px) {
+		.solution__intro {
+			grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+			gap: var(--space-16);
+			align-items: center;
+			margin-bottom: var(--space-24);
+		}
+	}
+
+	.index {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: var(--space-4);
+		column-gap: var(--space-16);
 	}
 
-	.pillars__item {
-		padding: var(--space-6);
-		border: 1px solid var(--border-hairline);
-		border-radius: var(--radius-lg);
-		background: var(--bg-base);
-		box-shadow: var(--shadow-e1);
+	.index__row {
+		display: grid;
+		grid-template-columns: 3.5rem minmax(0, 1fr);
+		gap: var(--space-4);
+		align-items: start;
+		padding-block: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.index__row:last-child {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.index__n {
+		font-size: var(--text-h4-size);
+		padding-top: 2px;
+	}
+
+	.index__text {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-2);
 	}
 
-	.pillars__number {
-		color: var(--accent);
-		font-family: var(--font-mono);
+	.index__text .body-md {
+		max-width: 44ch;
 	}
 
-	@media (min-width: 640px) {
-		.pillars {
-			grid-template-columns: repeat(2, 1fr);
+	@media (min-width: 860px) {
+		.index {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
-	}
 
-	@media (min-width: 1100px) {
-		.pillars {
-			grid-template-columns: repeat(4, 1fr);
+		/* In two columns the last row of each column carries the closing rule,
+		   so both columns end on a line. */
+		.index__row:nth-last-child(-n + 2) {
+			border-bottom: 1px solid var(--border-hairline);
+		}
+
+		.index__row {
+			padding-block: var(--space-8);
+		}
+
+		.index__row:last-child {
+			border-bottom: 1px solid var(--border-hairline);
 		}
 	}
 </style>

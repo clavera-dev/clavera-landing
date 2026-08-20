@@ -1,27 +1,79 @@
 ---
 /**
- * Renders one approved R1–R6 project render as a <figure>, with the
- * digitally-generated-render disclosure visible as real HTML text
- * (never baked into the bitmap or hidden from assistive tech).
+ * One approved R1–R6 project render.
+ *
+ * Three presentation modes, because the renders play different roles in the
+ * page and must not all be framed the same way:
+ *
+ *   panel  – natural aspect ratio inside a hairline reveal frame (default)
+ *   plain  – natural aspect ratio, no frame; for images that bleed off an edge
+ *   cover  – cropped to a given aspect ratio via object-fit, for full-width
+ *            bands. Only ever used on renders whose composition survives the
+ *            crop — never on R3 or R6 (see src/data/media.ts).
+ *
+ * The digitally-generated-render disclosure is always emitted as real HTML
+ * text outside the bitmap, never baked in and never hidden from assistive
+ * technology (PROJECT_DECISIONS.md § Media).
  */
-import { getRender, avifSrcset, webpSrcset, webpSrc, RENDER_DISCLOSURE, type RenderAsset } from '../../data/media';
+import {
+	getRender,
+	avifSrcset,
+	webpSrcset,
+	webpSrc,
+	RENDER_DISCLOSURE,
+	type RenderAsset,
+} from '../../data/media';
 
 interface Props {
 	id: RenderAsset['id'];
 	sizes?: string;
 	loading?: 'lazy' | 'eager';
 	fetchpriority?: 'high' | 'low' | 'auto';
+	/** Visible label under the image. Omit for images that are their own statement. */
 	caption?: string;
+	variant?: 'panel' | 'plain' | 'cover';
+	/**
+	 * Crop ratio for `cover`. Omit it to let an ancestor drive the crop by
+	 * setting `--figure-ratio`, which is how sections retune a band per
+	 * breakpoint.
+	 */
+	ratio?: string;
+	/** Overrides the render's default object-position when cropping. */
+	position?: string;
+	class?: string;
 }
 
-const { id, sizes = '(min-width: 900px) 50vw, 100vw', loading = 'lazy', fetchpriority = 'auto', caption } = Astro.props;
+const {
+	id,
+	sizes = '(min-width: 900px) 50vw, 100vw',
+	loading = 'lazy',
+	fetchpriority = 'auto',
+	caption,
+	variant = 'panel',
+	ratio,
+	position,
+	class: className,
+} = Astro.props;
 
 const render = getRender(id);
 const defaultWidth = render.widths[Math.floor(render.widths.length / 2)];
 const { width, height } = render.dimensions[defaultWidth];
+const objectPosition = position ?? render.objectPosition;
+
+/*
+ * `cover` takes its crop from the `--figure-ratio` custom property rather than
+ * a fixed inline aspect-ratio, so a section can retune the crop per breakpoint
+ * — a wide band on desktop is the wrong shape on a phone. An explicit `ratio`
+ * prop pins it inline for one-off use.
+ */
+const figureStyle = variant === 'cover' && ratio ? `--figure-ratio: ${ratio};` : undefined;
+const imgStyle =
+	variant === 'cover'
+		? `object-fit: cover; object-position: ${objectPosition};`
+		: `object-position: ${objectPosition};`;
 ---
 
-<figure class="render-figure">
+<figure class:list={['render-figure', `render-figure--${variant}`, className]} style={figureStyle}>
 	<picture>
 		<source type="image/avif" srcset={avifSrcset(render)} sizes={sizes} />
 		<source type="image/webp" srcset={webpSrcset(render)} sizes={sizes} />
@@ -33,7 +85,7 @@ const { width, height } = render.dimensions[defaultWidth];
 			loading={loading}
 			decoding="async"
 			fetchpriority={fetchpriority}
-			style={`object-position: ${render.objectPosition};`}
+			style={imgStyle}
 		/>
 	</picture>
 	<figcaption>
@@ -47,34 +99,62 @@ const { width, height } = render.dimensions[defaultWidth];
 		margin: 0;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-2);
+		gap: var(--space-3);
 	}
 
-	.render-figure picture,
+	.render-figure picture {
+		display: block;
+		position: relative;
+		overflow: hidden;
+	}
+
 	.render-figure img {
 		width: 100%;
 		height: auto;
-		border-radius: var(--radius-lg);
-		border: 1px solid var(--border-hairline);
+		background: var(--bg-elevated);
+	}
+
+	.render-figure--panel picture,
+	.render-figure--plain picture {
+		border-radius: var(--radius-xl);
+	}
+
+	.render-figure--panel picture {
+		box-shadow: 0 0 0 1px var(--border-hairline);
+	}
+
+	.render-figure--cover picture {
+		aspect-ratio: var(--figure-ratio, 16 / 9);
+	}
+
+	.render-figure--cover img {
+		height: 100%;
 	}
 
 	.render-figure figcaption {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-1);
+		gap: var(--space-2);
 	}
 
 	.render-figure__caption {
 		font-family: var(--font-sans);
-		font-size: var(--text-label-sm-size);
-		line-height: var(--text-label-sm-line);
-		color: var(--text-secondary);
+		font-size: var(--text-label-md-size);
+		line-height: var(--text-label-md-line);
+		letter-spacing: var(--text-label-md-tracking);
+		font-weight: 500;
+		color: var(--text-primary);
 	}
 
+	/* The legal marking, set as a technical annotation rather than fine print
+	   that fights the composition. */
 	.render-figure__disclosure {
-		font-family: var(--font-sans);
-		font-size: var(--text-caption-size);
-		line-height: var(--text-caption-line);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		line-height: var(--text-mono-sm-line);
+		letter-spacing: var(--text-mono-sm-tracking);
 		color: var(--text-tertiary);
+		max-width: 54ch;
+		text-wrap: pretty;
 	}
 </style>

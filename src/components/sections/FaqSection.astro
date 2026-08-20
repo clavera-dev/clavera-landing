@@ -2,9 +2,9 @@
 import Section from '../layout/Section.astro';
 
 /**
- * FAQ-09's zone clause is adjusted from the brief's zone-A list to the
- * areas approved in PROJECT_DECISIONS.md ("Initial areas"), which overrides
- * the brief where they conflict — same as src/components/sections/ZonesSection.astro.
+ * FAQ-09's zone clause is adjusted from the brief's zone-A list to the areas
+ * approved in PROJECT_DECISIONS.md ("Initial areas"), which overrides the
+ * brief where they conflict — same as src/components/sections/ZonesSection.astro.
  *
  * FAQ-02 ("¿Puedo entrar cuando quiera?") is removed: its answer depended on
  * "horario amplio", an operating-hours claim PROJECT_DECISIONS.md says is
@@ -51,13 +51,25 @@ const faqs = [
 ];
 ---
 
-<Section id="faq" eyebrow="Preguntas frecuentes" heading="Lo importante, sin letra chica.">
-	<div class="faq-list">
+<Section
+	id="faq"
+	index="11"
+	railLabel="Preguntas"
+	divider
+	eyebrow="Preguntas frecuentes"
+	heading="Lo importante, sin letra chica."
+>
+	<div class="faq">
 		{
 			faqs.map((faq) => (
-				<details class="faq-item">
-					<summary class="heading-h4">{faq.q}</summary>
-					<p class="body-md">{faq.a}</p>
+				<details class="faq__item">
+					<summary class="faq__q">
+						<span class="faq__q-text">{faq.q}</span>
+						<span class="faq__mark" aria-hidden="true" />
+					</summary>
+					<div class="faq__a">
+						<p class="body-md">{faq.a}</p>
+					</div>
 				</details>
 			))
 		}
@@ -65,40 +77,105 @@ const faqs = [
 </Section>
 
 <style>
-	.faq-list {
+	/*
+	  Hairline rows rather than nine bordered boxes. On desktop the question
+	  holds the left column and its answer opens in the right one, so an open
+	  item reads as an annotated line instead of an expanding card.
+	*/
+	.faq {
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.faq__item {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.faq__q {
 		display: flex;
-		flex-direction: column;
-		gap: var(--space-3);
-	}
-
-	.faq-item {
-		padding: var(--space-5) var(--space-6);
-		border: 1px solid var(--border-hairline);
-		border-radius: var(--radius-md);
-		background: var(--bg-elevated);
-	}
-
-	.faq-item summary {
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-6);
+		padding-block: var(--space-6);
 		cursor: pointer;
 		list-style: none;
+		font-family: var(--font-display);
+		font-size: var(--text-h4-size);
+		line-height: var(--text-h4-line);
+		font-weight: var(--text-h4-weight);
+		color: var(--text-primary);
+		transition: color var(--duration-fast) var(--ease-standard);
 	}
 
-	.faq-item summary::-webkit-details-marker {
+	.faq__q::-webkit-details-marker {
 		display: none;
 	}
 
-	.faq-item summary::after {
-		content: '+';
-		float: right;
+	.faq__q:hover {
 		color: var(--accent);
-		font-family: var(--font-mono);
 	}
 
-	.faq-item[open] summary::after {
-		content: '−';
+	.faq__q:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: -2px;
 	}
 
-	.faq-item p {
-		margin-top: var(--space-3);
+	/* A drawn plus/minus rather than a text glyph, so it stays optically
+	   centred at every size. */
+	.faq__mark {
+		position: relative;
+		flex: none;
+		width: 14px;
+		height: 14px;
+		margin-top: 0.4em;
+	}
+
+	.faq__mark::before,
+	.faq__mark::after {
+		content: '';
+		position: absolute;
+		inset: 50% 0 auto 0;
+		height: 2px;
+		background: var(--accent);
+		transform: translateY(-50%);
+		transition: opacity var(--duration-fast) var(--ease-standard);
+	}
+
+	.faq__mark::after {
+		inset: 0 50% auto auto;
+		width: 2px;
+		height: 100%;
+		transform: translateX(50%);
+	}
+
+	.faq__item[open] .faq__mark::after {
+		opacity: 0;
+	}
+
+	.faq__a {
+		padding-bottom: var(--space-6);
+		max-width: var(--measure);
+	}
+
+	@media (min-width: 900px) {
+		.faq__item {
+			display: grid;
+			grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+			column-gap: var(--space-12);
+			align-items: start;
+		}
+
+		.faq__q {
+			grid-column: 1;
+			padding-block: var(--space-8);
+		}
+
+		.faq__q-text {
+			max-width: 24ch;
+		}
+
+		.faq__a {
+			grid-column: 2;
+			padding-block: var(--space-8);
+		}
 	}
 </style>

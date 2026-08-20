@@ -10,18 +10,87 @@ const cases = [
 ];
 ---
 
-<Section id="casos" tone="elevated" eyebrow="Para quién" heading="Si te pasa alguna de estas, CLAVERA es para vos.">
-	<ul class="cases">
-		{cases.map((item) => <li class="body-lg">{item}</li>)}
-	</ul>
+<Section id="casos" index="08" railLabel="Para quién" labelledby="casos-heading" rhythm="loose">
+	<div class="casos">
+		<div class="casos__head">
+			<p class="eyebrow">Para quién</p>
+			<h2 id="casos-heading" class="heading-h2">Si te pasa alguna de estas, CLAVERA es para vos.</h2>
+		</div>
+
+		<ul class="casos__list">
+			{cases.map((item) => <li class="casos__item">{item}</li>)}
+		</ul>
+	</div>
 </Section>
 
 <style>
-	.cases {
-		margin: 0;
-		padding-left: var(--space-6);
+	/*
+	  No rules, no numbering, no boxes here — this section is deliberately the
+	  quietest on the page. Five statements at heading scale with a lot of air
+	  between them; the reader is meant to stop on the one that is about them.
+	*/
+	.casos {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-12);
+	}
+
+	.casos__head {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-4);
+		gap: var(--space-6);
+	}
+
+	.casos__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+	}
+
+	.casos__item {
+		position: relative;
+		padding-left: var(--space-8);
+		font-family: var(--font-display);
+		font-size: var(--text-h3-size);
+		line-height: 1.35;
+		letter-spacing: var(--text-h3-tracking);
+		font-weight: 500;
+		color: var(--text-primary);
+		max-width: 32ch;
+		text-wrap: pretty;
+	}
+
+	.casos__item::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.62em;
+		width: var(--space-4);
+		height: 2px;
+		background: var(--accent);
+	}
+
+	@media (min-width: 900px) {
+		.casos {
+			grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+			gap: var(--space-16);
+			align-items: start;
+		}
+
+		.casos__head {
+			position: sticky;
+			top: calc(var(--header-h) + var(--space-12));
+		}
+
+		.casos__list {
+			gap: var(--space-10);
+		}
+
+		.casos__item {
+			font-size: var(--text-h2-size);
+		}
 	}
 </style>

@@ -1,12 +1,25 @@
 ---
 import Section from '../layout/Section.astro';
 
+/**
+ * The page's one full change of surface: after six graphite sections the
+ * comparison arrives on paper, because it is the only block that is pure
+ * documentation rather than atmosphere. The switch is what makes the
+ * argument feel measured instead of sold.
+ *
+ * "Cochera de auto" appears as a price anchor, which is the one use of that
+ * word the brand vocabulary permits — never to name CLAVERA's own service.
+ */
 const columns = ['Calle / balcón', 'Cochera de auto', 'CLAVERA'];
 
 const rows = [
 	{
 		label: 'Seguridad',
-		values: ['Candado y suerte', 'Parcial: espacio compartido, sin lugar propio', 'Lugar asignado + ingreso controlado + registro'],
+		values: [
+			'Candado y suerte',
+			'Parcial: espacio compartido, sin lugar propio',
+			'Lugar asignado + ingreso controlado + registro',
+		],
 	},
 	{
 		label: 'Costo mensual',
@@ -25,14 +38,34 @@ const rows = [
 ];
 ---
 
-<Section id="comparacion" tone="elevated" eyebrow="Por qué CLAVERA" heading="Ni la calle, ni un lugar pensado para autos.">
-	<div class="table-wrap">
+<Section
+	id="comparacion"
+	index="06"
+	railLabel="Comparación"
+	surface="paper"
+	eyebrow="Por qué CLAVERA"
+	heading="Ni la calle, ni un lugar pensado para autos."
+>
+	<div
+		class="table-wrap"
+		role="region"
+		aria-labelledby="comparacion-heading"
+		tabindex="0"
+	>
 		<table class="comparison">
-			<caption class="visually-hidden">Comparación entre la calle, una cochera de auto y CLAVERA</caption>
+			<caption class="visually-hidden">
+				Comparación entre la calle, una cochera de auto y CLAVERA
+			</caption>
 			<thead>
 				<tr>
-					<th scope="col"></th>
-					{columns.map((column) => <th scope="col">{column}</th>)}
+					<th scope="col"><span class="visually-hidden">Criterio</span></th>
+					{
+						columns.map((column, i) => (
+							<th scope="col" class={i === 2 ? 'comparison__own' : undefined}>
+								{column}
+							</th>
+						))
+					}
 				</tr>
 			</thead>
 			<tbody>
@@ -41,7 +74,7 @@ const rows = [
 						<tr>
 							<th scope="row">{row.label}</th>
 							{row.values.map((value, i) => (
-								<td class={i === 2 ? 'comparison__clavera' : undefined}>{value}</td>
+								<td class={i === 2 ? 'comparison__own' : undefined}>{value}</td>
 							))}
 						</tr>
 					))
@@ -49,52 +82,110 @@ const rows = [
 			</tbody>
 		</table>
 	</div>
-	<p class="caption">Valores de referencia de mercado para cocheras en CABA, agosto 2026.</p>
+
+	<p class="mono comparison__hint" aria-hidden="true">Deslizá para ver la tabla completa →</p>
+
+	<p class="caption comparison__note">
+		Valores de referencia de mercado para cocheras en CABA, agosto 2026.
+	</p>
 </Section>
 
 <style>
 	.table-wrap {
 		overflow-x: auto;
-		border-radius: var(--radius-lg);
-		border: 1px solid var(--border-hairline);
+		/* Keyboard users need to be able to scroll the table; the region role
+		   plus tabindex makes it a focusable scroll container. */
+		scrollbar-width: thin;
+	}
+
+	.table-wrap:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: 4px;
 	}
 
 	.comparison {
 		width: 100%;
 		border-collapse: collapse;
-		min-width: 640px;
+		min-width: 660px;
 	}
 
 	.comparison th,
 	.comparison td {
 		text-align: left;
-		padding: var(--space-4);
-		border-bottom: 1px solid var(--border-hairline);
+		padding: var(--space-5) var(--space-5);
+		border-top: 1px solid var(--border-hairline);
 		font-family: var(--font-sans);
 		font-size: var(--text-body-md-size);
 		line-height: var(--text-body-md-line);
+		color: var(--text-secondary);
 		vertical-align: top;
 	}
 
 	.comparison thead th {
+		border-top: 0;
+		padding-bottom: var(--space-4);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		line-height: var(--text-mono-sm-line);
+		letter-spacing: var(--text-mono-sm-tracking);
+		text-transform: uppercase;
 		font-weight: 600;
-		color: var(--text-primary);
-		background: var(--bg-elevated);
+		color: var(--text-tertiary);
 	}
 
 	.comparison tbody th {
 		font-weight: 600;
 		color: var(--text-primary);
 		white-space: nowrap;
+		padding-left: 0;
 	}
 
 	.comparison tbody tr:last-child th,
 	.comparison tbody tr:last-child td {
-		border-bottom: none;
+		border-bottom: 1px solid var(--border-hairline);
 	}
 
-	.comparison__clavera {
-		color: var(--text-primary);
+	/* CLAVERA's column is the only one carrying weight and warmth — the
+	   comparison should be legible at a glance without any extra chrome. */
+	.comparison__own {
 		background: var(--accent-subtle);
+		color: var(--text-primary);
+		font-weight: 500;
+	}
+
+	.comparison thead th.comparison__own {
+		color: var(--accent);
+		background: transparent;
+		border-bottom: 2px solid var(--accent);
+	}
+
+	/* Below this width the table no longer fits and becomes a scroll region;
+	   the hint is the visual affordance for that. Keyboard and assistive-tech
+	   users reach it through the labelled, focusable region instead. */
+	.comparison__hint {
+		display: none;
+	}
+
+	@media (max-width: 759px) {
+		.comparison__hint {
+			display: block;
+			margin-top: var(--space-4);
+			color: var(--accent);
+		}
+	}
+
+	.comparison__note {
+		margin-top: var(--space-6);
+	}
+
+	@media (min-width: 900px) {
+		.comparison th,
+		.comparison td {
+			padding: var(--space-6);
+		}
+
+		.comparison tbody th {
+			padding-left: 0;
+		}
 	}
 </style>

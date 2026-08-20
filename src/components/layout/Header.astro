@@ -3,30 +3,65 @@ import { logo } from '../../data/media';
 ---
 
 <header class="site-header">
-	<div class="container site-header__inner">
-		<a class="site-header__logo" href="#top">
+	<div class="shell site-header__inner">
+		<a class="site-header__logo" href="#top" aria-label="CLAVERA — inicio">
 			<img src={logo.src} alt={logo.alt} width="120" height="28" />
 		</a>
-		<a class="button button--primary" href="#fundadores">Quiero mi lugar</a>
+
+		<div class="site-header__end">
+			<p class="mono site-header__note" aria-hidden="true">Socios fundadores · 40 lugares</p>
+			<a class="button button--primary" href="#fundadores">Quiero mi lugar</a>
+		</div>
 	</div>
 </header>
 
 <style>
+	/*
+	  The header floats over the hero photograph rather than sitting on a bar
+	  above it. Its own top-down scrim (plus a light blur) is what guarantees
+	  legibility — no scroll listener, no JavaScript, and it stays legible over
+	  every surface the page later switches to.
+	*/
+	/*
+	  Fixed, not sticky: the header has to sit OVER the hero photograph rather
+	  than reserve a band above it. Anchor targets clear it via the global
+	  scroll-margin-top rule.
+	*/
 	.site-header {
-		position: sticky;
+		position: fixed;
+		inset-inline: 0;
 		top: 0;
 		z-index: 40;
-		background: oklch(15% 0.004 95 / 0.85);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		border-bottom: 1px solid var(--border-hairline);
+		isolation: isolate;
+	}
+
+	/* The scrim lives on a pseudo-element so the fade-out mask applies to the
+	   backdrop only — masking the header itself would fade its logo and CTA. */
+	.site-header::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: linear-gradient(
+			to bottom,
+			oklch(15% 0.004 95 / 0.92) 0%,
+			oklch(15% 0.004 95 / 0.74) 55%,
+			oklch(15% 0.004 95 / 0) 100%
+		);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		mask-image: linear-gradient(to bottom, oklch(0% 0 0) 55%, transparent 100%);
+		-webkit-mask-image: linear-gradient(to bottom, oklch(0% 0 0) 55%, transparent 100%);
+		pointer-events: none;
 	}
 
 	.site-header__inner {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding-block: var(--space-4);
+		gap: var(--space-4);
+		min-height: var(--header-h);
+		padding-block: var(--space-3) var(--space-6);
 	}
 
 	.site-header__logo {
@@ -35,7 +70,36 @@ import { logo } from '../../data/media';
 	}
 
 	.site-header__logo img {
-		height: 28px;
+		height: 26px;
 		width: auto;
+	}
+
+	.site-header__end {
+		display: flex;
+		align-items: center;
+		gap: var(--space-6);
+	}
+
+	.site-header__note {
+		display: none;
+		color: var(--text-secondary);
+	}
+
+	.site-header__end .button {
+		padding-block: var(--space-2);
+	}
+
+	@media (min-width: 700px) {
+		.site-header__end .button {
+			padding-block: var(--space-3);
+		}
+	}
+
+	@media (min-width: 1000px) {
+		.site-header__note {
+			display: block;
+			padding-right: var(--space-6);
+			border-right: 1px solid var(--border-hairline-strong);
+		}
 	}
 </style>

@@ -4,6 +4,11 @@
   Design tokens are the approved CLAVERA design system, supplied at
   docs/design-system/tokens/. They are imported directly (not copied) so the
   site and the documentation never drift out of sync.
+
+  Everything below the token imports is page-level composition built ON TOP of
+  those tokens: fluid steps that interpolate between approved type sizes, the
+  editorial layout primitives (shell / rail / bleed), and the two surface
+  registers the landing page alternates between (graphite and paper).
 */
 @import '../../docs/design-system/tokens/fonts.css';
 @import '../../docs/design-system/tokens/colors.css';
@@ -15,11 +20,69 @@
 @import '../../docs/design-system/tokens/base.css';
 
 /* ---------------------------------------------------------------------- */
+/* Layout scale                                                           */
+/* ---------------------------------------------------------------------- */
+
+:root {
+	/* Editorial shell. Wider than a typical text container because the page
+	   is composition-led: full-bleed imagery and asymmetric splits need room. */
+	--shell: 1320px;
+	--gutter: clamp(20px, 5vw, 72px);
+
+	/* The left "drawing sheet" rail that carries each section's mono index.
+	   Collapses to 0 below the desktop breakpoint. */
+	--rail: 0px;
+
+	/* Reading measures */
+	--measure: 62ch;
+	--measure-tight: 46ch;
+
+	/* Fluid display steps. Both ends of every clamp are approved token sizes,
+	   so the type never leaves the design system's scale — it only moves
+	   between its own steps. */
+	--fluid-display: clamp(
+		var(--text-display-lg-size),
+		4.2vw + 1rem,
+		var(--text-display-2xl-size)
+	);
+	--fluid-display-sm: clamp(var(--text-h1-size), 3vw + 0.75rem, var(--text-display-xl-size));
+	--fluid-h2: clamp(var(--text-h2-size), 2.2vw + 0.75rem, var(--text-display-lg-size));
+	--fluid-lede: clamp(var(--text-body-md-size), 0.55vw + 0.9rem, var(--text-body-lg-size));
+
+	/* Section rhythm. Sections are deliberately not all the same height —
+	   these three steps are the page's pacing vocabulary. */
+	--rhythm-tight: clamp(var(--space-16), 8vw, var(--space-24));
+	--rhythm: clamp(var(--space-20), 11vw, var(--space-32));
+	--rhythm-loose: clamp(var(--space-24), 14vw, 160px);
+
+	--header-h: 68px;
+
+	/*
+	  Distance from the sheet's content edge out to the viewport edge. Lets an
+	  image inside a normal grid column bleed off the page without leaving the
+	  grid — the basis of the asymmetric splits.
+	*/
+	--edge: calc((100vw - min(100vw, var(--shell))) / 2 + var(--gutter));
+	--edge-inner: calc(var(--edge) + var(--rail));
+}
+
+@media (min-width: 1100px) {
+	:root {
+		--rail: 132px;
+	}
+}
+
+/* ---------------------------------------------------------------------- */
 /* Base document behaviour                                                */
 /* ---------------------------------------------------------------------- */
 
 html {
 	color-scheme: dark;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -39,6 +102,11 @@ html {
 	}
 }
 
+/* Anchored sections must clear the sticky header. */
+[id] {
+	scroll-margin-top: calc(var(--header-h) + var(--space-6));
+}
+
 img,
 picture,
 video {
@@ -47,20 +115,134 @@ video {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Layout utilities                                                       */
+/* Surfaces                                                               */
 /* ---------------------------------------------------------------------- */
 
-.container {
-	width: 100%;
-	max-width: 1200px;
-	margin-inline: auto;
-	padding-inline: var(--space-6);
+/*
+  The page runs on two registers: graphite (atmosphere, imagery, product) and
+  paper (documentation — the zoning plan and the comparison). Rather than
+  restyling every utility per surface, a surface class re-points the SEMANTIC
+  token aliases. Every shared class (.body-lg, .caption, .eyebrow, .rule…)
+  then adapts automatically, and the token layer stays the single source of
+  truth for the actual colour values.
+*/
+.surface-deep {
+	background: var(--bg-base);
 }
 
-@media (min-width: 640px) {
-	.container {
-		padding-inline: var(--space-8);
+.surface-raised {
+	background: var(--bg-surface);
+}
+
+.surface-paper {
+	background: var(--bg-paper);
+	color: var(--text-on-paper);
+
+	--text-primary: var(--text-on-paper);
+	--text-secondary: var(--text-on-paper-secondary);
+	--text-tertiary: var(--text-on-paper-tertiary);
+	--border-hairline: var(--border-on-paper);
+	--border-hairline-strong: var(--border-on-paper-strong);
+	/* amber-700 on concrete-50 measures 5.2:1 — the only amber step that
+	   carries text contrast on the light surface. */
+	--accent: var(--amber-700);
+	--accent-hover: var(--amber-700);
+	--focus-ring: var(--amber-700);
+	--shadow-e1: var(--shadow-paper-e1);
+	--shadow-e2: var(--shadow-paper-e2);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Layout primitives                                                      */
+/* ---------------------------------------------------------------------- */
+
+.shell {
+	width: 100%;
+	max-width: var(--shell);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+/* Shell + the mono index rail as a real grid column, so body content lines up
+   on the same left edge across every section of the page. */
+.sheet {
+	width: 100%;
+	max-width: var(--shell);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+	display: grid;
+	grid-template-columns: var(--rail) minmax(0, 1fr);
+	column-gap: 0;
+}
+
+.sheet > * {
+	grid-column: 2;
+	min-width: 0;
+}
+
+.sheet__rail {
+	grid-column: 1;
+	grid-row: 1 / -1;
+	display: none;
+}
+
+@media (min-width: 1100px) {
+	.sheet__rail {
+		display: block;
 	}
+}
+
+/*
+  Escapes to the full viewport width from inside the sheet's content column.
+
+  It cannot use the usual `margin-inline: calc(50% - 50vw)` trick: inside the
+  sheet the content column is offset by the rail and is therefore not centred
+  in the viewport, so percentage-based centring lands it off to one side.
+  Negative margins measured from each edge are exact instead.
+*/
+.bleed {
+	width: auto;
+	max-width: none;
+	margin-left: calc(var(--edge-inner) * -1);
+	margin-right: calc(var(--edge) * -1);
+}
+
+/* Aligns a plain `.shell` block with the sheet's content column. */
+.shell--aligned {
+	padding-inline-start: calc(var(--gutter) + var(--rail));
+}
+
+/* Runs an element off one edge of the page while it stays in its grid column. */
+.bleed-right {
+	width: calc(100% + var(--edge));
+	max-width: none;
+}
+
+.bleed-left {
+	margin-left: calc(var(--edge-inner) * -1);
+	width: calc(100% + var(--edge-inner));
+	max-width: none;
+}
+
+.measure {
+	max-width: var(--measure);
+}
+
+.measure-tight {
+	max-width: var(--measure-tight);
+}
+
+.stack {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Hairline "reveal line" — the system's architectural separator. */
+.rule {
+	height: 1px;
+	border: 0;
+	margin: 0;
+	background: var(--border-hairline);
 }
 
 .visually-hidden {
@@ -70,70 +252,103 @@ video {
 	padding: 0;
 	margin: -1px;
 	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
+	clip-path: inset(50%);
 	white-space: nowrap;
 	border: 0;
 }
 
 .skip-link {
-	position: absolute;
+	position: fixed;
 	top: var(--space-2);
 	left: var(--space-2);
 	z-index: 100;
-	padding: var(--space-2) var(--space-4);
-	background: var(--bg-elevated-2);
-	color: var(--text-primary);
+	padding: var(--space-3) var(--space-5);
+	background: var(--accent);
+	color: var(--accent-on);
 	border-radius: var(--radius-sm);
-	border: 1px solid var(--border-hairline-strong);
-	transform: translateY(-150%);
-	transition: transform var(--duration-fast) var(--ease-standard);
+	font-family: var(--font-sans);
+	font-size: var(--text-label-md-size);
+	font-weight: 600;
+	transform: translateY(-200%);
+	transition: transform var(--duration-base) var(--ease-out);
 }
 
-.skip-link:focus {
+.skip-link:focus-visible {
 	transform: translateY(0);
+	color: var(--accent-on);
 }
 
 /* ---------------------------------------------------------------------- */
-/* Typography utilities (map the type tokens to reusable classes)         */
+/* Typography utilities                                                   */
 /* ---------------------------------------------------------------------- */
 
 .eyebrow {
-	display: block;
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
 	font-family: var(--font-sans);
 	font-size: var(--text-eyebrow-size);
 	line-height: var(--text-eyebrow-line);
 	letter-spacing: var(--text-eyebrow-tracking);
 	font-weight: var(--text-eyebrow-weight);
 	text-transform: uppercase;
+	color: var(--text-tertiary);
+	margin: 0;
+}
+
+/* The amber tick: the LED reduced to its smallest possible mark. */
+.eyebrow::before {
+	content: '';
+	flex: none;
+	width: var(--space-4);
+	height: 2px;
+	background: var(--accent);
+}
+
+.mono {
+	font-family: var(--font-mono);
+	font-size: var(--text-mono-sm-size);
+	line-height: var(--text-mono-sm-line);
+	letter-spacing: var(--text-mono-sm-tracking);
+	font-weight: var(--text-mono-sm-weight);
+	font-variant-numeric: tabular-nums;
+	text-transform: uppercase;
+	color: var(--text-tertiary);
+	margin: 0;
+}
+
+.mono--accent {
 	color: var(--accent);
-	margin: 0 0 var(--space-3);
+}
+
+/* Bay numerals — the 01…08 language taken from the racks in the renders. */
+.numeral {
+	font-family: var(--font-mono);
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.02em;
+	color: var(--accent);
+	line-height: 1;
 }
 
 .heading-display {
 	font-family: var(--font-display);
-	font-size: var(--text-display-lg-size);
-	line-height: var(--text-display-lg-line);
-	letter-spacing: var(--text-display-lg-tracking);
-	font-weight: var(--text-display-lg-weight);
+	font-size: var(--fluid-display);
+	line-height: 1.02;
+	letter-spacing: var(--text-display-2xl-tracking);
+	font-weight: var(--text-display-2xl-weight);
 	margin: 0;
-}
-
-@media (min-width: 900px) {
-	.heading-display {
-		font-size: var(--text-display-xl-size);
-		line-height: var(--text-display-xl-line);
-		letter-spacing: var(--text-display-xl-tracking);
-		font-weight: var(--text-display-xl-weight);
-	}
+	text-wrap: balance;
 }
 
 .heading-h2 {
 	font-family: var(--font-display);
-	font-size: var(--text-h2-size);
-	line-height: var(--text-h2-line);
-	letter-spacing: var(--text-h2-tracking);
-	font-weight: var(--text-h2-weight);
+	font-size: var(--fluid-h2);
+	line-height: 1.08;
+	letter-spacing: var(--text-display-lg-tracking);
+	font-weight: var(--text-display-lg-weight);
 	margin: 0;
+	text-wrap: balance;
 }
 
 .heading-h3 {
@@ -151,7 +366,18 @@ video {
 	line-height: var(--text-h4-line);
 	letter-spacing: var(--text-h4-tracking);
 	font-weight: var(--text-h4-weight);
+	color: var(--text-primary);
 	margin: 0;
+}
+
+.lede {
+	font-family: var(--font-sans);
+	font-size: var(--fluid-lede);
+	line-height: 1.6;
+	font-weight: var(--text-body-lg-weight);
+	color: var(--text-secondary);
+	margin: 0;
+	text-wrap: pretty;
 }
 
 .body-lg {
@@ -161,6 +387,7 @@ video {
 	font-weight: var(--text-body-lg-weight);
 	color: var(--text-secondary);
 	margin: 0;
+	text-wrap: pretty;
 }
 
 .body-md {
@@ -170,6 +397,7 @@ video {
 	font-weight: var(--text-body-md-weight);
 	color: var(--text-secondary);
 	margin: 0;
+	text-wrap: pretty;
 }
 
 .caption {
@@ -190,6 +418,11 @@ video {
 	font-weight: var(--text-label-lg-weight);
 }
 
+strong {
+	color: var(--text-primary);
+	font-weight: 600;
+}
+
 /* ---------------------------------------------------------------------- */
 /* Buttons                                                                */
 /* ---------------------------------------------------------------------- */
@@ -198,21 +431,30 @@ video {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: var(--space-2);
+	gap: var(--space-3);
 	font-family: var(--font-sans);
 	font-size: var(--text-label-lg-size);
 	line-height: var(--text-label-lg-line);
 	letter-spacing: var(--text-label-lg-tracking);
-	font-weight: var(--text-label-lg-weight);
+	font-weight: 600;
 	padding: var(--space-3) var(--space-6);
 	border-radius: var(--radius-sm);
 	border: 1px solid transparent;
 	cursor: pointer;
 	text-decoration: none;
+	white-space: nowrap;
 	transition:
 		background-color var(--duration-fast) var(--ease-standard),
-		box-shadow var(--duration-fast) var(--ease-standard),
+		border-color var(--duration-fast) var(--ease-standard),
+		color var(--duration-fast) var(--ease-standard),
+		box-shadow var(--duration-base) var(--ease-standard),
 		transform var(--duration-fast) var(--ease-standard);
+}
+
+.button--lg {
+	padding: var(--space-4) var(--space-8);
+	font-size: var(--text-h5-size);
+	line-height: var(--text-h5-line);
 }
 
 .button--primary {
@@ -222,12 +464,13 @@ video {
 
 .button--primary:hover {
 	background: var(--accent-hover);
-	box-shadow: var(--shadow-glow-accent);
+	color: var(--accent-on);
+	box-shadow: var(--shadow-glow-accent-lg);
 }
 
 .button--primary:active {
 	background: var(--accent-press);
-	transform: scale(0.97);
+	transform: scale(0.98);
 }
 
 .button--ghost {
@@ -242,30 +485,42 @@ video {
 }
 
 .button--ghost:active {
-	transform: scale(0.97);
+	transform: scale(0.98);
 }
 
-/* ---------------------------------------------------------------------- */
-/* Badges                                                                 */
-/* ---------------------------------------------------------------------- */
-
-.badge {
-	display: inline-flex;
-	align-items: center;
-	gap: var(--space-2);
-	padding: var(--space-1) var(--space-3);
-	border-radius: var(--radius-pill);
-	border: 1px solid var(--border-hairline-strong);
-	font-family: var(--font-sans);
-	font-size: var(--text-label-sm-size);
-	line-height: var(--text-label-sm-line);
-	letter-spacing: var(--text-label-sm-tracking);
-	font-weight: var(--text-label-sm-weight);
-	color: var(--text-secondary);
-}
-
-.badge--accent {
-	border-color: transparent;
-	background: var(--accent-subtle);
+/*
+  The lead-capture controls stay inert until the Typeform URLs are configured.
+  A dimmed solid button reads as broken and drops below contrast, so the
+  disabled state becomes an explicit reserved control instead: outlined, full
+  accent contrast, obviously not pressable. It returns to the solid primary
+  automatically once a URL is set.
+*/
+.button:disabled {
+	cursor: not-allowed;
+	background: transparent;
+	border-color: var(--accent);
 	color: var(--accent);
+	box-shadow: none;
+	transform: none;
+}
+
+/* An inline text link that reads as editorial, not as a button. */
+.link-arrow {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--space-2);
+	font-family: var(--font-sans);
+	font-size: var(--text-label-lg-size);
+	font-weight: 600;
+	color: var(--accent);
+	padding-block: var(--space-1);
+	border-bottom: 1px solid var(--accent-subtle-strong);
+	transition:
+		border-color var(--duration-fast) var(--ease-standard),
+		color var(--duration-fast) var(--ease-standard);
+}
+
+.link-arrow:hover {
+	color: var(--accent-hover);
+	border-color: currentColor;
 }

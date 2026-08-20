@@ -1,28 +1,146 @@
 ---
 import Section from '../layout/Section.astro';
+
+/**
+ * The friction moment. Deliberately image-free: it sits between two of the
+ * page's strongest photographs and gives the eye somewhere quiet to land.
+ * Typography carries it — a display-scale statement, then a narrow column of
+ * argument, then the daily loop set as two annotated lines.
+ */
+const loop = [
+	{ label: 'Cada salida', copy: 'empieza con el ascensor, el pasillo y la puerta.' },
+	{ label: 'Cada regreso', copy: 'termina exactamente igual.' },
+];
 ---
 
-<Section id="problema" eyebrow="La ciudad cambió" heading="Cada vez más bicis. Cada vez menos lugar para guardarlas.">
-	<p class="body-lg">
-		En los edificios de Buenos Aires no hay lugar seguro para una bici, mucho menos para una e-bike o una cargo. La
-		calle suma candados, óxido y riesgo. El departamento suma ascensores, pasillos y espacio perdido. Las opciones
-		informales están llenas, no dan comprobante y no asumen ningún compromiso.
-	</p>
-	<p class="heading-h3">La ciudad se llenó de bicis. Los edificios no cambiaron.</p>
-	<div class="problem__pair">
-		<p class="body-md"><strong>Cada salida</strong> empieza con el ascensor, el pasillo y la puerta.</p>
-		<p class="body-md"><strong>Cada regreso</strong> termina igual.</p>
+<Section id="problema" index="01" railLabel="La ciudad" labelledby="problema-heading" rhythm="loose">
+	<div class="problem">
+		<div class="problem__lead">
+			<p class="eyebrow">La ciudad cambió</p>
+			<h2 id="problema-heading" class="problem__statement">
+				La ciudad se llenó de bicis.<br /><span class="problem__statement-dim"
+					>Los edificios no cambiaron.</span
+				>
+			</h2>
+		</div>
+
+		<div class="problem__grid">
+			<div class="problem__argument">
+				<p class="body-lg">
+					En los edificios de Buenos Aires no hay lugar seguro para una bici, mucho menos para una
+					e-bike o una cargo. La calle suma candados, óxido y riesgo. El departamento suma ascensores,
+					pasillos y espacio perdido. Las opciones informales están llenas, no dan comprobante y no
+					asumen ningún compromiso.
+				</p>
+			</div>
+
+			<ul class="problem__loop">
+				{
+					loop.map((item) => (
+						<li class="problem__loop-item">
+							<span class="mono mono--accent">{item.label}</span>
+							<p class="heading-h3 problem__loop-copy">{item.copy}</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<p class="problem__close">
+			Dejá de subir la bici por el ascensor. Dejá de dejarla en la calle.
+		</p>
 	</div>
 </Section>
 
 <style>
-	.problem__pair {
+	.problem {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-2);
-		padding: var(--space-6);
-		border-left: 2px solid var(--accent);
-		background: var(--bg-elevated);
-		border-radius: var(--radius-md);
+		gap: var(--space-16);
+	}
+
+	.problem__lead {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+
+	.problem__statement {
+		font-family: var(--font-display);
+		font-size: var(--fluid-display);
+		line-height: 1.04;
+		letter-spacing: var(--text-display-2xl-tracking);
+		font-weight: var(--text-display-2xl-weight);
+		color: var(--text-primary);
+		margin: 0;
+		max-width: 22ch;
+		text-wrap: balance;
+	}
+
+	.problem__statement-dim {
+		color: var(--text-tertiary);
+	}
+
+	.problem__grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-12);
+	}
+
+	.problem__argument {
+		max-width: var(--measure);
+	}
+
+	/* The daily loop, set as two annotated lines separated by reveal lines —
+	   no card, no coloured edge strip. */
+	.problem__loop {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.problem__loop-item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		padding-block: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.problem__loop-item:last-child {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.problem__loop-copy {
+		color: var(--text-secondary);
+		font-weight: 500;
+	}
+
+	.problem__close {
+		font-family: var(--font-display);
+		font-size: var(--text-h3-size);
+		line-height: var(--text-h3-line);
+		letter-spacing: var(--text-h3-tracking);
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0;
+		padding-top: var(--space-8);
+		border-top: 2px solid var(--accent);
+		max-width: 34ch;
+	}
+
+	@media (min-width: 900px) {
+		.problem__grid {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+			gap: var(--space-24);
+			align-items: start;
+		}
+
+		.problem__statement {
+			font-size: clamp(var(--text-display-xl-size), 5.2vw + 1rem, 84px);
+			max-width: 22ch;
+		}
 	}
 </style>

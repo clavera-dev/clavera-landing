@@ -5,26 +5,42 @@ import Section from '../layout/Section.astro';
  * Zone list per PROJECT_DECISIONS.md "Initial areas" — this overrides the
  * larger nine-barrio list in the brief (§S10), which is superseded for
  * phase one.
+ *
+ * Set at display scale rather than as accent pills: these four names are the
+ * section's entire content, and the brand system reserves pill radius for
+ * status badges.
  */
 const zones = ['Palermo', 'Chacarita', 'Villa Crespo', 'Recoleta'];
 ---
 
 <Section
 	id="zonas"
+	index="09"
+	railLabel="Zonas"
+	surface="raised"
+	divider
 	eyebrow="Primeros hubs"
 	heading="Estamos construyendo el mapa de demanda antes de elegir las ubicaciones."
 >
-	<p slot="lede" class="body-lg">
+	<p slot="lede" class="lede">
 		Nos interesa saber dónde hace falta. Estas son las zonas donde estamos trabajando.
 	</p>
 
-	<ul class="zones">
-		{zones.map((zone) => <li class="badge badge--accent zones__item">{zone}</li>)}
-	</ul>
+	<ol class="zones">
+		{
+			zones.map((zone, i) => (
+				<li class="zones__item">
+					<span class="mono zones__n">{String(i + 1).padStart(2, '0')}</span>
+					<span class="zones__name">{zone}</span>
+				</li>
+			))
+		}
+	</ol>
 
-	<p class="body-md">
-		Cada zona avanza a su ritmo: en algunas buscamos un hub completo, en otras un espacio más chico dentro de un
-		edificio o un espacio existente. Dejá tu pedido y te contamos qué hay disponible en la tuya.
+	<p class="body-md zones__note">
+		Cada zona avanza a su ritmo: en algunas buscamos un hub completo, en otras un espacio más chico
+		dentro de un edificio o un espacio existente. Dejá tu pedido y te contamos qué hay disponible en
+		la tuya.
 	</p>
 </Section>
 
@@ -33,13 +49,52 @@ const zones = ['Palermo', 'Chacarita', 'Villa Crespo', 'Recoleta'];
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-3);
+		display: grid;
+		grid-template-columns: 1fr;
 	}
 
 	.zones__item {
-		font-size: var(--text-label-md-size);
-		padding: var(--space-2) var(--space-4);
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-4);
+		padding-block: var(--space-5);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.zones__item:last-child {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.zones__n {
+		color: var(--accent);
+	}
+
+	.zones__name {
+		font-family: var(--font-display);
+		font-size: var(--fluid-display-sm);
+		line-height: 1.1;
+		letter-spacing: var(--text-display-lg-tracking);
+		font-weight: 700;
+		color: var(--text-primary);
+	}
+
+	.zones__note {
+		margin-top: var(--space-10);
+		max-width: var(--measure);
+	}
+
+	@media (min-width: 800px) {
+		.zones {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			column-gap: var(--space-16);
+		}
+
+		.zones__item {
+			padding-block: var(--space-6);
+		}
+
+		.zones__item:nth-last-child(-n + 2) {
+			border-bottom: 1px solid var(--border-hairline);
+		}
 	}
 </style>

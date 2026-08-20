@@ -1,9 +1,59 @@
 ---
 import Section from '../layout/Section.astro';
 import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
+
+/**
+ * The research survey is a separate Typeform from the founders form and must
+ * stay that way — it reads its own URL from the config through `target`.
+ *
+ * Set deliberately quiet and low-contrast: it is a secondary conversion and
+ * must not compete with the Socios Fundadores call to action above it.
+ */
 ---
 
-<Section id="encuesta" eyebrow="Ayudanos a diseñar el primer hub" heading="¿Cómo usás tu bici en Buenos Aires?" headingLevel={3}>
-	<p class="body-md">Tres minutos. Nos ayuda a elegir dónde abrir y cómo diseñar el espacio.</p>
-	<TypeformBoundary target="survey" ctaLabel="Responder encuesta · 3 min →" />
+<Section id="encuesta" labelledby="encuesta-heading" rhythm="tight">
+	<div class="survey">
+		<div class="survey__text">
+			<p class="eyebrow">Ayudanos a diseñar el primer hub</p>
+			<h3 id="encuesta-heading" class="heading-h3 survey__heading">
+				¿Cómo usás tu bici en Buenos Aires?
+			</h3>
+			<p class="body-md">
+				Tres minutos. Nos ayuda a elegir dónde abrir y cómo diseñar el espacio.
+			</p>
+		</div>
+
+		<TypeformBoundary target="survey" ctaLabel="Responder encuesta · 3 min" variant="ghost" />
+	</div>
 </Section>
+
+<style>
+	.survey {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+		padding-block: var(--space-10);
+		border-top: 1px solid var(--border-hairline);
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.survey__text {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		max-width: var(--measure);
+	}
+
+	.survey__heading {
+		color: var(--text-primary);
+	}
+
+	@media (min-width: 800px) {
+		.survey {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			gap: var(--space-12);
+		}
+	}
+</style>

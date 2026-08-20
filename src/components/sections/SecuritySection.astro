@@ -1,9 +1,14 @@
 ---
 import Section from '../layout/Section.astro';
 import RenderFigure from '../media/RenderFigure.astro';
-import { getRender } from '../../data/media';
 
 /**
+ * The entrance render (an older, separate access/security asset — never R3,
+ * see src/data/media.ts) is the page's one portrait photograph. It is pulled
+ * up so it crosses the boundary into the previous surface: a controlled
+ * overlap that stops the page reading as a stack of separate bands, placed
+ * where the section above leaves its right side empty.
+ *
  * The operating-hours item ("Horario amplio...") is removed here:
  * PROJECT_DECISIONS.md says operating-hour wording is unconfirmed and must
  * not be claimed yet.
@@ -17,38 +22,97 @@ const items = [
 ];
 ---
 
-<Section id="seguridad" eyebrow="Seguridad y acceso" heading="Nadie entra de pasada.">
-	<p slot="lede" class="body-lg">
-		Cada socio se identifica. Cada acceso queda registrado. Cada bici está asociada a su marca, modelo y número de
-		cuadro.
-	</p>
-	<div class="security-grid">
-		<ul class="security-list">
-			{items.map((item) => <li class="body-md">{item}</li>)}
-		</ul>
-		<RenderFigure id="entrance" caption={getRender('entrance').caption} />
+<Section id="seguridad" index="05" railLabel="Seguridad" surface="raised" labelledby="seguridad-heading">
+	<div class="security">
+		<div class="security__text">
+			<p class="eyebrow">Seguridad y acceso</p>
+			<h2 id="seguridad-heading" class="heading-h2">Nadie entra de pasada.</h2>
+			<p class="lede">
+				Cada socio se identifica. Cada acceso queda registrado. Cada bici está asociada a su marca,
+				modelo y número de cuadro.
+			</p>
+
+			<ul class="security__list">
+				{items.map((item) => <li class="body-md">{item}</li>)}
+			</ul>
+		</div>
+
+		<div class="security__media">
+			<RenderFigure
+				id="entrance"
+				variant="panel"
+				sizes="(min-width: 900px) 38vw, 100vw"
+				caption="Ingreso controlado"
+			/>
+		</div>
 	</div>
 </Section>
 
 <style>
-	.security-grid {
+	.security {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: var(--space-8);
-		align-items: start;
+		gap: var(--space-10);
 	}
 
-	.security-list {
-		margin: 0;
-		padding-left: var(--space-6);
+	.security__text {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-3);
+		gap: var(--space-6);
+		max-width: var(--measure);
+	}
+
+	/* Stacked, this portrait would otherwise run the full column width and
+	   outweigh the section it illustrates. */
+	.security__media {
+		max-width: 480px;
+	}
+
+	.security__list {
+		list-style: none;
+		margin: var(--space-4) 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.security__list li {
+		position: relative;
+		padding: var(--space-5) 0 var(--space-5) var(--space-8);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.security__list li:last-child {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	/* An amber tick instead of a bullet glyph. */
+	.security__list li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: calc(var(--space-5) + 0.55em);
+		width: var(--space-4);
+		height: 2px;
+		background: var(--accent);
 	}
 
 	@media (min-width: 900px) {
-		.security-grid {
-			grid-template-columns: 1.2fr 1fr;
+		.security {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+			gap: var(--space-16);
+			align-items: start;
+		}
+
+		/* Crosses up over the surface boundary above. */
+		.security__media {
+			margin-top: calc(var(--rhythm) * -1 - var(--space-16));
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.security {
+			gap: var(--space-20);
 		}
 	}
 </style>
