@@ -11,13 +11,15 @@ import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
  */
 ---
 
-<Section id="encuesta" labelledby="encuesta-heading" rhythm="tight">
+<Section id="encuesta" labelledby="encuesta-heading" rhythm="coda">
 	<div class="survey">
 		<div class="survey__text">
 			<p class="eyebrow">Ayudanos a diseñar el primer hub</p>
-			<h3 id="encuesta-heading" class="heading-h3 survey__heading">
+			{/* A top-level page section, so h2 — it keeps the h3 type scale
+			    because it is deliberately the quietest block on the page. */}
+			<h2 id="encuesta-heading" class="heading-h3 survey__heading">
 				¿Cómo usás tu bici en Buenos Aires?
-			</h3>
+			</h2>
 			<p class="body-md">
 				Tres minutos. Nos ayuda a elegir dónde abrir y cómo diseñar el espacio.
 			</p>

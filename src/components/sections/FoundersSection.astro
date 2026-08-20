@@ -25,7 +25,7 @@ const figures = [
 	surface="raised"
 	labelledby="fundadores-heading"
 	rhythm="loose"
-	class="founders"
+	accent
 >
 	<div class="founders__inner">
 		<div class="founders__head">
@@ -70,21 +70,6 @@ const figures = [
 </Section>
 
 <style>
-	.founders {
-		position: relative;
-	}
-
-	/* The page's single full-width amber rule — the LED turned all the way up,
-	   once. */
-	.founders::before {
-		content: '';
-		position: absolute;
-		inset-inline: 0;
-		top: 0;
-		height: 2px;
-		background: var(--accent);
-	}
-
 	.founders__inner {
 		display: flex;
 		flex-direction: column;

@@ -129,8 +129,14 @@ const pillars = [
 		.solution__intro {
 			grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
 			gap: var(--space-16);
-			align-items: center;
+			/* The text column starts at the top so its eyebrow shares the rail
+			   index's line; the image keeps its optical centring on its own. */
+			align-items: start;
 			margin-bottom: var(--space-24);
+		}
+
+		.solution__media {
+			align-self: center;
 		}
 	}
 

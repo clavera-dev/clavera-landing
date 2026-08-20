@@ -29,8 +29,12 @@
 	--shell: 1320px;
 	--gutter: clamp(20px, 5vw, 72px);
 
-	/* The left "drawing sheet" rail that carries each section's mono index.
-	   Collapses to 0 below the desktop breakpoint. */
+	/*
+	  The left "drawing sheet" rail that carries each section's mono index.
+	  Zero until there is genuinely spare width for it — see the media query
+	  below, which is why every rail-dependent value is expressed in terms of
+	  this token rather than a hard-coded number.
+	*/
 	--rail: 0px;
 
 	/* Reading measures */
@@ -55,7 +59,19 @@
 	--rhythm: clamp(var(--space-20), 11vw, var(--space-32));
 	--rhythm-loose: clamp(var(--space-24), 14vw, 160px);
 
-	--header-h: 68px;
+	/*
+	  Header geometry is DERIVED, never guessed. The header is one control of
+	  --header-control height sitting inside symmetric --header-pad padding,
+	  so --header-h is always the real rendered height. Everything that has to
+	  clear the fixed header (hero padding, anchor targets, sticky offsets)
+	  reads these tokens, so they cannot drift apart again.
+	*/
+	--header-control: 40px;
+	--header-pad: var(--space-3);
+	--header-h: calc(var(--header-control) + var(--header-pad) * 2);
+
+	/* Clearance for anchor targets landing below the fixed header. */
+	--anchor-offset: calc(var(--header-h) + var(--space-6));
 
 	/*
 	  Distance from the sheet's content edge out to the viewport edge. Lets an
@@ -64,11 +80,38 @@
 	*/
 	--edge: calc((100vw - min(100vw, var(--shell))) / 2 + var(--gutter));
 	--edge-inner: calc(var(--edge) + var(--rail));
+
+	/*
+	  The same distance measured from the element's own containing block
+	  instead of the viewport. 100vw includes the classic scrollbar, which is
+	  right for a full-bleed image (a few px of overshoot into the clipped
+	  region guarantees edge coverage) but wrong for anything being *aligned*,
+	  which would sit ~7px inside the content edge. Custom properties
+	  substitute textually, so the 100% here resolves against whichever
+	  element uses it — only use it where the containing block spans the full
+	  page width.
+	*/
+	--edge-exact: calc((100% - min(100%, var(--shell))) / 2 + var(--gutter));
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 700px) {
 	:root {
-		--rail: 132px;
+		--header-control: 44px;
+		--header-pad: var(--space-4);
+	}
+}
+
+/*
+  The rail starts at 1200px, not 1100px. At 1100px it took 132px out of a
+  990px content box — a 13% loss arriving as a jump. From 1200px up it is
+  fluid, so the sheet margin grows with the page instead of snapping to a
+  fixed width, and the main column stays ~1000–1075px across every desktop
+  size.
+*/
+@media (min-width: 1200px) {
+	:root {
+		--header-pad: var(--space-5);
+		--rail: clamp(88px, 7vw, 120px);
 	}
 }
 
@@ -102,9 +145,9 @@ body {
 	}
 }
 
-/* Anchored sections must clear the sticky header. */
+/* Anchored sections must clear the fixed header. */
 [id] {
-	scroll-margin-top: calc(var(--header-h) + var(--space-6));
+	scroll-margin-top: var(--anchor-offset);
 }
 
 img,
@@ -186,7 +229,8 @@ video {
 	display: none;
 }
 
-@media (min-width: 1100px) {
+/* Matches the width at which --rail becomes non-zero. */
+@media (min-width: 1200px) {
 	.sheet__rail {
 		display: block;
 	}

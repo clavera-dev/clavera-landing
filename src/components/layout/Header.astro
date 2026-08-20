@@ -5,7 +5,7 @@ import { logo } from '../../data/media';
 <header class="site-header">
 	<div class="shell site-header__inner">
 		<a class="site-header__logo" href="#top" aria-label="CLAVERA — inicio">
-			<img src={logo.src} alt={logo.alt} width="120" height="28" />
+			<img src={logo.src} alt={logo.alt} width="89" height="20" />
 		</a>
 
 		<div class="site-header__end">
@@ -17,15 +17,11 @@ import { logo } from '../../data/media';
 
 <style>
 	/*
-	  The header floats over the hero photograph rather than sitting on a bar
-	  above it. Its own top-down scrim (plus a light blur) is what guarantees
-	  legibility — no scroll listener, no JavaScript, and it stays legible over
-	  every surface the page later switches to.
-	*/
-	/*
-	  Fixed, not sticky: the header has to sit OVER the hero photograph rather
-	  than reserve a band above it. Anchor targets clear it via the global
-	  scroll-margin-top rule.
+	  Fixed, not sticky: the header floats over the hero photograph instead of
+	  reserving a band above it. Its own top-down scrim (plus a light blur) is
+	  what guarantees legibility over every surface the page switches to — no
+	  scroll listener, no JavaScript. Anchor targets clear it through the
+	  global --anchor-offset.
 	*/
 	.site-header {
 		position: fixed;
@@ -40,7 +36,10 @@ import { logo } from '../../data/media';
 	.site-header::before {
 		content: '';
 		position: absolute;
-		inset: 0;
+		/* Runs past the header box so the fade-out is governed by the scrim,
+		   not by whatever the header height happens to be. */
+		inset: 0 0 auto 0;
+		height: calc(100% + var(--space-10));
 		z-index: -1;
 		background: linear-gradient(
 			to bottom,
@@ -55,13 +54,15 @@ import { logo } from '../../data/media';
 		pointer-events: none;
 	}
 
+	/* Symmetric padding around a fixed-height control row: the row's optical
+	   centre and the header's centre are the same line at every width. */
 	.site-header__inner {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-4);
 		min-height: var(--header-h);
-		padding-block: var(--space-3) var(--space-6);
+		padding-block: var(--header-pad);
 	}
 
 	.site-header__logo {
@@ -70,7 +71,7 @@ import { logo } from '../../data/media';
 	}
 
 	.site-header__logo img {
-		height: 26px;
+		height: 24px;
 		width: auto;
 	}
 
@@ -85,13 +86,16 @@ import { logo } from '../../data/media';
 		color: var(--text-secondary);
 	}
 
+	/* The CTA *is* the header's control height — set it directly instead of
+	   letting padding plus line-height add up to an unpredictable number. */
 	.site-header__end .button {
-		padding-block: var(--space-2);
+		min-height: var(--header-control);
+		padding-block: 0;
 	}
 
 	@media (min-width: 700px) {
-		.site-header__end .button {
-			padding-block: var(--space-3);
+		.site-header__logo img {
+			height: 28px;
 		}
 	}
 
@@ -100,6 +104,9 @@ import { logo } from '../../data/media';
 			display: block;
 			padding-right: var(--space-6);
 			border-right: 1px solid var(--border-hairline-strong);
+			/* A divider proportional to the control it separates, rather than
+			   the 16px stub the note's own line box would give. */
+			line-height: var(--space-6);
 		}
 	}
 </style>
