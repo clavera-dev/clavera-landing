@@ -2,6 +2,16 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-20 — Tool registry frozen
+
+- Reviewed the previously approved tool plan plus the two supplied recommendation screenshots.
+- Finalized the minimal durable documentation set: root `CLAUDE.md`, `docs/project/CLAVERA_EXECUTION_PLAN.md`, and `docs/project/CLAVERA_WORKLOG.md`.
+- No newly advertised tool was added automatically.
+- Current cycle is limited to: Frontend Design; isolated Taste audit; Refero research when Pro access is confirmed; separate Impeccable critique; Playwright + axe + Astro/TypeScript diagnostics; Emil skills at the motion milestone; conditional Motion for JavaScript; and final Checklist Design plus separate Lighthouse/SEO/accessibility checks.
+- Explicitly excluded for this cycle: UI UX Pro Max, Superpowers, gstack, Context7, Claude SEO/marketing suites, Caveman, HyperFrames, Skill Creator, Bulletproof, Dataviz, productivity/external-memory plugins, Anthropic document skills, 21st MCP, Uiverse, and duplicate security-review installation.
+- The freeze can be changed only after documenting a specific unmet need in the execution plan.
+- No Claude prompt was issued, no tool was installed, and no repository or branch was changed while making this decision.
+
 ## 2026-08-20 — Context recovery and precision-pass review
 
 ### Repository state
