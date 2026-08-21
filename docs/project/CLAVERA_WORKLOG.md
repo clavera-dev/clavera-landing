@@ -2,6 +2,36 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-22 — M2.5 and M3 technically accepted
+
+Codex completed the final independent review of the remote milestone commit. M2.5 (multilingual foundation) and M3 (test infrastructure) are technically accepted. No blocking or non-blocking code findings remain.
+
+### Accepted commit
+
+- Hash: `906f68bfe582d8d2db38a91acf71009f18be9fa1`
+- Subject: `feat: add multilingual foundation and test infrastructure`
+- Remote `origin/landing-design` independently verified at the same hash.
+- 53 files committed.
+
+### Verification reported at acceptance
+
+- `git diff --check`: clean.
+- Astro check: 50 files, 0 errors, 0 warnings, 0 hints.
+- Production build: 3 pages (`/`, `/en/`, `/ru/`), zero client-side JavaScript.
+- Playwright across Chromium, Firefox and WebKit: 669 passed, 0 failed, 21 reasoned skips (18 diagnostic screenshot tests captured once by Chromium; 3 skip-link reveal tests skipped on WebKit, which excludes links from the default tab order — the link's presence and first-in-tab-order position are still asserted on all three engines).
+
+### What this acceptance does not cover
+
+- **No visual acceptance.** Diagnostic screenshots are not visual-regression baselines and none is approved. The composition remains Spanish-first; the Russian hero headline still occupies roughly double the height of the Spanish and English ones at desktop. Visual acceptance stays deferred to the composition gate after M4/M5.
+- **No legal or publish approval.** Both S7 blockers remain open, unchanged:
+  1. the lawyer's written approval to publish the comparison table (brief §S7 note 2), outstanding across all three languages;
+  2. the contradiction between Appendix В.2 / §S7 note 2 and the brief's own canonical Spanish market-reference note.
+- **Appendix В.4 limitations unchanged.** Opening dates, address before lease signing, comparison with bike shops or free municipal guarderías, and access hours without `según el hub` are not machine-checkable; only the literal-string subset is tested. These still need human review.
+
+### Not in the accepted commit
+
+The Taste Skill installation (`.claude/skills/redesign-existing-projects/`, `skills-lock.json`) was deliberately excluded as M4 tooling and remains untracked. M4 has not started.
+
 ## 2026-08-21 — Multilingual scope approved and foundation milestone
 
 ### Approved scope change

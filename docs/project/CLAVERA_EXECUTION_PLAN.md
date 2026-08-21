@@ -1,6 +1,6 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-08-21
+Status date: 2026-08-22
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
@@ -45,6 +45,7 @@ Claude prompts are written in English. Model, thinking, and permission settings 
 - Current Claude settings for visual-critical work: Opus, High, Auto.
 - Repository instruction set: root `CLAUDE.md`, `docs/project/CLAVERA_EXECUTION_PLAN.md`, and `docs/project/CLAVERA_WORKLOG.md`. These three files are the durable project context established by the documentation milestone following `c5171d2`.
 - `c5171d2` is the technical redesign baseline only. It is not final visual acceptance. Final visual acceptance moves to the composition gate after the multilingual redesign and its QA.
+- `906f68b` is the accepted multilingual-foundation and test-infrastructure commit (M2.5 + M3), technically accepted by Codex on the remote ref. It carries no visual acceptance and no legal or publish approval.
 - Roles: Claude is the implementation writer, Codex is the independent reviewer. They must not write to the same worktree concurrently.
 
 ## Tool registry
@@ -101,7 +102,7 @@ Timing: install before the motion-planning milestone. The opportunity analysis a
 
 Source: `https://playwright.dev/`
 Role: browser smoke tests, interaction tests, responsive viewport checks, overflow checks, cross-browser coverage, screenshot capture, and later visual regression testing.
-Status: installed (`@playwright/test` 1.62.1) with Chromium, Firefox and WebKit binaries; suite green, pending Codex review.
+Status: installed (`@playwright/test` 1.62.1) with Chromium, Firefox and WebKit binaries; suite green and accepted at commit `906f68b`.
 Timing: add immediately after the current precision milestone is accepted. Add functional and structural tests first. Create visual-regression baselines only after the corrected geometry is accepted.
 
 #### TypeScript language service / LSP
@@ -267,7 +268,7 @@ Acceptance requirements:
 
 ### M2.5 — Multilingual foundation
 
-Status: implementation complete; read-only pre-commit review passed with no blocking findings; pending final Codex review of the remote commit. Not visually accepted.
+Status: **technically accepted by Codex at commit `906f68b`** (`906f68bfe582d8d2db38a91acf71009f18be9fa1`), verified independently on the remote `origin/landing-design` ref with no blocking or non-blocking findings. Technical acceptance only — this is not visual acceptance, which remains deferred to the composition gate, and not legal approval.
 
 Approved 2026-08-21. Establishes ES/EN/RU as a design constraint before the composition work, so no layout is accepted that only survives Spanish.
 
@@ -283,7 +284,7 @@ Approved 2026-08-21. Establishes ES/EN/RU as a design constraint before the comp
 
 ### M3 — Test infrastructure
 
-Status: implementation complete; read-only pre-commit review passed with no blocking findings; pending final Codex review of the remote commit. Playwright, `@axe-core/playwright` and the Chromium/Firefox/WebKit matrix are installed and green; diagnostic screenshots are captured but remain explicitly non-baseline.
+Status: **technically accepted by Codex at commit `906f68b`** (`906f68bfe582d8d2db38a91acf71009f18be9fa1`), verified independently on the remote `origin/landing-design` ref with no blocking or non-blocking findings. Playwright, `@axe-core/playwright` and the Chromium/Firefox/WebKit matrix are installed and green. Diagnostic screenshots remain explicitly non-baseline: no visual-regression baseline is approved, and visual acceptance stays deferred to the composition gate.
 
 - install Playwright and `@axe-core/playwright`;
 - verify TypeScript LSP/editor diagnostics;
