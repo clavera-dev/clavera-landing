@@ -1,6 +1,6 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-08-22
+Status date: 2026-08-23
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
@@ -77,10 +77,13 @@ Constraint: it must follow the repository authority order and may not redefine t
 
 Source: `https://github.com/Leonxlnx/taste-skill`
 Role: isolated art-direction and anti-generic audit after the first visual concept exists.
-Status: approved in the original project plan; installation pending.
-Timing: now, after the first concept and its precision correction.
+Status: installed project-locally, not yet run.
+Installed variant: `redesign-existing-projects`, at `.claude/skills/redesign-existing-projects/SKILL.md`.
+Provenance: recorded in `skills-lock.json` — source `Leonxlnx/taste-skill` (github), skill path `skills/redesign-skill/SKILL.md`, computed hash `b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726`. The vendored `SKILL.md` is third-party content and is committed unmodified.
+Timing: audit runs inside M4, which remains pending. Installation alone starts nothing.
 Constraint: audit only for the first use. It may not change the approved brand, public claims, Astro/Yarn/TypeScript stack, or add a runtime animation library without a separate approved decision. Findings must be presented before implementation.
-Selected install variant: `redesign-existing-projects`. The project already has a visual implementation, and this variant is explicitly intended to audit an existing UI before proposing changes. Do not install the default experimental `design-taste-frontend` for this milestone.
+Authority precedence: this skill sits at position 5 in the authority order — below `PROJECT_DECISIONS.md`, the brief, `docs/design-system/` and this plan. Where its generic guidance conflicts with an approved CLAVERA decision, the approved decision wins and the recommendation is rejected. Its published guidance already contains such conflicts, including replacing the typeface with `Geist`/`Outfit`/`Cabinet Grotesk`/`Satoshi`, introducing placeholder or stock imagery, adding runtime motion, and applying blanket `scroll-behavior: smooth`.
+Do not install the default experimental `design-taste-frontend` variant for this milestone.
 
 #### Impeccable
 

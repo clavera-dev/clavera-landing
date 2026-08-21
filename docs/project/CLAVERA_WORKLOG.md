@@ -2,6 +2,38 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-23 — Taste audit skill registered (not run)
+
+The Taste Skill is now installed project-locally and committed to the repository. This is tooling registration only.
+
+### What was installed
+
+- Variant: `redesign-existing-projects` at `.claude/skills/redesign-existing-projects/SKILL.md`.
+- Provenance recorded in `skills-lock.json`: source `Leonxlnx/taste-skill` (github), skill path `skills/redesign-skill/SKILL.md`, computed hash `b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726`.
+- The vendored `SKILL.md` is third-party content and is committed unmodified.
+- The experimental default `design-taste-frontend` variant was deliberately not installed.
+
+### Status
+
+- **The skill has not been run.** No audit has been performed.
+- **None of its recommendations has been approved.** There are no findings to accept or reject yet.
+- M4 remains pending. Installing the skill starts nothing; the audit is an M4 activity.
+- No application source, test, copy, design token, dependency or configuration changed in this commit.
+
+### Standing rejection rule
+
+The skill sits at position 5 in the authority order, below `PROJECT_DECISIONS.md`, the brief, `docs/design-system/` and the execution plan. Any suggestion that conflicts with CLAVERA authority is rejected unless separately approved and recorded here first. That explicitly includes:
+
+- automatic font replacement — the skill's published guidance proposes `Geist`, `Outfit`, `Cabinet Grotesk` or `Satoshi`, against the approved Plus Jakarta Sans / Onest / IBM Plex Mono pairing;
+- placeholder or stock imagery, against the approved-assets-only rule and the R1–R6 render set;
+- fabricated content of any kind, against the canonical Spanish copy authority and the Appendix В terminology constraints;
+- runtime motion or an animation library, which needs a separate recorded decision and the M6 motion map;
+- smooth-scroll interception or blanket `scroll-behavior: smooth`, against the existing `prefers-reduced-motion` handling;
+- framework changes — React, Tailwind, Next or any UI library — against the Astro static / strict TypeScript / Yarn stack;
+- replacement or regeneration of the approved design system and its tokens.
+
+Findings must be presented for review before any implementation. The skill audits; it does not decide.
+
 ## 2026-08-22 — M2.5 and M3 technically accepted
 
 Codex completed the final independent review of the remote milestone commit. M2.5 (multilingual foundation) and M3 (test infrastructure) are technically accepted. No blocking or non-blocking code findings remain.
