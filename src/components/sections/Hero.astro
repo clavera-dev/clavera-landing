@@ -12,12 +12,13 @@
  *   mobile  – the image is a tall band that fades into graphite, and the
  *             headline begins below it at full display size.
  */
-import { getRender, avifSrcset, webpSrcset, webpSrc, RENDER_DISCLOSURE } from '../../data/media';
+import { getRender, avifSrcset, webpSrcset, webpSrc } from '../../data/media';
+import { getCopy, localeHome, resolveLocale, renderAlt } from '../../i18n';
 
+const copy = getCopy(Astro.currentLocale);
+const home = localeHome(resolveLocale(Astro.currentLocale));
 const r1 = getRender('r1');
 const { width, height } = r1.dimensions[1600];
-
-const facts = ['Lugar asignado', 'Ingreso controlado', 'Cerrado y seco'];
 ---
 
 <section id="top" class="hero" aria-labelledby="hero-heading">
@@ -27,7 +28,7 @@ const facts = ['Lugar asignado', 'Ingreso controlado', 'Cerrado y seco'];
 			<source type="image/webp" srcset={webpSrcset(r1)} sizes="100vw" />
 			<img
 				src={webpSrc(r1, 1600)}
-				alt={r1.alt}
+				alt={renderAlt(copy, 'r1')}
 				width={width}
 				height={height}
 				loading="eager"
@@ -35,29 +36,28 @@ const facts = ['Lugar asignado', 'Ingreso controlado', 'Cerrado y seco'];
 				decoding="async"
 			/>
 		</picture>
-		<figcaption class="hero__disclosure">{RENDER_DISCLOSURE}</figcaption>
+		<figcaption class="hero__disclosure">{copy.media.disclosure}</figcaption>
 	</figure>
 
 	<div class="hero__body">
 		<div class="shell shell--aligned hero__inner">
-			<p class="eyebrow hero__eyebrow">Guarda segura · Buenos Aires</p>
+			<p class="eyebrow hero__eyebrow">{copy.hero.eyebrow}</p>
 
-			<h1 id="hero-heading" class="hero__heading">
-				Tu bici merece un lugar seguro en la ciudad.
-			</h1>
+			<h1 id="hero-heading" class="hero__heading">{copy.hero.headingHtml}</h1>
 
-			<p class="lede hero__lede">
-				CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía. Tu lugar
-				asignado, acceso digital y vigilancia, a minutos de tu casa.
-			</p>
+			<p class="lede hero__lede">{copy.hero.lede}</p>
 
 			<div class="hero__actions">
-				<a class="button button--primary button--lg" href="#fundadores">Quiero mi lugar</a>
-				<a class="button button--ghost button--lg" href="#works">Ver cómo funciona</a>
+				<a class="button button--primary button--lg" href={`${home}#fundadores`}>
+					{copy.hero.ctaPrimary}
+				</a>
+				<a class="button button--ghost button--lg" href={`${home}#works`}>
+					{copy.hero.ctaSecondary}
+				</a>
 			</div>
 
 			<ul class="hero__facts">
-				{facts.map((fact) => <li class="mono">{fact}</li>)}
+				{copy.hero.facts.map((fact) => <li class="mono">{fact}</li>)}
 			</ul>
 		</div>
 	</div>
@@ -169,6 +169,8 @@ const facts = ['Lugar asignado', 'Ingreso controlado', 'Cerrado y seco'];
 		font-weight: var(--text-display-2xl-weight);
 		color: var(--text-primary);
 		margin: 0;
+		/* A preferred measure, not a cap: longer locales wrap to another line
+		   instead of being squeezed or clipped. */
 		max-width: 15ch;
 		text-wrap: balance;
 	}

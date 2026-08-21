@@ -1,16 +1,30 @@
 ---
 import { logo } from '../../data/media';
+import { getCopy, localeHome, resolveLocale } from '../../i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const copy = getCopy(Astro.currentLocale);
+const home = localeHome(resolveLocale(Astro.currentLocale));
 ---
 
 <header class="site-header">
 	<div class="shell site-header__inner">
-		<a class="site-header__logo" href="#top" aria-label="CLAVERA — inicio">
+		<a class="site-header__logo" href={`${home}#top`} aria-label={copy.a11y.homeLabel}>
 			<img src={logo.src} alt={logo.alt} width="89" height="20" />
 		</a>
 
 		<div class="site-header__end">
-			<p class="mono site-header__note" aria-hidden="true">Socios fundadores · 40 lugares</p>
-			<a class="button button--primary" href="#fundadores">Quiero mi lugar</a>
+			<p class="mono site-header__note" aria-hidden="true">{copy.header.note}</p>
+			<a class="button button--primary" href={`${home}#fundadores`}>{copy.header.cta}</a>
+			{/*
+			  Last element of the navigation, per brief Part V — never first.
+			  The wrapper is owned by this component so the scoped rule below
+			  actually matches: a class passed into a child component lands on
+			  the child's root without this component's scope attribute.
+			*/}
+			<div class="site-header__lang">
+				<LanguageSwitcher />
+			</div>
 		</div>
 	</div>
 </header>
@@ -78,7 +92,28 @@ import { logo } from '../../data/media';
 	.site-header__end {
 		display: flex;
 		align-items: center;
-		gap: var(--space-6);
+		/* Wraps rather than compressing when a locale makes the CTA longer. */
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: var(--space-3) var(--space-5);
+	}
+
+	/*
+	  Below 700px the logo and CTA already fill the row, so the switcher would
+	  wrap to a second line and push the header from 64px to 108px — breaking
+	  the derived --header-h that hero padding, anchor offsets and sticky
+	  offsets all read. On small screens the footer switcher (required by brief
+	  Part V in both places) carries language switching instead, and the header
+	  stays exactly one control row tall at every width.
+	*/
+	.site-header__lang {
+		display: none;
+	}
+
+	@media (min-width: 700px) {
+		.site-header__lang {
+			display: block;
+		}
 	}
 
 	.site-header__note {

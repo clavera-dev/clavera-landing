@@ -1,5 +1,8 @@
 ---
 import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).zones;
 
 /**
  * Zone list per PROJECT_DECISIONS.md "Initial areas" — this overrides the
@@ -10,25 +13,22 @@ import Section from '../layout/Section.astro';
  * section's entire content, and the brand system reserves pill radius for
  * status badges.
  */
-const zones = ['Palermo', 'Chacarita', 'Villa Crespo', 'Recoleta'];
 ---
 
 <Section
 	id="zonas"
-	index="09"
-	railLabel="Zonas"
+	index={c.index}
+	railLabel={c.rail}
 	surface="raised"
 	divider
-	eyebrow="Primeros hubs"
-	heading="Estamos construyendo el mapa de demanda antes de elegir las ubicaciones."
+	eyebrow={c.eyebrow}
+	heading={c.heading}
 >
-	<p slot="lede" class="lede">
-		Nos interesa saber dónde hace falta. Estas son las zonas donde estamos trabajando.
-	</p>
+	<p slot="lede" class="lede">{c.lede}</p>
 
 	<ol class="zones">
 		{
-			zones.map((zone, i) => (
+			c.items.map((zone, i) => (
 				<li class="zones__item">
 					<span class="mono zones__n">{String(i + 1).padStart(2, '0')}</span>
 					<span class="zones__name">{zone}</span>
@@ -37,11 +37,7 @@ const zones = ['Palermo', 'Chacarita', 'Villa Crespo', 'Recoleta'];
 		}
 	</ol>
 
-	<p class="body-md zones__note">
-		Cada zona avanza a su ritmo: en algunas buscamos un hub completo, en otras un espacio más chico
-		dentro de un edificio o un espacio existente. Dejá tu pedido y te contamos qué hay disponible en
-		la tuya.
-	</p>
+	<p class="body-md zones__note">{c.note}</p>
 </Section>
 
 <style>

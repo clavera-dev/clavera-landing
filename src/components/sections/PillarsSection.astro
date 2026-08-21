@@ -19,50 +19,15 @@ import Section from '../layout/Section.astro';
  * introduces the list rather than sitting inside it.
  */
 import RenderFigure from '../media/RenderFigure.astro';
-const pillars = [
-	{ n: '01', title: 'Lugar asignado', copy: 'Con tu nombre, independiente y siempre libre para vos.' },
-	{
-		n: '02',
-		title: 'Acceso digital personal',
-		copy: 'QR o código personal. Entrás y salís sin depender de nadie.',
-	},
-	{
-		n: '03',
-		title: 'Cerrado, seco y limpio',
-		copy: 'Sin lluvia, sin humedad de vereda, sin polvo. Mantenimiento periódico.',
-	},
-	{
-		n: '04',
-		title: 'Vigilancia y registro',
-		copy: 'Cámaras y registro individual de cada ingreso y egreso.',
-	},
-	{
-		n: '05',
-		title: 'Retiro sin mover otras bicis',
-		copy: 'Cada lugar es independiente: sacás la tuya sin tocar la del vecino.',
-	},
-	{
-		n: '06',
-		title: 'Inventario por número de cuadro',
-		copy: 'Marca, modelo y número de cuadro registrados al ingresar.',
-	},
-	{
-		n: '07',
-		title: 'Membresía mensual',
-		copy: 'Sin garantía, sin contrato anual, sin comisión inmobiliaria.',
-	},
-	{
-		n: '08',
-		title: 'Zona de limpieza',
-		copy: 'Un espacio de autoservicio preparado para limpiar tu bicicleta dentro del hub.',
-	},
-];
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).solution;
 ---
 
 <Section
 	id="solucion"
-	index="02"
-	railLabel="La solución"
+	index={c.index}
+	railLabel={c.rail}
 	surface="raised"
 	labelledby="solucion-heading"
 	rhythm="loose"
@@ -70,12 +35,9 @@ const pillars = [
 >
 	<div class="solution__intro">
 		<div class="solution__text">
-			<p class="eyebrow">Infraestructura de barrio</p>
-			<h2 id="solucion-heading" class="heading-h2">Siempre el mismo lugar. Siempre listo para vos.</h2>
-			<p class="lede">
-				Convertimos un espacio seguro del barrio en infraestructura pensada desde cero para bicicletas
-				y micromovilidad.
-			</p>
+			<p class="eyebrow">{c.eyebrow}</p>
+			<h2 id="solucion-heading" class="heading-h2">{c.heading}</h2>
+			<p class="lede">{c.lede}</p>
 		</div>
 
 		<div class="solution__media bleed-right">
@@ -83,14 +45,14 @@ const pillars = [
 				id="r2"
 				variant="plain"
 				sizes="(min-width: 900px) 60vw, 100vw"
-				caption="Soportes verticales individuales"
+				caption
 			/>
 		</div>
 	</div>
 
 	<ol class="index">
 		{
-			pillars.map((pillar) => (
+			c.pillars.map((pillar) => (
 				<li class="index__row">
 					<span class="index__n numeral">{pillar.n}</span>
 					<div class="index__text">
@@ -151,6 +113,8 @@ const pillars = [
 
 	.index__row {
 		display: grid;
+		/* minmax(0, 1fr) lets a long translated title wrap instead of forcing
+		   the row wider than its column. */
 		grid-template-columns: 3.5rem minmax(0, 1fr);
 		gap: var(--space-4);
 		align-items: start;

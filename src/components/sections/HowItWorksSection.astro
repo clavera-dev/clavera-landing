@@ -1,28 +1,21 @@
 ---
 import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
 
-const steps = [
-	{ n: '1', title: 'Reservá tu lugar', copy: 'Dejá tus datos y contanos en qué barrio la necesitás.' },
-	{
-		n: '2',
-		title: 'Activá tu acceso',
-		copy: 'Registramos marca, modelo y número de cuadro. Recibís tu acceso personal.',
-	},
-	{ n: '3', title: 'Usala todos los días', copy: 'Llegás, dejás la bici en tu lugar y seguís.' },
-];
+const c = getCopy(Astro.currentLocale).works;
 ---
 
 <Section
 	id="works"
-	index="03"
-	railLabel="Cómo funciona"
-	eyebrow="Cómo funciona"
-	heading="Tres pasos, y la bici deja de ser un problema."
+	index={c.index}
+	railLabel={c.rail}
+	eyebrow={c.eyebrow}
+	heading={c.heading}
 	rhythm="tight"
 >
 	<ol class="steps">
 		{
-			steps.map((step) => (
+			c.steps.map((step) => (
 				<li class="steps__item">
 					<span class="steps__n numeral">{step.n}</span>
 					<h3 class="heading-h4">{step.title}</h3>

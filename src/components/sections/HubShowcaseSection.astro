@@ -1,6 +1,9 @@
 ---
 import Section from '../layout/Section.astro';
 import RenderFigure from '../media/RenderFigure.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).hub;
 
 /**
  * The approved R1–R6 set is deliberately NOT shown here as a six-up gallery.
@@ -21,21 +24,17 @@ import RenderFigure from '../media/RenderFigure.astro';
  * The legend under the drawing names only what is literally visible in the
  * approved render, matching its alt text.
  */
-const legend = ['Ingreso', 'Ocho lugares numerados', 'Zona cargo', 'Lockers', 'Sala técnica'];
 ---
 
 <Section
 	id="hub"
-	index="07"
-	railLabel="El espacio"
-	eyebrow="El espacio"
-	heading="Así está diseñado un hub CLAVERA."
+	index={c.index}
+	railLabel={c.rail}
+	eyebrow={c.eyebrow}
+	heading={c.heading}
 	rhythm="loose"
 >
-	<p slot="lede" class="lede">
-		Cada hub se proyecta con el mismo estándar: lugares independientes, circulación libre, materiales
-		que resisten uso diario.
-	</p>
+	<p slot="lede" class="lede">{c.lede}</p>
 
 	<div class="hub">
 		<div class="hub__plan surface-paper">
@@ -44,10 +43,10 @@ const legend = ['Ingreso', 'Ocho lugares numerados', 'Zona cargo', 'Lockers', 'S
 			</div>
 
 			<div class="hub__legend">
-				<p class="mono mono--accent">Esquema de zonificación</p>
+				<p class="mono mono--accent">{c.legendTitle}</p>
 				<ol class="hub__legend-list">
 					{
-						legend.map((zone, i) => (
+						c.legend.map((zone, i) => (
 							<li>
 								<span class="numeral hub__legend-n">{String(i + 1).padStart(2, '0')}</span>
 								<span class="hub__legend-label">{zone}</span>
@@ -64,7 +63,7 @@ const legend = ['Ingreso', 'Ocho lugares numerados', 'Zona cargo', 'Lockers', 'S
 					id="r3"
 					variant="plain"
 					sizes="(min-width: 900px) 40vw, 100vw"
-					caption="Zona de autolavado"
+					caption
 				/>
 			</div>
 
@@ -73,7 +72,7 @@ const legend = ['Ingreso', 'Ocho lugares numerados', 'Zona cargo', 'Lockers', 'S
 					id="r4"
 					variant="panel"
 					sizes="(min-width: 900px) 52vw, 100vw"
-					caption="Lockers y espacio para silla de bebé"
+					caption
 				/>
 			</div>
 		</div>

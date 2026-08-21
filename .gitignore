@@ -148,3 +148,10 @@ vite.config.ts.timestamp-*
 
 # macOS
 .DS_Store
+
+# Playwright QA output. Diagnostic screenshots and traces are not committed;
+# no visual-regression baseline is approved yet.
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/

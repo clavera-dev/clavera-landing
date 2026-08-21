@@ -1,6 +1,9 @@
 ---
 import Section from '../layout/Section.astro';
 import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).survey;
 
 /**
  * The research survey is a separate Typeform from the founders form and must
@@ -14,18 +17,14 @@ import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
 <Section id="encuesta" labelledby="encuesta-heading" rhythm="coda">
 	<div class="survey">
 		<div class="survey__text">
-			<p class="eyebrow">Ayudanos a diseñar el primer hub</p>
+			<p class="eyebrow">{c.eyebrow}</p>
 			{/* A top-level page section, so h2 — it keeps the h3 type scale
 			    because it is deliberately the quietest block on the page. */}
-			<h2 id="encuesta-heading" class="heading-h3 survey__heading">
-				¿Cómo usás tu bici en Buenos Aires?
-			</h2>
-			<p class="body-md">
-				Tres minutos. Nos ayuda a elegir dónde abrir y cómo diseñar el espacio.
-			</p>
+			<h2 id="encuesta-heading" class="heading-h3 survey__heading">{c.heading}</h2>
+			<p class="body-md">{c.note}</p>
 		</div>
 
-		<TypeformBoundary target="survey" ctaLabel="Responder encuesta · 3 min" variant="ghost" />
+		<TypeformBoundary target="survey" ctaLabel={c.cta} variant="ghost" />
 	</div>
 </Section>
 

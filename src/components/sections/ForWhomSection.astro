@@ -1,24 +1,20 @@
 ---
 import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
 
-const cases = [
-	'Tu bici vale más que el candado que la cuida — y duerme en el balcón.',
-	'Tenés una e-bike o una cargo que no entra en el ascensor.',
-	'Usás la bici todos los días y cada salida empieza con el ascensor.',
-	'Sos una familia con más bicis que balcón.',
-	'Tu edificio no tiene bicicletero, o el que hay está lleno.',
-];
+const c = getCopy(Astro.currentLocale).cases;
+
 ---
 
-<Section id="casos" index="08" railLabel="Para quién" labelledby="casos-heading" rhythm="loose">
+<Section id="casos" index={c.index} railLabel={c.rail} labelledby="casos-heading" rhythm="loose">
 	<div class="casos">
 		<div class="casos__head">
-			<p class="eyebrow">Para quién</p>
-			<h2 id="casos-heading" class="heading-h2">Si te pasa alguna de estas, CLAVERA es para vos.</h2>
+			<p class="eyebrow">{c.eyebrow}</p>
+			<h2 id="casos-heading" class="heading-h2">{c.heading}</h2>
 		</div>
 
 		<ul class="casos__list">
-			{cases.map((item) => <li class="casos__item">{item}</li>)}
+			{c.items.map((item) => <li class="casos__item">{item}</li>)}
 		</ul>
 	</div>
 </Section>
@@ -59,7 +55,9 @@ const cases = [
 		letter-spacing: var(--text-h3-tracking);
 		font-weight: 500;
 		color: var(--text-primary);
-		max-width: 32ch;
+		/* Preferred measure; longer locales take another line rather than
+		   overflowing the column. */
+		max-width: 34ch;
 		text-wrap: pretty;
 	}
 

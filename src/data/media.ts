@@ -7,6 +7,11 @@
  *
  * Approved content per render: PROJECT_DECISIONS.md § "Approved final render set".
  *
+ * This file owns only what is language-independent: paths, formats, widths and
+ * measured pixel dimensions. Alt text, captions and the mandatory generated-
+ * render disclosure are copy and therefore live per locale in src/i18n/, so
+ * every language ships its own accessible description.
+ *
  * public/brand/renders/final/ holds ONLY the optimized AVIF and WebP
  * derivatives of the approved final R1–R6 set. The approved master PNG files
  * are retained outside this repository and outside the public production
@@ -35,10 +40,6 @@ export interface RenderAsset {
 	basePath: string;
 	/** Filename fragment shared by every width/format variant. */
 	slug: string;
-	/** Spanish alt text describing what is literally visible, per §3.5 of the brief. */
-	alt: string;
-	/** Short visible label shown under the image. Centralized so every use of a render is consistent. */
-	caption: string;
 	/**
 	 * CSS `object-position` to use if this image is ever shown inside a
 	 * fixed-aspect box with `object-fit: cover`. Nothing in the site does
@@ -62,20 +63,11 @@ export interface RenderAsset {
 const FINAL_BASE_PATH = '/brand/renders/final';
 const LEGACY_BASE_PATH = '/brand/renders';
 
-/**
- * Required disclosure for digitally generated project renders.
- * Must render as accessible HTML text outside the bitmap (PROJECT_DECISIONS.md § Media).
- */
-export const RENDER_DISCLOSURE =
-	'Imágenes de proyecto. No corresponden a una sede en operación. Imagen ilustrativa generada digitalmente.';
-
 export const renders: RenderAsset[] = [
 	{
 		id: 'r1',
 		basePath: FINAL_BASE_PATH,
 		slug: 'clavera-final-r1-overview',
-		alt: 'Vista general de un hub CLAVERA: hilera de bicicletas en soportes verticales numerados, junto a una pared de lockers y un banco de madera.',
-		caption: 'Vista general del hub',
 		objectPosition: 'center',
 		native: { width: 2752, height: 1536 },
 		widths: [640, 960, 1280, 1600, 2048],
@@ -91,8 +83,6 @@ export const renders: RenderAsset[] = [
 		id: 'r2',
 		basePath: FINAL_BASE_PATH,
 		slug: 'clavera-final-r2-storage',
-		alt: 'Bicicletas en soportes verticales individuales numerados, cada uno anclado a la pared de un hub CLAVERA.',
-		caption: 'Soportes verticales individuales',
 		objectPosition: 'center',
 		native: { width: 2528, height: 1696 },
 		widths: [640, 960, 1280, 1600, 2048],
@@ -108,8 +98,6 @@ export const renders: RenderAsset[] = [
 		id: 'r3',
 		basePath: FINAL_BASE_PATH,
 		slug: 'clavera-final-r3-cleaning',
-		alt: 'Zona de autolavado para bicicletas en un hub CLAVERA, con manguera, productos de limpieza y piso con desagüe.',
-		caption: 'Zona de autolavado',
 		// Vertical composition (native 1856×2304) — never force this into a
 		// wide landscape object-fit: cover crop. Its top width variant is
 		// its native width (1856px), not an upscaled 2048px.
@@ -128,8 +116,6 @@ export const renders: RenderAsset[] = [
 		id: 'entrance',
 		basePath: LEGACY_BASE_PATH,
 		slug: 'clavera-brand-entrance-r3',
-		alt: 'Ingreso de un hub CLAVERA, con puerta de acceso, panel de acceso digital y cámara de seguridad.',
-		caption: 'Ingreso controlado',
 		objectPosition: 'center',
 		native: { width: 3712, height: 4608 },
 		widths: [640, 1280, 1920],
@@ -143,8 +129,6 @@ export const renders: RenderAsset[] = [
 		id: 'r4',
 		basePath: FINAL_BASE_PATH,
 		slug: 'clavera-final-r4-lockers',
-		alt: 'Lockers individuales en un hub CLAVERA, con uno abierto que muestra espacio para una silla portabebé de bicicleta.',
-		caption: 'Lockers y espacio para silla de bebé',
 		objectPosition: 'center',
 		native: { width: 2528, height: 1696 },
 		widths: [640, 960, 1280, 1600, 2048],
@@ -160,8 +144,6 @@ export const renders: RenderAsset[] = [
 		id: 'r5',
 		basePath: FINAL_BASE_PATH,
 		slug: 'clavera-final-r5-cargo',
-		alt: 'Zona para bicicletas cargo y e-bikes de gran tamaño, con lugares delimitados a nivel de piso en un hub CLAVERA.',
-		caption: 'Zona cargo y e-bikes',
 		objectPosition: 'center',
 		native: { width: 2752, height: 1536 },
 		widths: [640, 960, 1280, 1600, 2048],
@@ -177,8 +159,6 @@ export const renders: RenderAsset[] = [
 		id: 'r6',
 		basePath: FINAL_BASE_PATH,
 		slug: 'clavera-final-r6-zoning',
-		alt: 'Esquema isométrico de zonificación de un hub CLAVERA: ingreso, ocho lugares numerados de guarda, zona cargo, lockers y sala técnica.',
-		caption: 'Esquema de zonificación',
 		// Square, full-scene diagram — must render uncropped so every
 		// zone in the diagram stays legible.
 		objectPosition: 'center',

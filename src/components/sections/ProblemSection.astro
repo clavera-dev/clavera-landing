@@ -1,5 +1,9 @@
 ---
 import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
+
+const copy = getCopy(Astro.currentLocale);
+const c = copy.problem;
 
 /**
  * The friction moment. Deliberately image-free: it sits between two of the
@@ -7,36 +11,26 @@ import Section from '../layout/Section.astro';
  * Typography carries it — a display-scale statement, then a narrow column of
  * argument, then the daily loop set as two annotated lines.
  */
-const loop = [
-	{ label: 'Cada salida', copy: 'empieza con el ascensor, el pasillo y la puerta.' },
-	{ label: 'Cada regreso', copy: 'termina exactamente igual.' },
-];
+
 ---
 
-<Section id="problema" index="01" railLabel="La ciudad" labelledby="problema-heading" rhythm="loose">
+<Section id="problema" index={c.index} railLabel={c.rail} labelledby="problema-heading" rhythm="loose">
 	<div class="problem">
 		<div class="problem__lead">
-			<p class="eyebrow">La ciudad cambió</p>
+			<p class="eyebrow">{c.eyebrow}</p>
 			<h2 id="problema-heading" class="problem__statement">
-				La ciudad se llenó de bicis.<br /><span class="problem__statement-dim"
-					>Los edificios no cambiaron.</span
-				>
+				{c.statementLead}<br /><span class="problem__statement-dim">{c.statementDim}</span>
 			</h2>
 		</div>
 
 		<div class="problem__grid">
 			<div class="problem__argument">
-				<p class="body-lg">
-					En los edificios de Buenos Aires no hay lugar seguro para una bici, mucho menos para una
-					e-bike o una cargo. La calle suma candados, óxido y riesgo. El departamento suma ascensores,
-					pasillos y espacio perdido. Las opciones informales están llenas, no dan comprobante y no
-					asumen ningún compromiso.
-				</p>
+				<p class="body-lg">{c.argument}</p>
 			</div>
 
 			<ul class="problem__loop">
 				{
-					loop.map((item) => (
+					c.loop.map((item) => (
 						<li class="problem__loop-item">
 							<span class="mono mono--accent">{item.label}</span>
 							<p class="heading-h3 problem__loop-copy">{item.copy}</p>
@@ -46,9 +40,7 @@ const loop = [
 			</ul>
 		</div>
 
-		<p class="problem__close">
-			Dejá de subir la bici por el ascensor. Dejá de dejarla en la calle.
-		</p>
+		<p class="problem__close">{c.close}</p>
 	</div>
 </Section>
 

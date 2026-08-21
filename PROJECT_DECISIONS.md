@@ -1,6 +1,6 @@
 # CLAVERA Landing — Current Project Decisions
 
-Last updated: 2026-08-19
+Last updated: 2026-08-21
 
 This document contains the current approved decisions for the first production landing page.
 
@@ -19,7 +19,9 @@ The previous prototype at `TheTomre/site` is reference material only. Do not cop
 
 Build a production marketing landing page that can receive real advertising traffic.
 
-The launch language is Argentine Spanish (`es-AR`) only. Do not implement Russian or English versions and do not add a language switcher.
+The launch locales are Argentine Spanish (`es-AR`), English (`en`) and Russian (`ru`).
+
+Superseded on 2026-08-21: the previous phase-one rule limited the launch to `es-AR` only and prohibited a language switcher. See "Multilingual scope (2026-08-21)" below. That earlier restriction no longer applies and the brief's Part V multilingual regulation is authoritative again.
 
 The initial founding-member offer is limited to 40 places.
 
@@ -37,6 +39,36 @@ Initial areas:
 - Chacarita
 - Villa Crespo
 - Recoleta
+
+## Multilingual scope (2026-08-21)
+
+Approved by Kirill on 2026-08-21. This decision replaces the earlier `es-AR`-only phase-one restriction and restores the multilingual regulation already written in `docs/brief/CLAVERA_Site_TZ_v1_5.md` Part V.
+
+### Routes
+
+- `es-AR` at `/` — canonical, no locale prefix
+- English at `/en/`
+- Russian at `/ru/`
+
+All three are statically rendered. No automatic browser-language redirect is permitted.
+
+### Copy authority
+
+Spanish (`es-AR`) remains the canonical product-copy authority. English and Russian are working translations that carry the same approved product meaning and the same legal constraints. Their wording may receive editorial refinement later; their meaning may not drift from the Spanish canon.
+
+A translation may never weaken:
+
+- approved product claims;
+- forbidden Tier-1 vocabulary, which applies in every language (English `bike parking` and Russian `велопарковка` are prohibited exactly as `estacionamiento` is);
+- the entity-protection rule — CLAVERA is never described as a `cochera`, garage or `estacionamiento` in any language;
+- the generated-render disclosure, which is mandatory verbatim in every locale;
+- the insurance constraint;
+- the absence of operating-hour claims;
+- the `monTEK` and `Hamax` brand-name prohibition.
+
+### Design consequence
+
+Multilingual support is a composition and responsive-design constraint, not a later translation task. Every subsequent design decision is reviewed against all three locales for word length, line wrapping, heading height, navigation width, CTA width, section height and mobile composition. Layout primitives must be direction-safe and must absorb translation expansion through intrinsic sizing rather than fixed heights, clipping, hidden content, reduced body text or locale-specific pixel offsets.
 
 ## Design authority
 

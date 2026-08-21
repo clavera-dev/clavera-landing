@@ -1,0 +1,93 @@
+---
+/**
+ * Language switcher.
+ *
+ * Ordinary links to the equivalent page in each locale, so it works with
+ * JavaScript disabled and is reachable and operable by keyboard. The current
+ * locale is still rendered as a link target but marked `aria-current="true"`
+ * so assistive technology announces which one is active.
+ *
+ * `hash` lets a caller keep the reader in place across a language switch —
+ * the footer switcher passes none, but an in-page switcher can.
+ *
+ * Order is fixed by the brief (Part V): ES · EN · RU.
+ */
+import { SWITCHER_ORDER, LOCALE_DEFINITIONS, localeHref, resolveLocale, getCopy } from '../../i18n';
+
+interface Props {
+	hash?: string;
+	class?: string;
+}
+
+const { hash = '', class: className } = Astro.props;
+const current = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+---
+
+<nav class:list={['lang', className]} aria-label={copy.a11y.languageNavLabel}>
+	<ul class="lang__list">
+		{
+			SWITCHER_ORDER.map((code) => {
+				const definition = LOCALE_DEFINITIONS[code];
+				const isCurrent = code === current;
+				return (
+					<li>
+						<a
+							class="lang__link"
+							href={localeHref(code, hash)}
+							hreflang={definition.hreflang}
+							lang={definition.lang}
+							aria-current={isCurrent ? 'true' : undefined}
+						>
+							<span class="visually-hidden">{definition.switchLabel}</span>
+							<span aria-hidden="true">{definition.label}</span>
+						</a>
+					</li>
+				);
+			})
+		}
+	</ul>
+</nav>
+
+<style>
+	.lang__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-1);
+	}
+
+	.lang__link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		/* Comfortable target without forcing a fixed box on longer labels. */
+		min-width: var(--space-10);
+		min-height: var(--space-8);
+		padding-inline: var(--space-2);
+		border-radius: var(--radius-xs);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		line-height: var(--text-mono-sm-line);
+		letter-spacing: var(--text-mono-sm-tracking);
+		color: var(--text-tertiary);
+		transition: color var(--duration-fast) var(--ease-standard);
+	}
+
+	.lang__link:hover {
+		color: var(--accent);
+	}
+
+	.lang__link[aria-current='true'] {
+		color: var(--text-primary);
+		box-shadow: inset 0 0 0 1px var(--border-hairline-strong);
+	}
+
+	.lang__link:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: 2px;
+	}
+</style>

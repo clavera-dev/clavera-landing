@@ -1,19 +1,31 @@
 ---
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import { getCopy, resolveLocale, LOCALE_DEFINITIONS, SWITCHER_ORDER, DEFAULT_LOCALE, localeHome } from '../i18n';
 import '../styles/global.css';
 
-interface Props {
-	title: string;
-	description: string;
-}
+/**
+ * Every locale is a full static document with its own `lang`, its own
+ * self-referencing canonical, and the complete alternate set. Nothing here
+ * depends on client-side JavaScript.
+ */
+const locale = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+const definition = LOCALE_DEFINITIONS[locale];
 
-const { title, description } = Astro.props;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+/** Self-referencing canonical — never points at the root for a sub-locale. */
+const canonicalUrl = new URL(localeHome(locale), Astro.site);
+
+/** hreflang for all three locales plus x-default → the canonical Spanish. */
+const alternates = SWITCHER_ORDER.map((code) => ({
+	hreflang: LOCALE_DEFINITIONS[code].hreflang,
+	href: new URL(localeHome(code), Astro.site).href,
+}));
+const xDefault = new URL(localeHome(DEFAULT_LOCALE), Astro.site).href;
 ---
 
 <!doctype html>
-<html lang="es-AR">
+<html lang={definition.lang}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,23 +41,26 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-		<title>{title}</title>
-		<meta name="description" content={description} />
-		<link rel="canonical" href={canonicalUrl} />
+		<title>{copy.meta.title}</title>
+		<meta name="description" content={copy.meta.description} />
+		<link rel="canonical" href={canonicalUrl.href} />
+
+		{alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+		<link rel="alternate" hreflang="x-default" href={xDefault} />
 
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="CLAVERA" />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:url" content={canonicalUrl} />
-		<meta property="og:locale" content="es_AR" />
+		<meta property="og:title" content={copy.meta.ogTitle} />
+		<meta property="og:description" content={copy.meta.description} />
+		<meta property="og:url" content={canonicalUrl.href} />
+		<meta property="og:locale" content={definition.lang.replace('-', '_')} />
 
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
+		<meta name="twitter:title" content={copy.meta.ogTitle} />
+		<meta name="twitter:description" content={copy.meta.description} />
 	</head>
 	<body>
-		<a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+		<a class="skip-link" href="#contenido">{copy.a11y.skipLink}</a>
 		<Header />
 		<main id="contenido">
 			<slot />

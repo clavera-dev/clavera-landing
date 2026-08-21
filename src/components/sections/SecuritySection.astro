@@ -1,6 +1,9 @@
 ---
 import Section from '../layout/Section.astro';
 import RenderFigure from '../media/RenderFigure.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).security;
 
 /**
  * The entrance render (an older, separate access/security asset — never R3,
@@ -13,27 +16,17 @@ import RenderFigure from '../media/RenderFigure.astro';
  * PROJECT_DECISIONS.md says operating-hour wording is unconfirmed and must
  * not be claimed yet.
  */
-const items = [
-	'Identificación individual con DNI al asociarte',
-	'Acceso digital personal, no transferible',
-	'Cámaras y registro de ingresos y egresos',
-	'Estructuras de guarda profesionales, fijadas e independientes por lugar — sin bicis apoyadas unas sobre otras',
-	'Sin carga de baterías dentro del hub',
-];
 ---
 
-<Section id="seguridad" index="05" railLabel="Seguridad" surface="raised" labelledby="seguridad-heading">
+<Section id="seguridad" index={c.index} railLabel={c.rail} surface="raised" labelledby="seguridad-heading">
 	<div class="security">
 		<div class="security__text">
-			<p class="eyebrow">Seguridad y acceso</p>
-			<h2 id="seguridad-heading" class="heading-h2">Nadie entra de pasada.</h2>
-			<p class="lede">
-				Cada socio se identifica. Cada acceso queda registrado. Cada bici está asociada a su marca,
-				modelo y número de cuadro.
-			</p>
+			<p class="eyebrow">{c.eyebrow}</p>
+			<h2 id="seguridad-heading" class="heading-h2">{c.heading}</h2>
+			<p class="lede">{c.lede}</p>
 
 			<ul class="security__list">
-				{items.map((item) => <li class="body-md">{item}</li>)}
+				{c.items.map((item) => <li class="body-md">{item}</li>)}
 			</ul>
 		</div>
 
@@ -42,7 +35,7 @@ const items = [
 				id="entrance"
 				variant="panel"
 				sizes="(min-width: 900px) 38vw, 100vw"
-				caption="Ingreso controlado"
+				caption
 			/>
 		</div>
 	</div>

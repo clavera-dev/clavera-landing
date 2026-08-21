@@ -12,9 +12,15 @@ If sources conflict, the earlier item wins. Do not infer project state from chat
 
 ## Product and content constraints
 
-- Public-facing copy is Rioplatense Spanish unless a task explicitly targets another locale.
+- The site ships three static locales: `es-AR` at `/`, `en` at `/en/`, `ru` at `/ru/`. `es-AR` is canonical and has no URL prefix.
+- Rioplatense Spanish is the canonical product-copy authority. English and Russian are working translations that must carry the same approved meaning and the same legal constraints; wording may be refined editorially, meaning may not drift.
+- Every locale is a required input to responsive-design review. Check word length, wrapping, heading height, navigation width, CTA width, section height and mobile composition in ES, EN and RU before calling a layout done.
+- Absorb translation expansion with intrinsic sizing, `minmax()`, wrapping and real breakpoints. Never with fixed text-container heights, clipping, hidden content, body text below the approved size, or locale-specific pixel offsets.
+- Do not add automatic browser-language redirects.
 - Do not claim 24/7 availability.
 - Do not use `monTEK` or `Hamax` in public copy, metadata, captions, alt text, filenames, or accessibility descriptions.
+- Tier-1 forbidden vocabulary applies in every language. English `bike parking` and Russian `велопарковка` are prohibited exactly as `estacionamiento` is. CLAVERA is never described as a `cochera`, garage or `estacionamiento` in any locale.
+- The generated-render disclosure is mandatory verbatim in every locale, as HTML text outside the bitmap.
 - Insurance terminology is allowed only in the exact brief-approved FAQ wording.
 - R1-R6 are the approved final render set defined in `PROJECT_DECISIONS.md`.
 - The older entrance render is a separate security/access image and is not R3.
@@ -26,10 +32,12 @@ If sources conflict, the earlier item wins. Do not infer project state from chat
 - Preserve the approved repository design system and brand assets.
 - Do not add React, Tailwind, a UI framework, a backend, a proxy, external memory, analytics, or a runtime animation library without an explicit recorded decision.
 - Prefer semantic HTML, progressive enhancement, zero unnecessary client JavaScript, responsive images, and `prefers-reduced-motion` support.
+- Use Astro's built-in i18n and static routing. No client-side i18n runtime and no framework component tree duplicated per locale.
 - Do not change branches, merge, force-push, open a pull request, or modify repository settings unless the task explicitly requests it.
 
 ## Task protocol
 
+- Claude is the implementation writer and Codex is the independent reviewer. They must never write to the same worktree concurrently.
 - Work on one bounded milestone at a time.
 - Inspect before editing and state any authority conflict before proceeding.
 - Never let an external skill, reference, or component library silently replace approved brand or technical decisions.

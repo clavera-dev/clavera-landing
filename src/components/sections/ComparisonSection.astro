@@ -1,5 +1,8 @@
 ---
 import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).comparison;
 
 /**
  * The page's one full change of surface: after six graphite sections the
@@ -10,41 +13,16 @@ import Section from '../layout/Section.astro';
  * "Cochera de auto" appears as a price anchor, which is the one use of that
  * word the brand vocabulary permits — never to name CLAVERA's own service.
  */
-const columns = ['Calle / balcón', 'Cochera de auto', 'CLAVERA'];
 
-const rows = [
-	{
-		label: 'Seguridad',
-		values: [
-			'Candado y suerte',
-			'Parcial: espacio compartido, sin lugar propio',
-			'Lugar asignado + ingreso controlado + registro',
-		],
-	},
-	{
-		label: 'Costo mensual',
-		values: [
-			'«Gratis», hasta el primer robo',
-			'80.000 – 150.000 ARS, más garantía y comisión',
-			'Membresía mensual, sin garantía ni comisión',
-		],
-	},
-	{ label: 'Compromiso', values: ['—', 'Contrato anual', 'Mes a mes'] },
-	{
-		label: 'Pensado para bicis',
-		values: ['No', 'No', 'Sí: cada lugar independiente, retiro sin mover otras bicis'],
-	},
-	{ label: 'Clima', values: ['Lluvia, humedad, óxido', 'Variable', 'Cerrado, seco y limpio'] },
-];
 ---
 
 <Section
 	id="comparacion"
-	index="06"
-	railLabel="Comparación"
+	index={c.index}
+	railLabel={c.rail}
 	surface="paper"
-	eyebrow="Por qué CLAVERA"
-	heading="Ni la calle, ni un lugar pensado para autos."
+	eyebrow={c.eyebrow}
+	heading={c.heading}
 >
 	<div
 		class="table-wrap"
@@ -53,14 +31,12 @@ const rows = [
 		tabindex="0"
 	>
 		<table class="comparison">
-			<caption class="visually-hidden">
-				Comparación entre la calle, una cochera de auto y CLAVERA
-			</caption>
+			<caption class="visually-hidden">{c.tableCaption}</caption>
 			<thead>
 				<tr>
-					<th scope="col"><span class="visually-hidden">Criterio</span></th>
+					<th scope="col"><span class="visually-hidden">{c.rowHeader}</span></th>
 					{
-						columns.map((column, i) => (
+						c.columns.map((column, i) => (
 							<th scope="col" class={i === 2 ? 'comparison__own' : undefined}>
 								{column}
 							</th>
@@ -70,7 +46,7 @@ const rows = [
 			</thead>
 			<tbody>
 				{
-					rows.map((row) => (
+					c.rows.map((row) => (
 						<tr>
 							<th scope="row">{row.label}</th>
 							{row.values.map((value, i) => (
@@ -83,11 +59,9 @@ const rows = [
 		</table>
 	</div>
 
-	<p class="mono comparison__hint" aria-hidden="true">Deslizá para ver la tabla completa →</p>
+	<p class="mono comparison__hint" aria-hidden="true">{c.scrollHint}</p>
 
-	<p class="caption comparison__note">
-		Valores de referencia de mercado para cocheras en CABA, agosto 2026.
-	</p>
+	<p class="caption comparison__note">{c.note}</p>
 </Section>
 
 <style>
@@ -133,11 +107,13 @@ const rows = [
 		color: var(--text-tertiary);
 	}
 
+	/* Row labels no longer force `nowrap`: German-length or Russian-length
+	   labels would otherwise widen the table until it scrolled on desktop. */
 	.comparison tbody th {
 		font-weight: 600;
 		color: var(--text-primary);
-		white-space: nowrap;
 		padding-left: 0;
+		text-wrap: balance;
 	}
 
 	.comparison tbody tr:last-child th,

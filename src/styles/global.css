@@ -183,7 +183,16 @@ video {
 
 	--text-primary: var(--text-on-paper);
 	--text-secondary: var(--text-on-paper-secondary);
-	--text-tertiary: var(--text-on-paper-tertiary);
+	/*
+	  Tertiary text steps up to the secondary token on paper.
+	  `--text-on-paper-tertiary` (concrete-500) measures 3.55:1 against
+	  concrete-50 — below WCAG AA, and below the >=4.5:1 the brief requires for
+	  the generated-render disclosure, which appears on this surface under the
+	  R6 plan sheet. concrete-700 measures 6.44:1. On paper the tertiary level
+	  is therefore distinguished by size, weight and casing rather than by a
+	  colour that cannot carry text contrast.
+	*/
+	--text-tertiary: var(--text-on-paper-secondary);
 	--border-hairline: var(--border-on-paper);
 	--border-hairline-strong: var(--border-on-paper-strong);
 	/* amber-700 on concrete-50 measures 5.2:1 — the only amber step that
@@ -486,7 +495,15 @@ strong {
 	border: 1px solid transparent;
 	cursor: pointer;
 	text-decoration: none;
-	white-space: nowrap;
+	/*
+	  Labels wrap rather than forcing the control wider than its container.
+	  `nowrap` here pushed the Russian founders CTA to 415px inside a 375px
+	  viewport; the label is longer in some locales than in Spanish, so the
+	  control has to absorb that intrinsically instead of overflowing.
+	*/
+	max-width: 100%;
+	white-space: normal;
+	text-wrap: balance;
 	transition:
 		background-color var(--duration-fast) var(--ease-standard),
 		border-color var(--duration-fast) var(--ease-standard),

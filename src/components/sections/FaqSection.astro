@@ -1,5 +1,8 @@
 ---
 import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).faq;
 
 /**
  * FAQ-09's zone clause is adjusted from the brief's zone-A list to the areas
@@ -11,57 +14,19 @@ import Section from '../layout/Section.astro';
  * unconfirmed. FAQ-05's insurance wording is untouched — it is the brief's
  * specifically permitted formulation and is not part of this correction.
  */
-const faqs = [
-	{
-		q: '¿Qué es CLAVERA?',
-		a: 'CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía en Buenos Aires. Cada socio tiene un lugar asignado, acceso digital personal y registro de cada ingreso. No es un taller ni un lugar para autos.',
-	},
-	{
-		q: '¿Cuánto cuesta?',
-		a: 'Te mostramos el precio de Socio Fundador al dejar tus datos, junto con la disponibilidad en tu zona. Sin compromiso y sin pago. El precio de Socio Fundador es un 20% por debajo del precio de lista, garantizado por 24 meses.',
-	},
-	{
-		q: '¿Qué pasa si me quiero dar de baja?',
-		a: 'La membresía es mensual. Avisás con 30 días de anticipación y se da de baja sin penalidades.',
-	},
-	{
-		q: '¿Necesito tener mi bici asegurada?',
-		a: 'No. Recibimos bicicletas aseguradas y no aseguradas. Al ingresar registramos marca, modelo y número de cuadro.',
-	},
-	{
-		q: '¿Puedo cargar mi e-bike ahí?',
-		a: 'No. Por seguridad, no se cargan baterías dentro del hub.',
-	},
-	{
-		q: '¿Hacen reparaciones?',
-		a: 'No. CLAVERA no es un taller: es infraestructura de guarda.',
-	},
-	{
-		q: '¿Guardan autos o motos?',
-		a: 'No. CLAVERA es exclusivamente para bicicletas y micromovilidad personal.',
-	},
-	{
-		q: '¿Dónde va a estar el primer hub?',
-		a: 'Estamos construyendo el mapa de demanda antes de elegir la ubicación. Las zonas prioritarias son Chacarita, Villa Crespo, Palermo y Recoleta. El primer hub abre donde la demanda esté más concentrada.',
-	},
-	{
-		q: '¿Cómo se retira la bici?',
-		a: 'Cada lugar es independiente. Retirás la tuya sin mover ninguna otra bicicleta.',
-	},
-];
 ---
 
 <Section
 	id="faq"
-	index="11"
-	railLabel="Preguntas"
+	index={c.index}
+	railLabel={c.rail}
 	divider
-	eyebrow="Preguntas frecuentes"
-	heading="Lo importante, sin letra chica."
+	eyebrow={c.eyebrow}
+	heading={c.heading}
 >
 	<div class="faq">
 		{
-			faqs.map((faq) => (
+			c.items.map((faq) => (
 				<details class="faq__item">
 					<summary class="faq__q">
 						<span class="faq__q-text">{faq.q}</span>
@@ -170,7 +135,9 @@ const faqs = [
 		}
 
 		.faq__q-text {
-			max-width: 24ch;
+			/* Preferred measure; a longer translated question wraps to more
+			   lines rather than colliding with the +/- marker. */
+			max-width: 28ch;
 		}
 
 		.faq__a {

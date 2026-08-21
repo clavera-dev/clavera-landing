@@ -2,6 +2,79 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-21 — Multilingual scope approved and foundation milestone
+
+### Approved scope change
+
+- The phase-one `es-AR`-only decision is superseded. The landing page now ships three static locales: `es-AR` at `/` (canonical, unprefixed), `en` at `/en/`, `ru` at `/ru/`.
+- This restores the multilingual regulation already present in the brief's Part V, which the phase-one decision had narrowed.
+- Spanish remains the canonical product-copy authority. English and Russian are working translations carrying identical approved meaning and legal constraints; wording may be refined editorially later, meaning may not drift.
+- Multilingual support is treated as a composition and responsive-design constraint. All three locales are required inputs to every future responsive review.
+- Tier-1 forbidden vocabulary, the entity-protection rule, render disclosures, insurance constraints, operating-hour constraints and the `monTEK`/`Hamax` prohibition apply in every language and may not be weakened by a translation.
+- `c5171d2` is the technical redesign baseline, not final visual acceptance. Visual acceptance moves to the composition gate after the multilingual redesign and its QA.
+- Claude is the implementation writer; Codex is the independent reviewer. They must not write to the same worktree concurrently.
+
+### Documents updated
+
+- `PROJECT_DECISIONS.md` — phase-one locale rule superseded; new "Multilingual scope (2026-08-21)" section.
+- `CLAUDE.md` — locale routes, translation authority, per-locale responsive review, Tier-1 enforcement in all languages, no browser-language redirect, reviewer/writer separation.
+- `docs/project/CLAVERA_EXECUTION_PLAN.md` — current state, M2 status correction, new M2.5 multilingual foundation milestone, M3 locale coverage, two dated decision-log entries.
+
+Historical entries were not rewritten.
+
+### 2026-08-21 — M2.5 + M3 milestone commit
+
+Codex completed the read-only pre-commit review of M2.5 and M3 with no blocking code or test findings. The multilingual foundation and the test infrastructure are committed together as one milestone on `landing-design`.
+
+Deliberately excluded from the commit: the Taste Skill installation (`.claude/skills/redesign-existing-projects/`, `skills-lock.json`). That tooling belongs to M4, not to M2.5 or M3, so it stays untracked until the M4 milestone commit or is ignored, at Kirill's call.
+
+Status after this commit:
+
+- M2.5 and M3 are implementation complete and pending **final Codex review of the remote commit**.
+- Nothing here constitutes visual acceptance. The composition is still Spanish-first and the Russian hero headline still occupies roughly double the height of the Spanish and English ones at desktop.
+- Nothing here constitutes legal approval. Both S7 blockers remain open (see the two entries below).
+
+### 2026-08-21 — Appendix В second correction round (uncommitted)
+
+Codex verified the first correction round and confirmed the original blockers fixed, but held M2.5/M3 on two remaining Appendix В gaps. Both are now closed.
+
+- **Standalone `por hora` was not scanned.** Appendix В.1 lists the row as `tarifa por hora, por hora`, so the bare phrase is Tier 1 in its own right. It is now in the Tier-1 dictionary, with permanent negative controls proving it is detected and that it does not fire on `por membresía` / `por 24 meses`.
+- **Tier 2 had leaked out of the column header.** The EN and RU market-reference notes used `car garages` and «автомобильных кочер». Appendix В.2 and brief §S7 note 2 permit the Tier-2 term **only** as the S7 column header. Both notes are rewritten neutrally, carrying no Tier-1 or Tier-2 term or root, and both phrases are removed from the allowlist. The allowlist is now three column headers plus one scoped Spanish exception, guarded by a test that fails if it grows.
+- **A scanner weakness was found by its own negative control.** Stripping the allowlist by plain substring removed `Car garage` from inside `car garages`, leaving a stray "s" so the plural passed. The strip is now bounded by Unicode lookarounds, so a permitted phrase glued to another letter no longer counts as permitted.
+
+#### Outstanding authority conflict — canonical Spanish S7 note `[BLOCKER]`
+
+The brief contradicts itself and this is not resolvable in code:
+
+- §S7 note 2 (line 350): the word `cochera` is used *"только как заголовок колонки и только в этой таблице"* — column header only.
+- Appendix В.2 (line 1650): permitted location is *"заголовок колонки таблицы S7"*.
+- But the brief's own approved S7 copy (line 345) reads: `Valores de referencia de mercado para cocheras en CABA, {mes} 2026.` — using `cocheras` in the **note**, not the column header.
+
+The brief is the authority for canonical Spanish copy, so the sentence ships verbatim. The automated exception is scoped to that one exact sentence — a reworded variant or the bare word still fails the suite, and English and Russian get no equivalent exception. Resolution needs the lawyer, alongside the still-outstanding written approval for publishing the S7 table at all (§S7 note 2), which now covers three languages.
+
+### 2026-08-21 — Appendix В correction round (uncommitted)
+
+Codex has not accepted M2.5/M3. This round addresses its blockers.
+
+- **Appendix В was found, not missing.** The previous report wrongly recorded the terminology dictionary as absent from the brief. It is at lines 1633–1671 (`# ПРИЛОЖЕНИЕ В`, subsections В.1–В.4); the earlier search missed it on heading case.
+- **Two Tier-1 violations shipped and are now fixed.** Appendix В.1 lists English `car space` and Russian «машиноместо»/«кочера» as Tier 1, forbidden everywhere. The EN and RU comparison columns used exactly those. They now use the Appendix В.2 forms `Car garage` and «Автомобильная кочера», which are permitted **only** in the S7 comparison and **still require the lawyer's written approval** — the same blocker that already attaches to the Spanish table (brief §S7 note 2). That approval is still outstanding for all three languages.
+- The screen-reader table caption no longer carries the Tier-2 term in any locale; it was not brief copy, so keeping it there widened the legal surface for no benefit.
+- **Render alt text now repeats the mandatory disclosure.** Brief S8 requires it in `<figcaption>` *and* `alt`; only the figcaption carried it. Alt is now composed as literal description + the exact localized disclosure, hero R1 included.
+- Diagnostic screenshots are gated on every image having loaded *and* decoded; the earlier captures showed blank render panels because they waited on a fixed timeout.
+- The Playwright harness no longer reuses an existing server on the test port, and the static server refuses to start against a missing build.
+
+### Implementation outcome (M2.5 + M3, uncommitted)
+
+Astro built-in i18n with `prefixDefaultLocale: false`; three static routes (`/`, `/en/`, `/ru/`) from one component tree. Copy lives in `src/i18n/{es,en,ru}.ts` against a shared `Copy` interface, so a missing translation is a TypeScript error. Components read strings via `getCopy(Astro.currentLocale)` — no locale prop drilling, no per-locale duplication. Alt text, captions and the render disclosure moved out of `src/data/media.ts` into the locale files; that file now owns only paths and measured dimensions.
+
+Three defects were found by the new multilingual QA and fixed:
+
+1. **Paper-surface contrast below AA.** `--text-tertiary` mapped to concrete-500, measuring 3.55:1 on concrete-50. This affected the mandatory generated-render disclosure under the R6 plan sheet, which the brief requires at >=4.5:1. Remapped to the secondary token (6.44:1). Pre-existing since the visual-direction milestone; invisible until axe ran.
+2. **Russian CTA overflowed the viewport.** `.button` had `white-space: nowrap`, so the longer Russian founders CTA rendered 415px wide inside a 375px viewport and was clipped. Buttons now wrap and cap at `max-width: 100%`.
+3. **Header height diverged from `--header-h` on mobile.** Adding the language switcher wrapped the header to a second row (108px actual vs 64px declared), silently breaking hero padding, anchor offsets and sticky offsets. Root cause was the Astro scoping trap recorded in the previous milestone — a class passed into a child component does not carry the parent's scope, so the rule hiding the switcher never matched. Fixed with a parent-owned wrapper element; the header switcher now appears from 700px up and the footer switcher (required in both places by brief Part V) carries mobile.
+
+Regression cover added for all three: an axe scan per locale/viewport, a viewport-containment assertion that does not rely on scrollability, and a test asserting `--header-h` equals the rendered header height per locale and viewport.
+
 ## 2026-08-20 — Tool registry frozen
 
 - Reviewed the previously approved tool plan plus the two supplied recommendation screenshots.

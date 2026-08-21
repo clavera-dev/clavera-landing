@@ -1,6 +1,9 @@
 ---
 import Section from '../layout/Section.astro';
 import RenderFigure from '../media/RenderFigure.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).vehicles;
 
 /**
  * R5 (cargo and oversized bicycles) becomes the page's first true edge-to-edge
@@ -9,15 +12,14 @@ import RenderFigure from '../media/RenderFigure.astro';
  * the list of what fits is set beneath it as one typographic line rather than
  * a row of tags.
  */
-const vehicles = ['Bicicleta urbana', 'Ruta y MTB', 'E-bike', 'Cargo', 'Plegable', 'Monopatín eléctrico'];
 ---
 
 <Section
 	id="vehiculos"
-	index="04"
-	railLabel="Qué entra"
-	eyebrow="Tu movilidad, bien cuidada"
-	heading="Diseñado para lo que realmente usás."
+	index={c.index}
+	railLabel={c.rail}
+	eyebrow={c.eyebrow}
+	heading={c.heading}
 	rhythm="tight"
 >
 	<div class="vehicles">
@@ -27,13 +29,13 @@ const vehicles = ['Bicicleta urbana', 'Ruta y MTB', 'E-bike', 'Cargo', 'Plegable
 				variant="cover"
 				sizes="100vw"
 				position="50% 55%"
-				caption="Zona cargo y e-bikes"
+				caption
 			/>
 		</div>
 
 		<ul class="vehicles__list">
 			{
-				vehicles.map((vehicle) => (
+				c.items.map((vehicle) => (
 					<li class="vehicles__item">
 						{vehicle}
 					</li>
@@ -41,10 +43,7 @@ const vehicles = ['Bicicleta urbana', 'Ruta y MTB', 'E-bike', 'Cargo', 'Plegable
 			}
 		</ul>
 
-		<p class="body-md vehicles__note">
-			Lockers individuales opcionales para casco y equipo. Por seguridad, no se cargan baterías dentro
-			del hub.
-		</p>
+		<p class="body-md vehicles__note">{c.note}</p>
 	</div>
 </Section>
 
@@ -131,7 +130,9 @@ const vehicles = ['Bicicleta urbana', 'Ruta y MTB', 'E-bike', 'Cargo', 'Plegable
 		}
 
 		.vehicles__list {
-			max-width: 24ch;
+			/* Preferred measure only. Longer locales wrap onto more lines
+			   rather than overflowing or shrinking. */
+			max-width: 32ch;
 		}
 	}
 </style>

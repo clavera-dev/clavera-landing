@@ -1,6 +1,6 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-08-20
+Status date: 2026-08-21
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
@@ -36,6 +36,7 @@ Claude prompts are written in English. Model, thinking, and permission settings 
 ## Current verified state
 
 - Framework: Astro static output, strict TypeScript, Yarn.
+- Locales: `es-AR` at `/` (canonical), `en` at `/en/`, `ru` at `/ru/`. Approved 2026-08-21; supersedes the earlier `es-AR`-only phase-one rule.
 - Approved render set: R1-R6.
 - Current visual-direction commit: `c04a89f7f57336efe538cc0f62677594e10268e5` (`feat: establish CLAVERA visual direction`).
 - Latest precision commit: `c5171d2ec725f4e4c86985c2e0e71264d729bf2f` (`fix: refine landing geometry and visual alignment`).
@@ -43,6 +44,8 @@ Claude prompts are written in English. Model, thinking, and permission settings 
 - Current Claude project plugin: Anthropic Frontend Design.
 - Current Claude settings for visual-critical work: Opus, High, Auto.
 - Repository instruction set: root `CLAUDE.md`, `docs/project/CLAVERA_EXECUTION_PLAN.md`, and `docs/project/CLAVERA_WORKLOG.md`. These three files are the durable project context established by the documentation milestone following `c5171d2`.
+- `c5171d2` is the technical redesign baseline only. It is not final visual acceptance. Final visual acceptance moves to the composition gate after the multilingual redesign and its QA.
+- Roles: Claude is the implementation writer, Codex is the independent reviewer. They must not write to the same worktree concurrently.
 
 ## Tool registry
 
@@ -98,7 +101,7 @@ Timing: install before the motion-planning milestone. The opportunity analysis a
 
 Source: `https://playwright.dev/`
 Role: browser smoke tests, interaction tests, responsive viewport checks, overflow checks, cross-browser coverage, screenshot capture, and later visual regression testing.
-Status: approved; installation pending.
+Status: installed (`@playwright/test` 1.62.1) with Chromium, Firefox and WebKit binaries; suite green, pending Codex review.
 Timing: add immediately after the current precision milestone is accepted. Add functional and structural tests first. Create visual-regression baselines only after the corrected geometry is accepted.
 
 #### TypeScript language service / LSP
@@ -113,7 +116,7 @@ Coverage note: verify which extensions the installed plugin actually maps. Do no
 
 Source: `https://playwright.dev/docs/accessibility-testing`
 Role: automatically detectable accessibility checks inside Playwright.
-Status: approved with Playwright.
+Status: installed (`@axe-core/playwright` 4.13.0); scanning all three locales at 1440/768/375.
 Constraint: automated accessibility checks supplement rather than replace manual review.
 
 #### Refero MCP
@@ -249,7 +252,7 @@ Status: complete, pending precision correction acceptance.
 
 ### M2 — Precision correction
 
-Status: implementation complete at `c5171d2`; technical review passed; local visual acceptance pending.
+Status: implementation complete at `c5171d2`; technical review passed. This commit is the technical redesign baseline, not final visual acceptance; visual acceptance is deferred to the composition gate after the multilingual redesign (M2.5, M4, M5) and its QA.
 
 Acceptance requirements:
 
@@ -262,16 +265,39 @@ Acceptance requirements:
 - no obsolete render assets remain without a documented use;
 - Astro check and production build pass.
 
+### M2.5 — Multilingual foundation
+
+Status: implementation complete; read-only pre-commit review passed with no blocking findings; pending final Codex review of the remote commit. Not visually accepted.
+
+Approved 2026-08-21. Establishes ES/EN/RU as a design constraint before the composition work, so no layout is accepted that only survives Spanish.
+
+- Astro built-in i18n and static routing; no client-side i18n runtime, no per-locale component-tree duplication;
+- routes `/`, `/en/`, `/ru/` with `es-AR` canonical and unprefixed;
+- correct `<html lang>`, self-referencing canonical, and `hreflang` for `es-AR`, `en`, `ru`, `x-default` on every route;
+- semantic keyboard-accessible language switcher using ordinary links, working without JavaScript, placed per brief Part V (end of navigation and in the footer, order ES · EN · RU);
+- no automatic browser-language redirect;
+- working EN and RU translations of the full public page, including render captions, alt text and the mandatory disclosure;
+- Tier-1 vocabulary enforcement in all three languages;
+- layouts absorb translation expansion through intrinsic sizing rather than fixed heights, clipping or hidden content;
+- existing section order, IDs, render mapping and Typeform isolation preserved.
+
 ### M3 — Test infrastructure
 
-Status: pending.
+Status: implementation complete; read-only pre-commit review passed with no blocking findings; pending final Codex review of the remote commit. Playwright, `@axe-core/playwright` and the Chromium/Firefox/WebKit matrix are installed and green; diagnostic screenshots are captured but remain explicitly non-baseline.
 
 - install Playwright and `@axe-core/playwright`;
 - verify TypeScript LSP/editor diagnostics;
 - add smoke tests for page load, anchors, CTA boundaries, FAQ, and keyboard navigation;
+- run every structural check across all three locales;
+- assert `<html lang>`, canonical, `hreflang` and language-switcher destinations per locale;
+- assert no clipped navigation, CTA labels, headings or essential body copy in any locale;
 - check horizontal overflow at defined viewports;
 - configure Chromium, Firefox, and WebKit where the environment supports them;
-- capture diagnostic screenshots without yet treating them as approved visual baselines.
+- capture diagnostic screenshots without yet treating them as approved visual baselines;
+- gate every capture on proof that all images loaded and decoded, so a blank render panel fails the run instead of being saved;
+- never reuse an existing server on the test port, so each run verifies the freshly built output;
+- enforce Appendix В terminology against the built output in all three locales, across visible copy, metadata, alt/ARIA text and public URLs/filenames;
+- keep the Tier-2 allowlist to the three S7 column headers plus the one scoped canonical Spanish sentence, with negative controls proving the scanner detects what it claims to.
 
 ### M4 — Reference research and composition specification
 
@@ -377,3 +403,15 @@ Approved by Kirill: yes.
 Reason: the current site is an existing Astro implementation, and the official Taste Skill repository describes `redesign-existing-projects` as the variant that audits an existing UI before fixing layout, spacing, hierarchy, and styling.
 Affected milestones: M4 and M5.
 Approved by Kirill: requested selection of the tools to install next; final audit recommendations still require separate approval.
+
+### 2026-08-21 — Multilingual scope approved (ES / EN / RU)
+
+Reason: the `es-AR`-only phase-one restriction in `PROJECT_DECISIONS.md` conflicted with the brief's Part V, which already regulates ES/EN/RU with `/`, `/en/`, `/ru/`, `hreflang` and a language switcher. Kirill approved restoring multilingual scope and making it a composition constraint rather than a later translation task, so that no layout is accepted that only holds together in Spanish.
+Affected milestones: M0, M2, new M2.5, M3, M4, M5, M8, M9, M10.
+Approved by Kirill: yes.
+
+### 2026-08-21 — Visual acceptance gate moved
+
+Reason: `c5171d2` was reviewed only as a technical baseline, and the page must now be redesigned against three locales. Accepting its visuals now would freeze a Spanish-only composition.
+Affected milestones: M2, M5, M8, M10.
+Approved by Kirill: yes.

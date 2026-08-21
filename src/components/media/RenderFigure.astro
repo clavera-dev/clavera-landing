@@ -15,22 +15,19 @@
  * text outside the bitmap, never baked in and never hidden from assistive
  * technology (PROJECT_DECISIONS.md § Media).
  */
-import {
-	getRender,
-	avifSrcset,
-	webpSrcset,
-	webpSrc,
-	RENDER_DISCLOSURE,
-	type RenderAsset,
-} from '../../data/media';
+import { getRender, avifSrcset, webpSrcset, webpSrc, type RenderAsset } from '../../data/media';
+import { getCopy, renderAlt } from '../../i18n';
 
 interface Props {
 	id: RenderAsset['id'];
 	sizes?: string;
 	loading?: 'lazy' | 'eager';
 	fetchpriority?: 'high' | 'low' | 'auto';
-	/** Visible label under the image. Omit for images that are their own statement. */
-	caption?: string;
+	/**
+	 * Show the render's caption. The text itself comes from the active
+	 * locale, so a caller never passes translated copy in.
+	 */
+	caption?: boolean;
 	variant?: 'panel' | 'plain' | 'cover';
 	/**
 	 * Crop ratio for `cover`. Omit it to let an ancestor drive the crop by
@@ -48,13 +45,15 @@ const {
 	sizes = '(min-width: 900px) 50vw, 100vw',
 	loading = 'lazy',
 	fetchpriority = 'auto',
-	caption,
+	caption = false,
 	variant = 'panel',
 	ratio,
 	position,
 	class: className,
 } = Astro.props;
 
+const copy = getCopy(Astro.currentLocale);
+const text = copy.media.renders[id];
 const render = getRender(id);
 const defaultWidth = render.widths[Math.floor(render.widths.length / 2)];
 const { width, height } = render.dimensions[defaultWidth];
@@ -79,7 +78,7 @@ const imgStyle =
 		<source type="image/webp" srcset={webpSrcset(render)} sizes={sizes} />
 		<img
 			src={webpSrc(render)}
-			alt={render.alt}
+			alt={renderAlt(copy, id)}
 			width={width}
 			height={height}
 			loading={loading}
@@ -89,8 +88,8 @@ const imgStyle =
 		/>
 	</picture>
 	<figcaption>
-		{caption && <span class="render-figure__caption">{caption}</span>}
-		<span class="render-figure__disclosure">{RENDER_DISCLOSURE}</span>
+		{caption && <span class="render-figure__caption">{text.caption}</span>}
+		<span class="render-figure__disclosure">{copy.media.disclosure}</span>
 	</figcaption>
 </figure>
 

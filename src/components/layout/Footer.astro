@@ -1,7 +1,9 @@
 ---
 import { logo } from '../../data/media';
+import { getCopy } from '../../i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 
-const currentYear = 2026;
+const copy = getCopy(Astro.currentLocale);
 ---
 
 <footer class="site-footer">
@@ -9,12 +11,12 @@ const currentYear = 2026;
 		<div class="site-footer__top">
 			<div class="site-footer__brand">
 				<img src={logo.src} alt={logo.alt} width="89" height="20" />
-				<p class="site-footer__claim">Infraestructura urbana de guarda para tu bici.</p>
+				<p class="site-footer__claim">{copy.footer.claim}</p>
 			</div>
 
 			<div class="site-footer__cols">
 				<div class="site-footer__col">
-					<p class="mono site-footer__col-title">Contacto</p>
+					<p class="mono site-footer__col-title">{copy.footer.contactTitle}</p>
 					<ul>
 						<li><a href="mailto:hola@clavera.ar">hola@clavera.ar</a></li>
 						<li><a href="https://instagram.com/clavera.ar" rel="me">Instagram</a></li>
@@ -22,29 +24,46 @@ const currentYear = 2026;
 					</ul>
 				</div>
 
-				<nav class="site-footer__col" aria-label="Para propietarios y desarrolladores">
-					<p class="mono site-footer__col-title">Espacios</p>
+				<nav class="site-footer__col" aria-label={copy.a11y.ownersNavLabel}>
+					<p class="mono site-footer__col-title">{copy.footer.spacesTitle}</p>
 					<ul>
-						<li><a href="/espacios">Proponer un espacio</a></li>
-						<li><a href="/desarrolladores">Para desarrolladores</a></li>
+						<li><a href="/espacios">{copy.footer.proposeSpace}</a></li>
+						<li><a href="/desarrolladores">{copy.footer.forDevelopers}</a></li>
 					</ul>
 				</nav>
 
-				<nav class="site-footer__col" aria-label="Legal">
-					<p class="mono site-footer__col-title">Legal</p>
+				<nav class="site-footer__col" aria-label={copy.a11y.legalNavLabel}>
+					<p class="mono site-footer__col-title">{copy.footer.legalTitle}</p>
 					<ul>
-						<li><a href="/privacidad">Política de Privacidad</a></li>
-						<li><a href="/terminos">Términos y Condiciones</a></li>
-						<li><a href="/cookies">Cookies</a></li>
+						<li><a href="/privacidad">{copy.footer.privacy}</a></li>
+						<li><a href="/terminos">{copy.footer.terms}</a></li>
+						<li><a href="/cookies">{copy.footer.cookies}</a></li>
 					</ul>
 				</nav>
+
+				<div class="site-footer__col">
+					<p class="mono site-footer__col-title">{copy.footer.languageTitle}</p>
+					{/* Second switcher location required by brief Part V. Wrapper is
+					    owned by this component so the scoped rule matches. */}
+					<div class="site-footer__lang">
+						<LanguageSwitcher />
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<div class="site-footer__bottom">
-			<p class="caption">© {currentYear} CLAVERA. Todos los derechos reservados.</p>
-			<p class="caption">Buenos Aires, Argentina</p>
+			<p class="caption">{copy.footer.rights}</p>
+			<p class="caption">{copy.footer.location}</p>
 		</div>
+
+		{
+			copy.footer.translationNotice && (
+				<p class="caption site-footer__notice" lang="es-AR">
+					{copy.footer.translationNotice}
+				</p>
+			)
+		}
 	</div>
 </footer>
 
@@ -123,6 +142,16 @@ const currentYear = 2026;
 
 	.site-footer__col a:hover {
 		color: var(--accent);
+	}
+
+	/* Spanish-primacy notice, shown only on the non-canonical locales. */
+	.site-footer__notice {
+		max-width: 60ch;
+	}
+
+	.site-footer__lang {
+		margin-top: calc(var(--space-1) * -1);
+		margin-inline-start: calc(var(--space-2) * -1);
 	}
 
 	.site-footer__bottom {
