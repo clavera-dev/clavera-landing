@@ -1,6 +1,6 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-08-23
+Status date: 2026-08-21
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`

@@ -2,7 +2,7 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
-## 2026-08-23 — Taste audit skill registered (not run)
+## 2026-08-21 — Taste audit skill registered (not run)
 
 The Taste Skill is now installed project-locally and committed to the repository. This is tooling registration only.
 
@@ -34,7 +34,7 @@ The skill sits at position 5 in the authority order, below `PROJECT_DECISIONS.md
 
 Findings must be presented for review before any implementation. The skill audits; it does not decide.
 
-## 2026-08-22 — M2.5 and M3 technically accepted
+## 2026-08-21 — M2.5 and M3 technically accepted
 
 Codex completed the final independent review of the remote milestone commit. M2.5 (multilingual foundation) and M3 (test infrastructure) are technically accepted. No blocking or non-blocking code findings remain.
 
