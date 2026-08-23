@@ -38,6 +38,12 @@ const c = getCopy(Astro.currentLocale).solution;
 			<p class="eyebrow">{c.eyebrow}</p>
 			<h2 id="solucion-heading" class="heading-h2">{c.heading}</h2>
 			<p class="lede">{c.lede}</p>
+			{/*
+			  No hub is in operation. The eight properties below are written in
+			  the present tense as product properties, so this line states
+			  plainly that they are planned properties of the future service.
+			*/}
+			<p class="body-md solution__planned" data-planned-note>{c.plannedNote}</p>
 		</div>
 
 		<div class="solution__media bleed-right">
@@ -71,6 +77,10 @@ const c = getCopy(Astro.currentLocale).solution;
 		grid-template-columns: 1fr;
 		gap: var(--space-10);
 		margin-bottom: var(--space-16);
+	}
+
+	.solution__planned {
+		color: var(--text-tertiary);
 	}
 
 	.solution__text {

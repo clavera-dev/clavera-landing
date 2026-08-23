@@ -79,13 +79,18 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 		padding-block: var(--header-pad);
 	}
 
+	/* flex-shrink: 0 keeps the wordmark at its true proportions. Without it the
+	   flex row squeezed the anchor when a longer locale needed more room for the
+	   CTA — the English header rendered the mark at 98px instead of 107px, i.e.
+	   horizontally squashed against a fixed height. */
 	.site-header__logo {
 		display: inline-flex;
 		align-items: center;
+		flex-shrink: 0;
 	}
 
 	.site-header__logo img {
-		height: 24px;
+		height: 20px;
 		width: auto;
 	}
 
@@ -126,6 +131,24 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 	.site-header__end .button {
 		min-height: var(--header-control);
 		padding-block: 0;
+	}
+
+	/*
+	  Below 700px the header row has to hold the longest locale's CTA on ONE
+	  line. "I’m interested in the pilot" and "Мне интересен пилот" are far
+	  longer than the Spanish label; at the default control padding they wrapped
+	  to a second line and pushed the rendered header to 74px against a declared
+	  --header-h of 64px — which hero padding, anchor offsets and sticky offsets
+	  are all derived from.
+
+	  The room comes from the control's own padding and the wordmark stepping
+	  down to its intrinsic 20px height, not from shrinking the label, clipping
+	  it, or giving any locale its own offset.
+	*/
+	@media (max-width: 699px) {
+		.site-header__end .button {
+			padding-inline: var(--space-3);
+		}
 	}
 
 	@media (min-width: 700px) {

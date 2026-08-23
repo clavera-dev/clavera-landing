@@ -1,6 +1,7 @@
 ---
 import { logo } from '../../data/media';
 import { getCopy } from '../../i18n';
+import { whatsappHref } from '../../config/contact';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 const copy = getCopy(Astro.currentLocale);
@@ -20,6 +21,14 @@ const copy = getCopy(Astro.currentLocale);
   the route actually ships, and the entry becomes a link again.
 */
 const AVAILABLE_ROUTES = new Set<string>();
+
+/*
+  WhatsApp Business. The number has not been supplied, so `whatsappHref()`
+  returns null and the entry renders as plain text — never a `wa.me` link, a
+  dummy number, `href="#"` or a disabled control. Supplying the number in
+  src/config/contact.ts is the only change needed to make it a real link.
+*/
+const whatsapp = whatsappHref();
 
 interface FooterEntry {
 	href: string;
@@ -65,6 +74,17 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 						<li><a href="mailto:hola@clavera.ar">hola@clavera.ar</a></li>
 						<li><a href="https://instagram.com/clavera.ar" rel="me">Instagram</a></li>
 						<li><a href="https://facebook.com/clavera.ar" rel="me">Facebook</a></li>
+						<li>
+							{
+								whatsapp === null ? (
+									<span class="site-footer__pending-item">{copy.footer.whatsappPending}</span>
+								) : (
+									<a href={whatsapp} rel="me">
+										WhatsApp Business
+									</a>
+								)
+							}
+						</li>
 					</ul>
 				</div>
 

@@ -15,8 +15,8 @@ const c = getCopy(Astro.currentLocale).founders;
  * guaranteed 24 months — and no monetary price is shown.
  *
  * The offer is stated here because it is canonical approved copy. It does not
- * imply a working sign-up: the short lead form and the founding-price reveal
- * are excluded from the public beta and deferred to M9.
+ * imply a reservation: the pilot-interest form below is a non-binding
+ * expression of interest, and the founding-price reveal remains deferred.
  */
 ---
 
@@ -56,12 +56,12 @@ const c = getCopy(Astro.currentLocale).founders;
 			<p class="body-md">{c.note}</p>
 
 			{/*
-			  The beta's only Typeform destination is the research survey. The short
-			  Socios Fundadores form and its price reveal are deferred to M9, so this
-			  section states the approved offer and then offers the one action that
-			  actually works — labelled for the survey it really opens.
+			  The pilot-interest form is the primary beta conversion. It is
+			  non-binding: no price, no payment, no reservation, no contract, no
+			  promise of admission. While its URL is still pending the boundary
+			  renders plain text, never a control.
 			*/}
-			<TypeformBoundary name="fundadores" size="lg" />
+			<TypeformBoundary flow="pilot" name="fundadores" size="lg" />
 		</div>
 
 		<p class="caption founders__disclaimer">{c.disclaimer}</p>

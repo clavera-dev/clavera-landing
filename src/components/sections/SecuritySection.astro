@@ -28,6 +28,14 @@ const c = getCopy(Astro.currentLocale).security;
 			<ul class="security__list">
 				{c.items.map((item) => <li class="body-md">{item}</li>)}
 			</ul>
+
+			{/*
+			  Identification, cameras and access logging read as a description of
+			  a facility that already exists. None does. This states that they are
+			  planned properties of the future service, without weakening the
+			  approved security boundary and without adding any new guarantee.
+			*/}
+			<p class="body-md security__planned" data-planned-note>{c.plannedNote}</p>
 		</div>
 
 		<div class="security__media">
@@ -46,6 +54,10 @@ const c = getCopy(Astro.currentLocale).security;
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: var(--space-10);
+	}
+
+	.security__planned {
+		color: var(--text-tertiary);
 	}
 
 	.security__text {

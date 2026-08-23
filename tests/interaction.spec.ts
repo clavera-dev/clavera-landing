@@ -38,17 +38,20 @@ for (const locale of LOCALES) {
 		  routing itself, the EN language disclosure, and the absence of the
 		  deferred price-reveal path are covered in depth by survey.spec.ts.
 		*/
-		test('exposes the survey as a live control, with no dead or disabled CTA', async ({ page }) => {
+		test('exposes the two beta flows, with no dead or disabled CTA', async ({ page }) => {
 			await page.goto(locale.path);
 			const boundaries = page.locator('[data-typeform-boundary]');
 			await expect(boundaries).toHaveCount(2);
 
-			// The survey is the only Typeform target the beta exposes.
-			await expect(page.locator('[data-typeform-target="survey"]')).toHaveCount(2);
-			await expect(page.locator('[data-typeform-target="founders"]')).toHaveCount(0);
+			// Exactly two flows: pilot interest (primary) and research (secondary).
+			await expect(page.locator('[data-typeform-flow="pilot"]')).toHaveCount(1);
+			await expect(page.locator('[data-typeform-flow="research"]')).toHaveCount(1);
 
-			// Live links, never a disabled stub or a link to nowhere.
-			await expect(boundaries.locator('a[href^="https://"]')).toHaveCount(2);
+			// The research link is live. The pilot boundary is either a live link
+			// or plain text — never a disabled stub, and never a link to nowhere.
+			await expect(page.locator('[data-typeform-flow="research"] a[href^="https://"]')).toHaveCount(
+				1,
+			);
 			await expect(boundaries.locator('button')).toHaveCount(0);
 
 			// No disabled control anywhere on the page.

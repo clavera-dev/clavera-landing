@@ -6,8 +6,9 @@ import { getCopy } from '../../i18n';
 const c = getCopy(Astro.currentLocale).survey;
 
 /**
- * The research survey — the only Typeform destination the public beta exposes.
- * Its URL is locale-routed inside TypeformBoundary; nothing here knows it.
+ * The research survey — the beta's SECONDARY action, separate from the
+ * pilot-interest form. Its URL is locale-routed inside TypeformBoundary;
+ * nothing here knows it.
  *
  * Set deliberately quiet and low-contrast, per brief S13, which puts this
  * section below the FAQ at a reduced visual weight.
@@ -24,7 +25,7 @@ const c = getCopy(Astro.currentLocale).survey;
 			<p class="body-md">{c.note}</p>
 		</div>
 
-		<TypeformBoundary name="encuesta" variant="ghost" />
+		<TypeformBoundary flow="research" name="encuesta" variant="ghost" />
 	</div>
 </Section>
 

@@ -2,6 +2,67 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-23 — M3.5.1 beta-conversion preparation (pending review; not accepted, not deployed)
+
+A bounded correction pass on top of M3.5, on `landing-design`. **Implementation complete, pending independent Codex remote-commit review and Kirill's visual review.** Not acceptance, not visual approval, not legal or lawyer approval, not product approval, not advertising readiness, not deployment. No dependency, skill, plugin or tool was installed; no Cloudflare or hosting setting was touched; M4–M10 remain pending and unstarted.
+
+### Two beta Typeform flows
+
+The beta now has **two** flows, replacing M3.5's single-destination rule:
+
+1. **Pilot interest — primary conversion.** A new short, non-binding form for collecting contact details from people interested in the pilot. It is **not** the old founding-price flow: no monetary price, no payment/deposit/`seña`, no space reserved, no membership or contract, no promise of admission, no `/gracias` redirect. Typeform's native ending is used after submission.
+2. **Research survey — secondary.** Unchanged in S13: ES `ARGCABA`, RU `latam`, EN `ARGCABA` with the visible Spanish-language disclosure, three-minute wording, and bare URLs with nothing appended.
+
+### Safe pending configuration
+
+`src/config/typeform.ts` now holds two explicit, total mappings: `RESEARCH_SURVEY_DESTINATIONS` (live) and `PILOT_INTEREST_DESTINATIONS` (`es: null, en: null, ru: null`), typed `PendingDestination = SurveyDestination | null`, with **no locale fallback**.
+
+The pilot component is fully implemented now. A configured destination renders an ordinary same-tab link with the live label; `null` renders localized plain, non-interactive text — never an anchor, a button, a disabled control, `href="#"`, an empty href, or a placeholder domain. **No `example.com` or other clickable fake URL exists anywhere.** Activation requires changing only the three values in the central config; this was verified by temporarily configuring Spanish, rebuilding, confirming it rendered `…/pilotoar?lang=es&source=landing` while English and Russian independently stayed pending, then reverting. **No placeholder URL is recorded in any durable document, and the temporary `null` values are not real URLs.**
+
+Attribution is prepared but bounded: only `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `lang`, `source` and `landing_version` may ever be appended, and only to the pilot flow. Arbitrary parameters are never forwarded and no personal datum ever enters a URL. Values are build-time only — forwarding a visitor's own `utm_*` would require client-side JavaScript, so it is deliberately not implemented and **the site still ships zero client JavaScript**.
+
+### CTA hierarchy and copy
+
+- Header and hero keep their internal `#fundadores` link but now read ES `Me interesa el piloto`, EN `I’m interested in the pilot`, RU `Мне интересен пилот` — interest wording, not reservation wording.
+- The Founders section keeps the approved offer unchanged: 40 places, 20% off the list price, 24 months guaranteed, month to month, no `garantía`, **no monetary price**. Its explanation now states in all three locales that this is a preliminary expression of interest, reserves no space, creates no contract, accepts no payment, and that CLAVERA may contact the respondent later about the pilot.
+- Live pilot labels once URLs exist: ES `Quiero participar`, EN `Join the pilot`, RU `Хочу участвовать`.
+- S4 step 1 changed from reservation wording (`Reservá tu lugar` / `Reserve your space` / `Забронируй место`) to interest wording. The S10 note dropped its "leave your request" promise. Nothing else was recopywritten.
+
+### Beta areas
+
+The four-area set is replaced by the owner-approved nine: Almagro, Belgrano, Chacarita, Colegiales, Núñez, Palermo, Palermo Hollywood, Paternal, Villa Crespo — strictly alphabetical, original Spanish names in all three locales, never transliterated in Russian. `Recoleta` is gone. The `<ol>` with `01`–`04` markers became an unnumbered `<ul>`, removing any implied opening order or ranking, and the section carries the localized equivalent of `Barrios en evaluación. No implica compromiso de apertura, fecha ni disponibilidad.` No addresses, pins, dates, counters, confirmed locations or "first district".
+
+Note: this set matches brief §S10 / §10.1. The stale brief §12.2 checklist line "`Belgrano` отсутствует" is inherited from v1.4 and is superseded by the brief's own v1.5 §10.1 restoration of Belgrano and Núñez, and by this decision.
+
+### Planned-service wording
+
+S3 and S6 gained one localized note each identifying cameras, access logging and identification as **planned properties of the future service**, since the surrounding present-tense copy could be read as describing an operating facility. The approved security boundary, the render disclosures and the S7 table are unchanged, and no new 24/7, insurance or guaranteed-security claim was introduced.
+
+### WhatsApp
+
+One centralized nullable value in `src/config/contact.ts`. While unset the footer renders localized plain text (`WhatsApp Business — próximamente.` / `— coming soon.` / `— скоро.`): no anchor, no `wa.me` URL, no `href="#"`, no dummy number, no disabled button.
+
+### Legal routes
+
+No legal content was created or finalized, and no routing structure was added — creating a route would publish a page, which is exactly what must not happen. The Spanish-only direction is recorded instead: legal pages will carry Spanish authority content only, and EN/RU will eventually link to those Spanish pages with an explicit Spanish-only notice. S7 is unchanged.
+
+### Defects found and fixed
+
+- **Header height.** The longer pilot CTA wrapped to two lines in English and Russian at 375px, making the rendered header 74px against a declared `--header-h` of 64px — the token hero padding, anchor offsets and sticky offsets are all derived from. Fixed by reducing the header control's inline padding below 700px and stepping the wordmark down to its intrinsic 20px height. No label was shortened, clipped or given a locale-specific offset.
+- **Squashed wordmark.** The header logo had no `flex-shrink: 0`, so the flex row compressed it from 107px to 98px in English against a fixed height — a horizontally distorted mark. Fixed.
+
+### Verification
+
+- `git diff --check`: clean. `yarn astro check`: 56 files, 0 errors, 0 warnings, 0 hints. `yarn build`: 3 static pages, zero client JavaScript.
+- Playwright across Chromium/Firefox/WebKit: **1044 passed, 0 failed, 60 skipped**, all skips justified — 24 breakpoint captures and 18 standard captures that only Chromium takes, 9 "configured pilot destination" assertions that skip precisely because the URLs are still pending (they run automatically once a URL is supplied), 6 English-only survey assertions skipped on ES/RU, and 3 skip-link reveal tests on WebKit.
+- axe clean across three locales at 1440/768/375.
+- Visual/responsive/interaction audit re-run for ES/EN/RU at 375×667, 375, 699, 700, 768, 999, 1000 and 1440: no horizontal overflow, header height matching the declared token at every width, hero CTA above the fold at 375×667, correct switcher behaviour either side of 700px, nine areas everywhere, the pilot boundary pending with zero controls, no `wa.me` link, and no console errors.
+- Screenshot record: exactly **21** persisted diagnostic screenshots after a suite run — 9 standard and 12 breakpoint. They are gitignored and not committed.
+
+### Still blocking real public deployment
+
+Pilot-interest Typeform URLs · `/privacidad`, `/terminos`, `/cookies` (mandatory, unbuilt, awaiting approved Spanish authority text) · controller `domicilio` · RNBD registration/status · final publication date · S7 legal approval · Appendix В.2 / §S7 conflict · WhatsApp number · domain and Meta verification · Cloudflare access and deployment approval · Kirill's visual review · Codex's independent review of the remote commit. A dedicated EN research-survey URL is **full-release debt only**, not a beta deployment blocker.
+
 ## 2026-08-23 — M3.5 implemented (beta candidate; not accepted, not deployed)
 
 M3.5 was implemented as one bounded stabilization pass on `landing-design`. This is **implementation complete, pending independent Codex remote-commit review and Kirill's visual review**. It is not acceptance, not visual approval, not legal approval, not product approval, not advertising readiness, and not deployment. No dependency, skill, plugin, MCP server or tool was installed; no Cloudflare or hosting setting was touched; M4–M10 remain pending and unstarted.
@@ -33,7 +94,7 @@ M3.5 was implemented as one bounded stabilization pass on `landing-design`. This
 - Playwright across Chromium/Firefox/WebKit: **882 passed, 0 failed, 51 skipped**, all skips justified — 42 diagnostic captures that only Chromium takes, 6 English-only survey assertions skipped on ES/RU, and 3 skip-link reveal tests on WebKit, which excludes links from the default tab order.
 - axe (`@axe-core/playwright`) clean across three locales at 1440/768/375. New low-emphasis text measured separately for contrast: 4.76–4.99:1 against a 4.5:1 requirement, all disclosure text ≥12px per brief S8.
 - Terminology suite and its negative controls unchanged and green.
-- 21 fresh **diagnostic** screenshots (not baselines) under `test-results/screenshots/`, including a new `m3-5-audit/` set at 699/700/999/1000px — the widths where header and navigation behaviour actually changes — plus targeted section captures under `m3-5-inspect/`.
+- 21 fresh **diagnostic** screenshots (not baselines) under `test-results/screenshots/`: 9 standard captures (3 locales × 1440/768/375) and 12 breakpoint captures in `m3-5-audit/` (3 locales × 699/700/999/1000px — the widths where header and navigation behaviour actually changes). **Correction (2026-08-23):** an earlier version of this entry also referred to a persisted `m3-5-inspect/` set. That directory was produced by an ad-hoc inspection script, not by the test suite, and does not persist as part of a run — exactly 21 diagnostic screenshots exist after the suite runs. Screenshots are gitignored and are not committed.
 - Existing tests were not weakened. One obsolete test (`lead-capture controls stay inert while unconfigured`) was **superseded** by a stronger one asserting live links, the absence of the founders target, and no disabled control anywhere.
 - `node_modules` in the working tree predated the M3 devDependencies, so `yarn install --frozen-lockfile` was run to restore the already-pinned contents. No dependency was added and `yarn.lock` is unchanged.
 

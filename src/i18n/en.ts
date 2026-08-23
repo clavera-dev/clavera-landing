@@ -34,13 +34,13 @@ export const en: Copy = {
 	},
 	header: {
 		note: 'Founding members · 40 spaces',
-		cta: 'Claim my space',
+		cta: 'I’m interested in the pilot',
 	},
 	hero: {
 		eyebrow: 'Secure storage · Buenos Aires',
 		headingHtml: 'Your bike deserves a safe place in the city.',
 		lede: 'CLAVERA is membership-based secure storage for bikes and personal mobility. Your assigned space, digital access and surveillance, minutes from home.',
-		ctaPrimary: 'Claim my space',
+		ctaPrimary: 'I’m interested in the pilot',
 		ctaSecondary: 'See how it works',
 		facts: ['Assigned space', 'Controlled entry', 'Enclosed and dry'],
 	},
@@ -64,6 +64,7 @@ export const en: Copy = {
 		eyebrow: 'Neighbourhood infrastructure',
 		heading: 'The same space every time. Always ready for you.',
 		lede: 'We turn a secure neighbourhood space into infrastructure designed from scratch for bikes and micromobility.',
+		plannedNote: 'This is how every CLAVERA hub is designed. These are planned properties of the future service: no location is in operation yet.',
 		pillars: [
 			{ n: '01', title: 'Assigned space', copy: 'In your name, independent and always free for you.' },
 			{ n: '02', title: 'Personal digital access', copy: 'A personal QR or code. You come and go without depending on anyone.' },
@@ -81,7 +82,7 @@ export const en: Copy = {
 		eyebrow: 'How it works',
 		heading: 'Three steps, and the bike stops being a problem.',
 		steps: [
-			{ n: '1', title: 'Reserve your space', copy: 'Leave your details and tell us which neighbourhood you need it in.' },
+			{ n: '1', title: 'Register your interest', copy: 'Leave your details and tell us which neighbourhood you need it in.' },
 			{ n: '2', title: 'Activate your access', copy: 'We record make, model and frame number. You receive your personal access.' },
 			{ n: '3', title: 'Use it every day', copy: 'You arrive, leave the bike in your space and carry on.' },
 		],
@@ -107,6 +108,7 @@ export const en: Copy = {
 			'Professional storage structures, fixed and independent per space — no bikes leaning on each other',
 			'No battery charging inside the hub',
 		],
+		plannedNote: 'Identification, cameras and access logging are planned properties of the service. No location is in operation yet.',
 	},
 	comparison: {
 		index: '06',
@@ -168,11 +170,22 @@ export const en: Copy = {
 	zones: {
 		index: '09',
 		rail: 'Areas',
-		eyebrow: 'First hubs',
+		eyebrow: 'Areas under evaluation',
 		heading: 'We are mapping demand before choosing the locations.',
 		lede: 'We want to know where it is needed. These are the areas we are working in.',
-		items: ['Palermo', 'Chacarita', 'Villa Crespo', 'Recoleta'],
-		note: 'Each area moves at its own pace: in some we are looking for a full hub, in others a smaller space inside a building or an existing space. Leave your request and we will tell you what is available in yours.',
+		items: [
+			'Almagro',
+			'Belgrano',
+			'Chacarita',
+			'Colegiales',
+			'Núñez',
+			'Palermo',
+			'Palermo Hollywood',
+			'Paternal',
+			'Villa Crespo',
+		],
+		note: 'Each area moves at its own pace: in some we are looking for a full hub, in others a smaller space inside a building or an existing space.',
+		disclaimer: 'Areas under evaluation. This implies no commitment to open, no date and no availability.',
 	},
 	founders: {
 		index: '10',
@@ -186,7 +199,7 @@ export const en: Copy = {
 		],
 		offerStrong: '20% off the list price, guaranteed for 24 months.',
 		offerRest: 'Founding Members choose their space before anyone else.',
-		note: 'Founding Member registration is not open yet and no payment is accepted. For now the survey is what helps most: it decides where the first hub opens.',
+		note: 'This is a preliminary expression of interest: it reserves no space, creates no contract, and no payment is accepted. If you want, we may contact you later about how the pilot progresses.',
 		disclaimer:
 			'The Founding Member price is defined as 20% below the list price in force, adjusted quarterly by IPC/ICL, guaranteed for 24 months from sign-up.',
 	},
@@ -217,13 +230,17 @@ export const en: Copy = {
 			{ q: 'Do you take cars or motorbikes?', a: 'No. CLAVERA is exclusively for bikes and personal micromobility.' },
 			{
 				q: 'Where will the first hub be?',
-				a: 'We are mapping demand before choosing the location. The priority areas are Chacarita, Villa Crespo, Palermo and Recoleta. The first hub opens where demand is most concentrated.',
+				a: 'We are mapping demand before choosing the location. The areas under evaluation are listed above, in no order of priority. The first hub opens where demand is most concentrated.',
 			},
 			{
 				q: 'How do I take the bike out?',
 				a: 'Every space is independent. You take yours out without moving any other bike.',
 			},
 		],
+	},
+	pilot: {
+		cta: 'Join the pilot',
+		pendingNote: 'The pilot-interest form is being prepared.',
 	},
 	survey: {
 		eyebrow: 'Help us design the first hub',
@@ -246,6 +263,7 @@ export const en: Copy = {
 		location: 'Buenos Aires, Argentina',
 		languageTitle: 'Language',
 		pendingNote: 'In preparation.',
+		whatsappPending: 'WhatsApp Business — coming soon.',
 		translationNotice:
 			'La versión en español (es-AR) es la única con validez legal. Las traducciones son de cortesía.',
 	},

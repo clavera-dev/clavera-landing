@@ -5,11 +5,17 @@ import { getCopy } from '../../i18n';
 const c = getCopy(Astro.currentLocale).zones;
 
 /**
- * Zone list per PROJECT_DECISIONS.md "Initial areas" — this overrides the
- * larger nine-barrio list in the brief (§S10), which is superseded for
- * phase one.
+ * The owner-approved nine-area beta set (PROJECT_DECISIONS.md, "Beta areas
+ * (2026-08-23)"), which supersedes the earlier four-area list and matches the
+ * nine names in brief §S10 / §10.1.
  *
- * Set at display scale rather than as accent pills: these four names are the
+ * UNORDERED AND UNNUMBERED ON PURPOSE. The previous version was an `<ol>` with
+ * `01`–`04` markers, which reads as an opening order or a priority ranking.
+ * None exists: these are areas under evaluation, listed alphabetically, and
+ * the list carries a disclaimer saying so. Do not reintroduce numbering,
+ * ranking, a "first district", addresses, pins, dates or counters.
+ *
+ * Set at display scale rather than as accent pills: the names are the
  * section's entire content, and the brand system reserves pill radius for
  * status badges.
  */
@@ -26,18 +32,18 @@ const c = getCopy(Astro.currentLocale).zones;
 >
 	<p slot="lede" class="lede">{c.lede}</p>
 
-	<ol class="zones">
+	<ul class="zones">
 		{
-			c.items.map((zone, i) => (
+			c.items.map((zone) => (
 				<li class="zones__item">
-					<span class="mono zones__n">{String(i + 1).padStart(2, '0')}</span>
 					<span class="zones__name">{zone}</span>
 				</li>
 			))
 		}
-	</ol>
+	</ul>
 
 	<p class="body-md zones__note">{c.note}</p>
+	<p class="caption zones__disclaimer" data-zones-disclaimer>{c.disclaimer}</p>
 </Section>
 
 <style>
@@ -61,10 +67,6 @@ const c = getCopy(Astro.currentLocale).zones;
 		border-bottom: 1px solid var(--border-hairline);
 	}
 
-	.zones__n {
-		color: var(--accent);
-	}
-
 	.zones__name {
 		font-family: var(--font-display);
 		font-size: var(--fluid-display-sm);
@@ -76,6 +78,11 @@ const c = getCopy(Astro.currentLocale).zones;
 
 	.zones__note {
 		margin-top: var(--space-10);
+		max-width: var(--measure);
+	}
+
+	.zones__disclaimer {
+		margin-top: var(--space-4);
 		max-width: var(--measure);
 	}
 

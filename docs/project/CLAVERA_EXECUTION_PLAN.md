@@ -5,7 +5,7 @@ Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
 Current next milestone: `M4 — Reference research and composition specification` (blocked until M3.5 is reviewed and accepted)
-Current milestone in review: `M3.5 — Expedited public-beta stabilization and release gate` — implementation complete, pending Codex remote-commit review and Kirill visual review
+Current milestone in review: `M3.5.1 — Beta-conversion preparation and correction` — implementation complete, pending Codex remote-commit review and Kirill visual review (builds on M3.5)
 
 ## Purpose
 
@@ -319,6 +319,19 @@ Status: **implementation complete on `landing-design` (2026-08-23), pending inde
 - Legal/publish gates that must be resolved before public deployment: `/privacidad`, `/terminos`, `/cookies` routes are **mandatory** for the public beta — currently unimplemented, requiring approved Spanish authority legal content (pending external/legal input, not created by this documentation task), with EN/RU as courtesy translations of that Spanish authority stating only Spanish has legal validity. There is no approved legal fallback for these routes; if their required content is not available, public deployment stays blocked, and removing footer links does not remove the underlying requirement since the beta sends users to Typeform and processes personal data. **Only S7** may receive a separately approved beta exclusion, and only if its outstanding written legal approval is not received in time; absence of that approval is never treated as approval. The unresolved Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` note also remains open. No broken footer links to not-yet-existing routes.
 - Public deployment itself requires a later, separate, explicit approval after Codex review and Kirill's own visual check. This milestone's acceptance is not visual acceptance, not legal approval, not product completion, and not completion of M4–M10.
 
+### M3.5.1 — Beta-conversion preparation and correction
+
+Status: **implementation complete on `landing-design` (2026-08-23), pending independent Codex remote-commit review and Kirill's visual review.** Not acceptance, not visual approval, not legal approval, not deployment. A bounded correction pass on top of M3.5; it does not replace or reorder M4–M10.
+
+- **Two beta Typeform flows.** Pilot interest (short, non-binding, primary conversion) and the research survey (secondary, S13, unchanged URLs). Full detail in `PROJECT_DECISIONS.md`, "Beta conversion architecture (2026-08-23, M3.5.1)".
+- **Pilot-interest URLs are pending external input.** Held as `null` per locale in `src/config/typeform.ts` with no fallback; the UI shows localized plain text, never a control or a fake URL. Activation = replacing the three `null` values. No placeholder URL is recorded in any durable document.
+- **Attribution prepared, not speculative.** Allowlist only (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `lang`, `source`, `landing_version`), applied at build time. Visitor-side `utm_*` forwarding is deliberately not implemented because it would require client JavaScript; the site still ships zero client JavaScript.
+- **Nine-area beta set**, alphabetized, unnumbered, presented as under evaluation with a no-commitment disclaimer. Original Spanish names in all three locales.
+- **Planned-service wording** corrected in S3 and S6 so cameras, access logging and identification read as planned properties of the future service. No new 24/7, insurance or guaranteed-security claim.
+- **WhatsApp number pending**, centralized and nullable in `src/config/contact.ts`; plain text while unset.
+- **S7 unchanged.** No legal page created, no legal content invented.
+- Unresolved external publish/legal items: controller `domicilio`, RNBD registration/status, final approved Spanish privacy/terms/cookies text, final publication date. A dedicated EN research-survey URL is full-release debt only, not a beta deployment blocker.
+
 ### M4 — Reference research and composition specification
 
 Status: pending.
@@ -452,4 +465,10 @@ Approved by Kirill: yes.
 
 Reason: Kirill settled the two open beta-form questions. (1) The Russian public Typeform introduction now states approximately 3 minutes, so the previous 2/3/5-minute readiness blocker is removed; Typeform's automatic 2-minute UI estimate is recorded as a non-blocking external display detail, not a launch blocker. (2) No separate English Typeform will be created for the expedited beta, so `/en/` temporarily uses the Spanish survey `ARGCABA` as an explicit compromise, disclosed honestly in the English UI, with a dedicated EN URL recorded as official-release debt. M3.5 was then implemented as one bounded stabilization pass: locale-aware survey routing isolated in `src/config/typeform.ts` and `TypeformBoundary.astro`; the short Socios Fundadores form, its price-reveal CTA and the `/gracias` redirect removed from the source rather than disabled; FAQ-03 corrected so it no longer promises a price reveal for a submission flow that does not exist; footer entries for unbuilt routes rendered as pending text so the candidate has no clickable 404, with no legal copy invented; and a brief-S1 defect fixed where the hero primary CTA sat below the fold at 375×667 in all three locales. Legal and strategic-SEO answers did not block candidate assembly, build, test or visual audit, and remain real public-deployment gates.
 Affected milestones: M3.5 (implementation complete, pending review). M4–M10 unchanged and still pending. Tool registry freeze unchanged — no dependency, skill, plugin or tool was installed.
+Approved by Kirill: yes.
+
+### 2026-08-23 — M3.5.1: two-flow beta conversion prepared, areas and planned-service wording corrected
+
+Reason: the real pilot-interest Typeform is being created concurrently, so the whole integration was built now against safe non-link pending placeholders rather than waiting. The beta gains a second, primary flow — a short non-binding pilot-interest form that reveals no price, takes no payment, reserves nothing and creates no contract — alongside the existing research survey. Kirill also approved the nine-area beta set (alphabetized, unnumbered, under evaluation), the owner/controller details, the processor list, the no-browser-tracking rule, the Spanish-only legal direction, and the pending WhatsApp number. Two real defects were found and fixed while implementing the new CTA wording: the longer pilot label wrapped in English and Russian at 375px, pushing the rendered header to 74px against a declared `--header-h` of 64px, and the header wordmark was being flex-squashed from 107px to 98px in English.
+Affected milestones: M3.5.1 added after M3.5 (implementation complete, pending review). M4–M10 unchanged and still pending. Tool registry freeze unchanged — no dependency, skill, plugin or tool was installed.
 Approved by Kirill: yes.

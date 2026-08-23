@@ -22,16 +22,17 @@ const FORBIDDEN_DESTINATIONS = ['/gracias', 'typeform.com/to/', 'socios-fundador
 
 for (const locale of LOCALES) {
 	test.describe(`[${locale.key}] survey routing`, () => {
-		test('every survey link points at this locale’s survey and nothing else', async ({ page }) => {
+		test('every research link points at this locale’s survey and nothing else', async ({ page }) => {
 			await page.goto(locale.path);
 
-			const links = page.locator('[data-typeform-boundary] a');
-			await expect(links, 'survey links on the page').toHaveCount(2);
+			const links = page.locator('[data-typeform-flow="research"] a');
+			await expect(links, 'research survey links on the page').toHaveCount(1);
 
 			const hrefs = await links.evaluateAll((els) =>
 				els.map((el) => el.getAttribute('href') ?? ''),
 			);
-			expect(hrefs, 'survey destinations').toEqual([locale.surveyUrl, locale.surveyUrl]);
+			// Exactly the accepted mapping — bare, with nothing appended.
+			expect(hrefs, 'research destinations').toEqual([locale.surveyUrl]);
 		});
 
 		test('does not link to any other locale’s survey', async ({ page }) => {
@@ -55,10 +56,13 @@ for (const locale of LOCALES) {
 
 			// A real href on a real anchor — not a button, not a script hook.
 			// Nothing here may depend on a Typeform embed or client JS.
+			// Two boundaries: the pilot flow (pending) and the research flow (live).
 			const boundaries = page.locator('[data-typeform-boundary]');
 			await expect(boundaries).toHaveCount(2);
 			await expect(boundaries.locator('button')).toHaveCount(0);
-			await expect(boundaries.locator('a[href^="https://claveraar.typeform.com/"]')).toHaveCount(2);
+			await expect(
+				page.locator('[data-typeform-flow="research"] a[href^="https://claveraar.typeform.com/"]'),
+			).toHaveCount(1);
 
 			// The whole page ships zero client-side JavaScript; assert it, because
 			// a Typeform embed would be the obvious way for that to regress.
@@ -74,7 +78,7 @@ for (const locale of LOCALES) {
 			page,
 		}) => {
 			await page.goto(locale.path);
-			const links = page.locator('[data-typeform-boundary] a');
+			const links = page.locator('[data-typeform-flow="research"] a');
 
 			for (const link of await links.all()) {
 				const name = (await link.textContent())?.trim() ?? '';
@@ -92,7 +96,7 @@ for (const locale of LOCALES) {
 
 		test('discloses a mismatched survey language, and only where it applies', async ({ page }) => {
 			await page.goto(locale.path);
-			const notices = page.locator('[data-survey-language-notice]');
+			const notices = page.locator('[data-destination-language-notice]');
 
 			if (locale.surveyLanguageNotice === null) {
 				// ES and RU get their own survey, so a warning here would be wrong.
@@ -100,8 +104,8 @@ for (const locale of LOCALES) {
 				return;
 			}
 
-			// One disclosure per survey link, not one for the page.
-			await expect(notices, 'a disclosure beside every survey link').toHaveCount(2);
+			// One disclosure beside the research link whose survey is Spanish.
+			await expect(notices, 'a disclosure beside every mismatched link').toHaveCount(1);
 
 			for (const notice of await notices.all()) {
 				await expect(notice).toHaveText(locale.surveyLanguageNotice);
@@ -110,7 +114,7 @@ for (const locale of LOCALES) {
 
 			// Wired to the link, so it is announced before the link is followed
 			// rather than only being visible to sighted readers.
-			const links = page.locator('[data-typeform-boundary] a');
+			const links = page.locator('[data-typeform-flow="research"] a');
 			for (const link of await links.all()) {
 				const describedBy = await link.getAttribute('aria-describedby');
 				expect(describedBy, 'aria-describedby on the survey link').toBeTruthy();

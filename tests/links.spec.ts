@@ -87,8 +87,9 @@ for (const locale of LOCALES) {
 
 			// The obligation must not vanish from the page just because the routes
 			// are not built: the entries are still listed, and marked pending.
+			// Five unbuilt routes plus the pending WhatsApp Business entry.
 			const footer = page.locator('footer');
-			await expect(footer.locator('[class*="pending-item"]'), 'pending entries').toHaveCount(5);
+			await expect(footer.locator('[class*="pending-item"]'), 'pending entries').toHaveCount(6);
 			await expect(footer.locator('[class*="site-footer__pending"]').last()).toBeVisible();
 		});
 

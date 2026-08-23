@@ -84,6 +84,11 @@ export interface Copy {
 		eyebrow: string;
 		heading: string;
 		lede: string;
+		/**
+		 * Identifies the eight properties as planned properties of the future
+		 * service, not of an operating location.
+		 */
+		plannedNote: string;
 		pillars: PillarCopy[];
 	};
 	works: {
@@ -108,6 +113,12 @@ export interface Copy {
 		heading: string;
 		lede: string;
 		items: string[];
+		/**
+		 * Cameras, access logging and identification are planned properties of
+		 * the future service. No hub is in operation, and this must not read as
+		 * a description of one.
+		 */
+		plannedNote: string;
 	};
 	comparison: {
 		index: string;
@@ -146,6 +157,11 @@ export interface Copy {
 		/** Barrio names are never translated (brief §5.3). */
 		items: string[];
 		note: string;
+		/**
+		 * States that the areas are under evaluation and imply no commitment to
+		 * open, no date and no availability.
+		 */
+		disclaimer: string;
 	};
 	founders: {
 		index: string;
@@ -169,6 +185,21 @@ export interface Copy {
 		eyebrow: string;
 		heading: string;
 		items: FaqCopy[];
+	};
+	/**
+	 * The short pilot-interest form — the primary beta conversion.
+	 *
+	 * Non-binding: it reserves no space, creates no contract, accepts no
+	 * payment, and promises no admission to the pilot.
+	 */
+	pilot: {
+		/** Shown only once a real destination exists for this locale. */
+		cta: string;
+		/**
+		 * Shown instead of any control while the locale's Typeform URL is still
+		 * `null` in src/config/typeform.ts. Plain text, never a fake link.
+		 */
+		pendingNote: string;
 	};
 	survey: {
 		eyebrow: string;
@@ -204,6 +235,11 @@ export interface Copy {
 		 * remain mandatory blockers for real public deployment.
 		 */
 		pendingNote: string;
+		/**
+		 * Shown while `WHATSAPP_NUMBER` is null in src/config/contact.ts. Plain
+		 * text — never a `wa.me` link, a dummy number or a disabled control.
+		 */
+		whatsappPending: string;
 		/**
 		 * Spanish-primacy notice. Required on non-canonical locales
 		 * (brief §5.3); empty string on `es`.

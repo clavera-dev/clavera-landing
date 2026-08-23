@@ -35,10 +35,30 @@ Do not claim 24/7 availability. Operating-hour wording can be added later when c
 
 Initial areas:
 
-- Palermo
+**Superseded on 2026-08-23** by the owner-approved nine-area beta set below. The earlier four-area list (Palermo, Chacarita, Villa Crespo, Recoleta) no longer applies; `Recoleta` is not part of the approved set.
+
+## Beta areas (2026-08-23)
+
+Approved by Kirill. Exactly these nine areas, presented strictly alphabetically:
+
+- Almagro
+- Belgrano
 - Chacarita
+- Colegiales
+- Núñez
+- Palermo
+- Palermo Hollywood
+- Paternal
 - Villa Crespo
-- Recoleta
+
+Rules:
+
+- The same original Spanish names are used in ES, EN and RU. They are never translated or transliterated — `Chacarita`, never «Чакарита» (brief §5.3).
+- **No numbering, ranking, ordering marker, or visual treatment that could imply an opening order or priority.** The list is an unordered list, alphabetized.
+- Presented as areas under evaluation, carrying the localized equivalent of: `Barrios en evaluación. No implica compromiso de apertura, fecha ni disponibilidad.`
+- No addresses, map pins, dates, application counters, confirmed locations, or a "first district".
+
+This set matches the nine names already in brief §S10 / §10.1. The stale brief §12.2 content checklist line "`Belgrano` отсутствует" is inherited from v1.4 and is superseded by the brief's own v1.5 §10.1 restoration of Belgrano and Núñez, and by this decision.
 
 ## Multilingual scope (2026-08-21)
 
@@ -196,6 +216,8 @@ The beta is a stabilization gate for controlled advertising traffic on the exist
 
 ### M3.5 implementation status (2026-08-23)
 
+**Partly superseded by M3.5.1 (see below):** M3.5 exposed the research survey as the *only* Typeform destination. The beta now has two flows — pilot interest (primary) and research survey (secondary). Everything else in this section still stands.
+
 M3.5 is implemented on `landing-design`. What that does and does not mean:
 
 **Implemented**
@@ -219,6 +241,57 @@ M3.5 completion means *implementation complete, pending Codex remote-commit revi
 - M4–M10 remain pending and unstarted.
 
 Legal and strategic-SEO answers did not block assembling, building, testing, or visually auditing the beta candidate — and they remain real public-deployment gates.
+
+### M3.5.1 implementation status (2026-08-23)
+
+M3.5.1 is implemented on `landing-design`: the beta-conversion architecture above is fully built, with the pilot-interest destinations held pending.
+
+**Implemented**
+
+- Two explicit, total locale mappings in `src/config/typeform.ts`: `RESEARCH_SURVEY_DESTINATIONS` (live, unchanged) and `PILOT_INTEREST_DESTINATIONS` (`null` for every locale), typed `PendingDestination = SurveyDestination | null`, with no fallback.
+- The pilot boundary is fully implemented: a configured destination renders an ordinary same-tab link with the live label; `null` renders localized plain text. Activation requires changing only the three values in the central config — verified by temporarily configuring one locale, rebuilding, and confirming the other two stayed pending.
+- Header and hero CTAs reworded to interest wording; the Founders section's primary external action is the pilot boundary; its explanation states the non-binding terms in all three locales.
+- S4 step 1 and the S10 note corrected narrowly so they describe submitting interest rather than completing a reservation.
+- The nine-area beta set, alphabetized, unnumbered, with the evaluation disclaimer.
+- Planned-service notes added to S3 and S6 so cameras, access logging and identification read as planned properties of the future service.
+- One centralized nullable WhatsApp value in `src/config/contact.ts`, rendered as plain text while unset.
+- Two defects found and fixed: the longer pilot CTA wrapped in EN and RU at 375px, pushing the rendered header to 74px against a declared `--header-h` of 64px; and the header wordmark was being flex-squashed from 107px to 98px in EN.
+
+**Not implied**
+
+M3.5.1 completion means *implementation complete, pending Codex remote-commit review and Kirill visual review*. It is not acceptance, deployment, legal approval, lawyer approval, product approval, advertising readiness, or finality. S7 is unchanged. No legal page was created and no legal content was invented. No dependency was installed. No deployment or Cloudflare change was made. M4–M10 remain pending.
+
+### Beta conversion architecture (2026-08-23, M3.5.1)
+
+Approved by Kirill. The beta has **two separate Typeform flows**.
+
+**1. Pilot interest — primary conversion.** A new short, non-binding form collecting contact details from people interested in the pilot. It is **not** the old founding-price flow. It must never: reveal a monetary price; accept payment, deposit or `seña`; reserve a space; create a membership or contract; promise admission to the pilot; or redirect to `/gracias`. Submission ends on Typeform's own native ending.
+
+**2. Research survey — secondary.** The existing long research survey in S13, with its current URLs, three-minute wording and the English Spanish-language disclosure.
+
+Live CTA labels for the pilot form, used once its URLs exist: ES `Quiero participar`, EN `Join the pilot`, RU `Хочу участвовать`. Header and hero continue to link internally to `#fundadores` and now read ES `Me interesa el piloto`, EN `I’m interested in the pilot`, RU `Мне интересен пилот` — interest wording, not reservation wording.
+
+The Founders section keeps the approved offer unchanged: 40 places, 20% off the list price, guaranteed 24 months, month to month, no `garantía`, and **no monetary price**. Its adjacent explanation states in every locale that this is a preliminary expression of interest, that it reserves no space, creates no contract, accepts no payment, and that CLAVERA may contact the respondent later about the pilot.
+
+**The pilot-interest URLs are pending external input and are not live.** They are held as `null` per locale in `src/config/typeform.ts` (`PILOT_INTEREST_DESTINATIONS`), with no locale fallback. While a locale is `null` the UI renders localized plain, non-interactive text — never an anchor, a button, a disabled control, `href="#"`, an empty href, or a placeholder domain. **No placeholder URL values are recorded in this document or any other durable document, and temporary `null` values are not real URLs.**
+
+Attribution: only an explicit allowlist of non-personal parameters may ever be appended — `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `lang`, `source`, `landing_version`. Arbitrary query parameters are never forwarded, and no name, email, phone or other personal datum ever appears in a URL. Values are applied at build time only; forwarding a visitor's own incoming `utm_*` would require client-side JavaScript, so it is deliberately not implemented and the site still ships **zero client JavaScript**.
+
+### Owner decisions recorded 2026-08-23
+
+- **Responsable:** Kazanova Anna.
+- **CUIT:** 20-96380996-5.
+- **No payment, deposit, `seña` or reservation is accepted in the beta.**
+- The founding offer remains public **without a monetary price**.
+- **Cameras, `vigilancia` and access logs are planned features of the future service, not features of an operating location.** Public copy must not read as describing a facility already in operation.
+- **Current processors/services:** Typeform, Google Workspace/Sheets, Cloudflare, and Meta **only** for WhatsApp Business and social communication.
+- **Do not add Meta Pixel, GA4, or any browser tracking.**
+- Future transfer of the personal-data database to a legal entity is **not** part of the beta decision.
+- **Legal pages will use Spanish authority content only.** EN and RU will eventually link to those Spanish pages with an explicit Spanish-only notice, rather than carrying their own legal text.
+- **WhatsApp number is still pending.** It is held as `null` in `src/config/contact.ts`; until it is supplied there is no WhatsApp anchor, no `wa.me` URL, no `href="#"`, no dummy number and no disabled button — only localized plain text.
+- **A dedicated EN research-survey URL is official full-release debt only.** It is **not** a public-beta deployment blocker.
+
+Unresolved external publish/legal items, none of which are approved or invented here: controller `domicilio`; RNBD registration and status; the final approved Spanish privacy, terms and cookies text; and the final publication date. No fake `domicilio`, RNBD number or placeholder legal policy is published, and no claim of legal, lawyer, advertising or deployment approval is made.
 
 ### Preserved tool and workflow decisions
 

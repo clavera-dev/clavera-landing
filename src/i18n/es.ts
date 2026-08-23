@@ -23,13 +23,13 @@ export const es: Copy = {
 	},
 	header: {
 		note: 'Socios fundadores · 40 lugares',
-		cta: 'Quiero mi lugar',
+		cta: 'Me interesa el piloto',
 	},
 	hero: {
 		eyebrow: 'Guarda segura · Buenos Aires',
 		headingHtml: 'Tu bici merece un lugar seguro en la ciudad.',
 		lede: 'CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía. Tu lugar asignado, acceso digital y vigilancia, a minutos de tu casa.',
-		ctaPrimary: 'Quiero mi lugar',
+		ctaPrimary: 'Me interesa el piloto',
 		ctaSecondary: 'Ver cómo funciona',
 		facts: ['Lugar asignado', 'Ingreso controlado', 'Cerrado y seco'],
 	},
@@ -53,6 +53,7 @@ export const es: Copy = {
 		eyebrow: 'Infraestructura de barrio',
 		heading: 'Siempre el mismo lugar. Siempre listo para vos.',
 		lede: 'Convertimos un espacio seguro del barrio en infraestructura pensada desde cero para bicicletas y micromovilidad.',
+		plannedNote: 'Así se proyecta cada hub CLAVERA. Son propiedades previstas del servicio futuro: todavía no hay ninguna sede en operación.',
 		pillars: [
 			{ n: '01', title: 'Lugar asignado', copy: 'Con tu nombre, independiente y siempre libre para vos.' },
 			{ n: '02', title: 'Acceso digital personal', copy: 'QR o código personal. Entrás y salís sin depender de nadie.' },
@@ -70,7 +71,7 @@ export const es: Copy = {
 		eyebrow: 'Cómo funciona',
 		heading: 'Tres pasos, y la bici deja de ser un problema.',
 		steps: [
-			{ n: '1', title: 'Reservá tu lugar', copy: 'Dejá tus datos y contanos en qué barrio la necesitás.' },
+			{ n: '1', title: 'Dejá tu interés', copy: 'Dejá tus datos y contanos en qué barrio la necesitás.' },
 			{ n: '2', title: 'Activá tu acceso', copy: 'Registramos marca, modelo y número de cuadro. Recibís tu acceso personal.' },
 			{ n: '3', title: 'Usala todos los días', copy: 'Llegás, dejás la bici en tu lugar y seguís.' },
 		],
@@ -96,6 +97,7 @@ export const es: Copy = {
 			'Estructuras de guarda profesionales, fijadas e independientes por lugar — sin bicis apoyadas unas sobre otras',
 			'Sin carga de baterías dentro del hub',
 		],
+		plannedNote: 'Identificación, cámaras y registro de accesos son propiedades previstas del servicio. Todavía no hay ninguna sede en operación.',
 	},
 	comparison: {
 		index: '06',
@@ -157,11 +159,22 @@ export const es: Copy = {
 	zones: {
 		index: '09',
 		rail: 'Zonas',
-		eyebrow: 'Primeros hubs',
+		eyebrow: 'Barrios en evaluación',
 		heading: 'Estamos construyendo el mapa de demanda antes de elegir las ubicaciones.',
 		lede: 'Nos interesa saber dónde hace falta. Estas son las zonas donde estamos trabajando.',
-		items: ['Palermo', 'Chacarita', 'Villa Crespo', 'Recoleta'],
-		note: 'Cada zona avanza a su ritmo: en algunas buscamos un hub completo, en otras un espacio más chico dentro de un edificio o un espacio existente. Dejá tu pedido y te contamos qué hay disponible en la tuya.',
+		items: [
+			'Almagro',
+			'Belgrano',
+			'Chacarita',
+			'Colegiales',
+			'Núñez',
+			'Palermo',
+			'Palermo Hollywood',
+			'Paternal',
+			'Villa Crespo',
+		],
+		note: 'Cada barrio avanza a su ritmo: en algunos buscamos un hub completo, en otros un espacio más chico dentro de un edificio o un espacio existente.',
+		disclaimer: 'Barrios en evaluación. No implica compromiso de apertura, fecha ni disponibilidad.',
 	},
 	founders: {
 		index: '10',
@@ -175,7 +188,7 @@ export const es: Copy = {
 		],
 		offerStrong: '20% de descuento sobre el precio de lista, garantizado por 24 meses.',
 		offerRest: 'Los Socios Fundadores eligen su lugar antes que nadie.',
-		note: 'Las inscripciones de Socios Fundadores todavía no están abiertas y no se acepta ningún pago. Por ahora, lo que más ayuda es la encuesta: define dónde abrimos el primer hub.',
+		note: 'Es una manifestación preliminar de interés: no reserva ningún lugar, no genera ningún contrato y no se acepta ningún pago. Si querés, te contactamos más adelante para contarte cómo sigue el piloto.',
 		disclaimer:
 			'El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, con actualización trimestral por IPC/ICL, garantizado por 24 meses desde el alta.',
 	},
@@ -206,13 +219,17 @@ export const es: Copy = {
 			{ q: '¿Guardan autos o motos?', a: 'No. CLAVERA es exclusivamente para bicicletas y micromovilidad personal.' },
 			{
 				q: '¿Dónde va a estar el primer hub?',
-				a: 'Estamos construyendo el mapa de demanda antes de elegir la ubicación. Las zonas prioritarias son Chacarita, Villa Crespo, Palermo y Recoleta. El primer hub abre donde la demanda esté más concentrada.',
+				a: 'Estamos construyendo el mapa de demanda antes de elegir la ubicación. Los barrios en evaluación están listados más arriba, sin ningún orden de prioridad. El primer hub abre donde la demanda esté más concentrada.',
 			},
 			{
 				q: '¿Cómo se retira la bici?',
 				a: 'Cada lugar es independiente. Retirás la tuya sin mover ninguna otra bicicleta.',
 			},
 		],
+	},
+	pilot: {
+		cta: 'Quiero participar',
+		pendingNote: 'Formulario de interés en preparación.',
 	},
 	survey: {
 		eyebrow: 'Ayudanos a diseñar el primer hub',
@@ -235,6 +252,7 @@ export const es: Copy = {
 		location: 'Buenos Aires, Argentina',
 		languageTitle: 'Idioma',
 		pendingNote: 'En preparación.',
+		whatsappPending: 'WhatsApp Business — próximamente.',
 		translationNotice: '',
 	},
 	media: {
