@@ -167,8 +167,11 @@ Approved by Kirill on 2026-08-23. This section adds a two-track release strategy
 - The short Socios Fundadores lead/price form is excluded from the expedited beta. The short form, the founding-price reveal, and the `/gracias` flow are not beta requirements.
 - The long research Typeform survey becomes the **only** Typeform destination exposed by the beta.
 - The long survey is now intended for ES, EN, and RU, each using its own public Typeform URL — an approved multilingual expansion of the earlier Spanish-only survey rule (brief §13, item 3).
-- The three public survey URLs will be supplied separately before M3.5 implementation. This documentation commit does not invent or add URLs.
-- The public beta must not expose a disabled, dead, placeholder, or mismatched-locale survey CTA. If one locale's URL is still missing at implementation time, that locale cannot be advertised as having a complete survey conversion path until Kirill makes a separate decision.
+- Two of the three public survey URLs are now known and verified as M3.5 inputs; these are public responder URLs, not secrets:
+  - **ES** — `https://claveraar.typeform.com/ARGCABA`: verified public; Spanish title and introduction; introduction and Typeform's own duration estimate both say approximately 3 minutes.
+  - **RU** — `https://claveraar.typeform.com/latam`: verified public; Russian title and introduction; has an unresolved internal inconsistency — the introduction text says approximately 5 minutes, the Typeform duration indicator says 2 minutes, and the current website survey CTA says 3 minutes. This mismatch is an external Typeform/content readiness issue and must be normalized before public advertising; it is not corrected by this documentation task.
+  - **EN** — not supplied; remains pending.
+- The public beta must not expose a disabled, dead, placeholder, or mismatched-locale survey CTA. `/en/` cannot be advertised as having a complete survey conversion path until an English URL is supplied or Kirill makes another explicit decision.
 - The short founding-member lead path remains deferred to the full product-completion track (M9) unless Kirill later removes it from the full roadmap explicitly.
 - The beta accepts no payment, deposit, `seña`, or membership contract of any kind.
 
@@ -178,16 +181,16 @@ The beta is a stabilization gate for controlled advertising traffic on the exist
 
 ### Legal and publishing gates
 
-- `/privacidad`, `/terminos`, and `/cookies` are required routes (brief B3, Part XI) and are not currently implemented.
-- Their final Spanish legal content is pending external/legal input.
-- EN/RU versions must be translations of the approved Spanish legal authority once it exists, and must state that only the Spanish version has legal validity.
+- `/privacidad`, `/terminos`, and `/cookies` are **mandatory** for the public beta. They are not optional and may not be replaced by a fallback of any kind. This applies with particular force to the beta because it sends users to an external Typeform and processes personal data.
+- They require approved Spanish authority copy. Their final Spanish legal content is pending external/legal input, and this documentation task does not create or invent that legal copy.
+- EN/RU versions are courtesy translations of that approved Spanish authority, and each must state that only the Spanish version has legal validity.
+- If the required legal content is not available, public deployment remains blocked. There is no "approved legal fallback" for `/privacidad`, `/terminos`, or `/cookies` — removing the footer links does not remove the underlying requirement to have these routes when the beta collects personal data and links out to Typeform.
+- Of all the beta's legal/publish gates, **only S7** may receive a separately approved beta exclusion, and only if written legal approval for S7 is not received in time. Absence of S7 approval must never be treated as approval.
 - Written legal approval for the S7 comparison table (brief §S7 note 2) remains outstanding, unchanged from the 2026-08-21 worklog entries.
 - The Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` market-reference note (see `docs/project/CLAVERA_WORKLOG.md`, 2026-08-21) remains unresolved.
-- If S7 approval is not received before beta launch, S7 requires a separate approved exclusion decision; absence of approval must never be treated as approval.
-- Footer links to routes that do not yet exist must not remain broken in a public beta; the implementation choice (build the route, or remove the link) is deferred to M3.5.
 - Cloudflare access is expected later but was not available to this documentation task.
 - No deployment is authorized by this documentation commit.
-- The beta must not be claimed advertising-ready until the survey path, the legal pages (or an approved legal fallback), the S7 decision, internal-link integrity, QA gates, and hosting readiness are all resolved.
+- The beta must not be claimed advertising-ready until the survey path, the mandatory legal pages, the S7 decision, internal-link integrity, QA gates, and hosting readiness are all resolved.
 
 ### Preserved tool and workflow decisions
 

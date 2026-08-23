@@ -2,6 +2,27 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-23 — Codex review corrections for expedited beta documentation
+
+Codex independently reviewed remote commit `53a0ae3f70641a1aac16f4fae6b672ee23bd58ef` (`docs: add expedited beta release track`). The overall two-track decision was accepted; three documentation corrections were required before M3.5 may begin. This entry and the corresponding edits to `PROJECT_DECISIONS.md` and `docs/project/CLAVERA_EXECUTION_PLAN.md` are the response. **No application source, Typeform configuration, installation, purchase, audit, or deployment changed.**
+
+### Correction 1 — mandatory legal routes tightened
+
+- `/privacidad`, `/terminos`, and `/cookies` are mandatory for the public beta, requiring approved Spanish authority copy, with EN/RU as courtesy translations stating only Spanish has legal validity. There is no "approved legal fallback" for these routes: if their required content is not available, public deployment remains blocked, and removing footer links does not remove the underlying requirement once the beta sends users to Typeform and processes personal data.
+- Of all the beta's legal/publish gates, **only S7** remains eligible for a separately approved beta exclusion, and only if its outstanding written legal approval is not received in time. Absence of S7 approval must never be treated as approval.
+- No legal copy was created or invented in making this correction.
+
+### Correction 2 — TypeScript LSP verification wording corrected
+
+- The claim that M3.5 runs on tools "already installed and accepted" including the TypeScript language service was replaced. Frontend Design, Playwright, `@axe-core/playwright`, and Astro diagnostics are installed/currently available as already recorded in the tool registry. TypeScript language-service/LSP support remains approved but must still be verified during M3.5 rather than assumed, per its existing, unchanged registry entry. Astro diagnostics remain mandatory regardless of what that verification finds. The underlying tool decision is unchanged.
+
+### Correction 3 — Typeform survey URL status recorded
+
+- ES survey URL verified public: `https://claveraar.typeform.com/ARGCABA` — Spanish title and introduction; introduction and Typeform's own duration indicator both say approximately 3 minutes.
+- RU survey URL verified public: `https://claveraar.typeform.com/latam` — Russian title and introduction; has an unresolved duration inconsistency (introduction ~5 minutes, Typeform indicator 2 minutes, current site CTA 3 minutes) that is an external Typeform/content readiness issue and must be normalized before public advertising.
+- EN survey URL remains pending; `/en/` cannot be advertised as having a complete survey conversion path until it is supplied or Kirill makes another explicit decision.
+- ES and RU are now known M3.5 inputs and are public responder URLs, not secrets. It is no longer accurate to say all three URLs are pending.
+
 ## 2026-08-23 — Two-track release strategy approved; M3.5 added as next milestone (documentation only)
 
 Kirill approved an expedited public-beta track alongside the existing full-quality track. This entry records the decision. **No application source, test, configuration, dependency, skill, lock file, or asset changed. No audit ran. No tool was installed or purchased. No deployment occurred.** Only `PROJECT_DECISIONS.md`, `docs/project/CLAVERA_EXECUTION_PLAN.md`, and this worklog were edited.
@@ -20,17 +41,17 @@ Kirill approved an expedited public-beta track alongside the existing full-quali
 
 ### Beta form decision
 
-- The long research Typeform survey becomes the only Typeform destination exposed by the beta, now intended for ES, EN, and RU, each with its own public URL — an approved multilingual expansion of the earlier Spanish-only survey rule. The three URLs are still pending and are not invented or added by this documentation commit; if one locale's URL is missing at implementation time, that locale cannot be advertised as having a complete survey conversion path until Kirill decides separately.
+- The long research Typeform survey becomes the only Typeform destination exposed by the beta, now intended for ES, EN, and RU, each with its own public URL — an approved multilingual expansion of the earlier Spanish-only survey rule. At the time of this entry all three URLs were still pending; see the 2026-08-23 correction entry above this one for the ES and RU URLs subsequently verified and the EN URL still outstanding.
 - The short Socios Fundadores lead/price form, the founding-price reveal, and the `/gracias` flow are excluded from the beta and remain deferred to the full product-completion track (M9) unless Kirill later removes the short form from the full roadmap explicitly.
 - The beta accepts no payment, deposit, `seña`, or membership contract.
 
 ### Legal, S7, route, survey, hosting, and review gates (all still open)
 
-- `/privacidad`, `/terminos`, `/cookies` are required routes and are not currently implemented; final Spanish legal content is pending external/legal input; EN/RU must be translations of the approved Spanish authority stating only ES has legal validity.
-- The S7 written legal approval remains outstanding (unchanged from the 2026-08-21 entries below). The Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` note remains unresolved. If S7 approval is not received before beta launch, S7 requires a separate approved exclusion decision — absence of approval is never treated as approval.
+- `/privacidad`, `/terminos`, `/cookies` are mandatory routes for the public beta and are not currently implemented; final Spanish legal content is pending external/legal input; EN/RU are courtesy translations of the approved Spanish authority stating only ES has legal validity. See the 2026-08-23 correction entry above for the tightened rule: there is no approved fallback for these routes, and public deployment stays blocked without their required content.
+- Of the beta's legal/publish gates, only S7 may receive a separately approved beta exclusion. The S7 written legal approval remains outstanding (unchanged from the 2026-08-21 entries below). The Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` note remains unresolved. If S7 approval is not received before beta launch, S7 requires a separate approved exclusion decision — absence of approval is never treated as approval.
 - Footer links to routes that do not yet exist must not remain broken in a public beta; the implementation choice is deferred to M3.5.
 - Cloudflare access is expected later but was not available to this documentation task; no deployment is authorized here.
-- The beta cannot be claimed advertising-ready until the survey path, legal pages (or an approved legal fallback), the S7 decision, internal-link integrity, QA gates, and hosting readiness are all resolved. Public deployment requires a later, separate, explicit approval after Codex review and Kirill's own visual check.
+- The beta cannot be claimed advertising-ready until the survey path, the mandatory legal pages, the S7 decision, internal-link integrity, QA gates, and hosting readiness are all resolved. Public deployment requires a later, separate, explicit approval after Codex review and Kirill's own visual check.
 
 ### Preserved decisions carried forward unimplemented
 
