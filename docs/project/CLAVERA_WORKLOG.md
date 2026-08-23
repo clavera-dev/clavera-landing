@@ -2,6 +2,45 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-23 — M3.5 implemented (beta candidate; not accepted, not deployed)
+
+M3.5 was implemented as one bounded stabilization pass on `landing-design`. This is **implementation complete, pending independent Codex remote-commit review and Kirill's visual review**. It is not acceptance, not visual approval, not legal approval, not product approval, not advertising readiness, and not deployment. No dependency, skill, plugin, MCP server or tool was installed; no Cloudflare or hosting setting was touched; M4–M10 remain pending and unstarted.
+
+### Settled decisions implemented (approved by Kirill, 2026-08-23)
+
+- **RU survey.** `https://claveraar.typeform.com/latam`. The public Russian introduction now states approximately 3 minutes, so it agrees with the site CTA. **The previous 2/3/5-minute readiness blocker is removed** — the obsolete 5-minute introduction is gone. Typeform's automatic UI estimate may still show 2 minutes; that is recorded honestly as a **non-blocking external display detail** outside our control, not a remaining launch blocker. The website continues to describe the survey as approximately 3 minutes.
+- **EN survey.** **No separate English Typeform will be created for the expedited beta.** `/en/` temporarily uses the Spanish survey `https://claveraar.typeform.com/ARGCABA`. This is an explicit beta compromise. The English UI discloses that the survey is in Spanish; the destination is never labelled or described as an English survey. **Release debt: a dedicated EN public Typeform URL is required before the official full-quality release.**
+- **ES survey.** `https://claveraar.typeform.com/ARGCABA`, unchanged.
+
+### What changed in the source
+
+- **Locale-aware survey routing**, isolated in `src/config/typeform.ts` (explicit, total `Record<Locale, SurveyDestination>` — no locale can silently inherit another's URL) and `src/components/lead-form/TypeformBoundary.astro`. Destinations are ordinary same-tab links that work without JavaScript; the page still ships zero client-side JS; no Typeform embed or SDK; no personal data in any URL.
+- **English disclosure**: "The survey is in Spanish." rendered beside every survey link and wired to it with `aria-describedby`, so it is announced before the link is followed. ES and RU carry no such notice by construction.
+- **Deferred conversion path removed, not disabled.** The short Socios Fundadores lead/price form, its `Ver mi precio de Socio Fundador` price-reveal CTA, and the `/gracias` redirect no longer exist in the source. Previously both Typeform controls rendered as **disabled buttons** because no URL was configured; the beta now exposes exactly one live destination and no disabled control anywhere.
+- **FAQ-03 corrected in all three locales.** It previously promised "we show you the Founding Member price when you leave your details" — a submission-triggered price reveal for a flow the beta does not have. It now states that the price is not published yet and that registration opens later with no payment accepted. The canonical offer definition (20% below list, guaranteed 24 months, quarterly IPC/ICL) is preserved. Reason: `PROJECT_DECISIONS.md` outranks the brief here, and the approved founding-offer language may remain only where it does not imply a working short form or price reveal.
+- **Footer interim treatment.** `/privacidad`, `/terminos`, `/cookies`, `/espacios` and `/desarrolladores` are not built, so those five entries render as plain text with a localized pending marker instead of anchors. The candidate now contains **no clickable link to a missing route** in any locale. Reversal is one line — add the path to `AVAILABLE_ROUTES` in `Footer.astro`. **No legal copy was invented.**
+- **Brief S1 defect fixed.** The hero primary CTA was **below the fold at 375×667** in every locale — Spanish bottom at y=729 (62px over), Russian at y=790 (123px over), against a 667px viewport. The image band plus the mandatory render disclosure consumed 323px before the first word of copy. A short-viewport rule (`max-width: 599px and max-height: 700px`, all locales, no per-locale offsets) recovers the budget from the image band and vertical rhythm — not from copy: no text shortened, no body size reduced, the disclosure keeps its own line. Measured after fonts settle: ES/EN y=589, RU y=650.
+
+### What was deliberately left alone
+
+- **S7 is unchanged.** No copy, structure, or markup edit. Its written legal approval remains **outstanding**, and the Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` note remains **unresolved**. Absence of approval is never approval. A test now pins that the CLAVERA cost cell carries no currency figure.
+- S4 step 1 (`Dejá tus datos…`) and the S10 zones note (`Dejá tu pedido…`) describe the product, not a beta conversion, and promise no price. They were left as approved brief copy and are flagged for Kirill rather than rewritten.
+- Design system, tokens, section order, section IDs, R1–R6 mapping, the separate entrance/security image, the verbatim render disclosure, Tier-1 vocabulary rules, the `monTEK`/`Hamax` ban, the absence of 24/7 claims, and the exact insurance FAQ boundary are all untouched.
+
+### Verification
+
+- `git diff --check`: clean. `yarn astro check`: 53 files, 0 errors, 0 warnings, 0 hints. `yarn build`: 3 static pages, zero client JavaScript.
+- Playwright across Chromium/Firefox/WebKit: **882 passed, 0 failed, 51 skipped**, all skips justified — 42 diagnostic captures that only Chromium takes, 6 English-only survey assertions skipped on ES/RU, and 3 skip-link reveal tests on WebKit, which excludes links from the default tab order.
+- axe (`@axe-core/playwright`) clean across three locales at 1440/768/375. New low-emphasis text measured separately for contrast: 4.76–4.99:1 against a 4.5:1 requirement, all disclosure text ≥12px per brief S8.
+- Terminology suite and its negative controls unchanged and green.
+- 21 fresh **diagnostic** screenshots (not baselines) under `test-results/screenshots/`, including a new `m3-5-audit/` set at 699/700/999/1000px — the widths where header and navigation behaviour actually changes — plus targeted section captures under `m3-5-inspect/`.
+- Existing tests were not weakened. One obsolete test (`lead-capture controls stay inert while unconfigured`) was **superseded** by a stronger one asserting live links, the absence of the founders target, and no disabled control anywhere.
+- `node_modules` in the working tree predated the M3 devDependencies, so `yarn install --frozen-lockfile` was run to restore the already-pinned contents. No dependency was added and `yarn.lock` is unchanged.
+
+### Still blocking real public deployment
+
+`/privacidad`, `/terminos`, `/cookies` (mandatory, unbuilt, awaiting approved Spanish legal authority copy) · S7 legal approval · Appendix В.2 / §S7 conflict · dedicated EN Typeform URL · domain and Meta verification · analytics and cookie consent · SPF/DKIM/DMARC · Cloudflare access and deployment approval · Kirill's visual review · Codex's independent review of the remote commit.
+
 ## 2026-08-23 — Codex review corrections for expedited beta documentation
 
 Codex independently reviewed remote commit `53a0ae3f70641a1aac16f4fae6b672ee23bd58ef` (`docs: add expedited beta release track`). The overall two-track decision was accepted; three documentation corrections were required before M3.5 may begin. This entry and the corresponding edits to `PROJECT_DECISIONS.md` and `docs/project/CLAVERA_EXECUTION_PLAN.md` are the response. **No application source, Typeform configuration, installation, purchase, audit, or deployment changed.**

@@ -29,18 +29,30 @@ for (const locale of LOCALES) {
 			expect(clearance, 'gap between header and anchored section').toBeGreaterThanOrEqual(0);
 		});
 
-		test('the lead-capture controls stay inert while unconfigured', async ({ page }) => {
+		/*
+		  Superseded by M3.5, not relaxed. The previous version asserted that both
+		  Typeform controls stayed inert *while no URL was configured* — correct
+		  while the survey URLs were unknown, and wrong now that they are known.
+		  The beta exposes the research survey as a working link from both
+		  places, and the short founders form is gone rather than disabled. The
+		  routing itself, the EN language disclosure, and the absence of the
+		  deferred price-reveal path are covered in depth by survey.spec.ts.
+		*/
+		test('exposes the survey as a live control, with no dead or disabled CTA', async ({ page }) => {
 			await page.goto(locale.path);
 			const boundaries = page.locator('[data-typeform-boundary]');
 			await expect(boundaries).toHaveCount(2);
 
-			// Both targets present and independent.
-			await expect(page.locator('[data-typeform-target="founders"]')).toHaveCount(1);
-			await expect(page.locator('[data-typeform-target="survey"]')).toHaveCount(1);
+			// The survey is the only Typeform target the beta exposes.
+			await expect(page.locator('[data-typeform-target="survey"]')).toHaveCount(2);
+			await expect(page.locator('[data-typeform-target="founders"]')).toHaveCount(0);
 
-			// Inert means a disabled button, never a link to nowhere.
-			await expect(boundaries.locator('button[disabled]')).toHaveCount(2);
-			await expect(boundaries.locator('a')).toHaveCount(0);
+			// Live links, never a disabled stub or a link to nowhere.
+			await expect(boundaries.locator('a[href^="https://"]')).toHaveCount(2);
+			await expect(boundaries.locator('button')).toHaveCount(0);
+
+			// No disabled control anywhere on the page.
+			await expect(page.locator('[disabled], [aria-disabled="true"]')).toHaveCount(0);
 		});
 
 		test('FAQ opens and closes from the keyboard', async ({ page }) => {

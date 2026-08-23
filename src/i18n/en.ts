@@ -186,8 +186,7 @@ export const en: Copy = {
 		],
 		offerStrong: '20% off the list price, guaranteed for 24 months.',
 		offerRest: 'Founding Members choose their space before anyone else.',
-		note: 'Leaving your details involves no payment. We send you the Founding Member price and availability in your area.',
-		cta: 'See my Founding Member price',
+		note: 'Founding Member registration is not open yet and no payment is accepted. For now the survey is what helps most: it decides where the first hub opens.',
 		disclaimer:
 			'The Founding Member price is defined as 20% below the list price in force, adjusted quarterly by IPC/ICL, guaranteed for 24 months from sign-up.',
 	},
@@ -203,7 +202,7 @@ export const en: Copy = {
 			},
 			{
 				q: 'How much does it cost?',
-				a: 'We show you the Founding Member price when you leave your details, along with availability in your area. No commitment and no payment. The Founding Member price is 20% below the list price, guaranteed for 24 months.',
+				a: 'We have not published the price yet. The Founding Member price is defined as 20% below the list price in force, guaranteed for 24 months. Founding Member registration opens later, and no payment is accepted.',
 			},
 			{
 				q: 'What if I want to cancel?',
@@ -231,6 +230,7 @@ export const en: Copy = {
 		heading: 'How do you use your bike in Buenos Aires?',
 		note: 'Three minutes. It helps us choose where to open and how to design the space.',
 		cta: 'Take the survey · 3 min',
+		languageNotice: 'The survey is in Spanish.',
 	},
 	footer: {
 		claim: 'Urban storage infrastructure for your bike.',
@@ -245,6 +245,7 @@ export const en: Copy = {
 		rights: '© 2026 CLAVERA. All rights reserved.',
 		location: 'Buenos Aires, Argentina',
 		languageTitle: 'Language',
+		pendingNote: 'In preparation.',
 		translationNotice:
 			'La versión en español (es-AR) es la única con validez legal. Las traducciones son de cortesía.',
 	},

@@ -6,11 +6,11 @@ import { getCopy } from '../../i18n';
 const c = getCopy(Astro.currentLocale).survey;
 
 /**
- * The research survey is a separate Typeform from the founders form and must
- * stay that way — it reads its own URL from the config through `target`.
+ * The research survey — the only Typeform destination the public beta exposes.
+ * Its URL is locale-routed inside TypeformBoundary; nothing here knows it.
  *
- * Set deliberately quiet and low-contrast: it is a secondary conversion and
- * must not compete with the Socios Fundadores call to action above it.
+ * Set deliberately quiet and low-contrast, per brief S13, which puts this
+ * section below the FAQ at a reduced visual weight.
  */
 ---
 
@@ -24,7 +24,7 @@ const c = getCopy(Astro.currentLocale).survey;
 			<p class="body-md">{c.note}</p>
 		</div>
 
-		<TypeformBoundary target="survey" ctaLabel={c.cta} variant="ghost" />
+		<TypeformBoundary name="encuesta" variant="ghost" />
 	</div>
 </Section>
 

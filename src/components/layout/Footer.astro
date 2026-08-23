@@ -4,6 +4,50 @@ import { getCopy } from '../../i18n';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 const copy = getCopy(Astro.currentLocale);
+
+/*
+  INTERIM TREATMENT — footer routes that do not exist yet.
+
+  `/privacidad`, `/terminos`, `/cookies`, `/espacios` and `/desarrolladores`
+  are not built. Linking to them would put a clickable 404 in front of every
+  visitor and every reviewer, so an entry whose route is absent renders as
+  plain text with a "pending" note instead of as an anchor.
+
+  This is presentation only. It does NOT discharge the obligation: the three
+  legal routes remain MANDATORY blockers for real public deployment
+  (PROJECT_DECISIONS.md, "Legal and publishing gates"), and no legal copy is
+  invented here. Reversal is one line — add the path to AVAILABLE_ROUTES when
+  the route actually ships, and the entry becomes a link again.
+*/
+const AVAILABLE_ROUTES = new Set<string>();
+
+interface FooterEntry {
+	href: string;
+	label: string;
+}
+
+const ownerEntries: FooterEntry[] = [
+	{ href: '/espacios', label: copy.footer.proposeSpace },
+	{ href: '/desarrolladores', label: copy.footer.forDevelopers },
+];
+
+const legalEntries: FooterEntry[] = [
+	{ href: '/privacidad', label: copy.footer.privacy },
+	{ href: '/terminos', label: copy.footer.terms },
+	{ href: '/cookies', label: copy.footer.cookies },
+];
+
+const isAvailable = (entry: FooterEntry) => AVAILABLE_ROUTES.has(entry.href);
+const hasAnyLink = (entries: FooterEntry[]) => entries.some(isAvailable);
+const hasAnyPending = (entries: FooterEntry[]) => entries.some((entry) => !isAvailable(entry));
+
+/*
+  A landmark with nothing to navigate to is noise for a screen-reader user, so
+  a column that currently has no working link is a plain container rather than
+  a labelled <nav>.
+*/
+const OwnersTag = hasAnyLink(ownerEntries) ? 'nav' : 'div';
+const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 ---
 
 <footer class="site-footer">
@@ -24,22 +68,55 @@ const copy = getCopy(Astro.currentLocale);
 					</ul>
 				</div>
 
-				<nav class="site-footer__col" aria-label={copy.a11y.ownersNavLabel}>
+				<OwnersTag
+					class="site-footer__col"
+					aria-label={OwnersTag === 'nav' ? copy.a11y.ownersNavLabel : undefined}
+				>
 					<p class="mono site-footer__col-title">{copy.footer.spacesTitle}</p>
 					<ul>
-						<li><a href="/espacios">{copy.footer.proposeSpace}</a></li>
-						<li><a href="/desarrolladores">{copy.footer.forDevelopers}</a></li>
+						{
+							ownerEntries.map((entry) => (
+								<li>
+									{isAvailable(entry) ? (
+										<a href={entry.href}>{entry.label}</a>
+									) : (
+										<span class="site-footer__pending-item">{entry.label}</span>
+									)}
+								</li>
+							))
+						}
 					</ul>
-				</nav>
+					{
+						hasAnyPending(ownerEntries) && (
+							<p class="caption site-footer__pending">{copy.footer.pendingNote}</p>
+						)
+					}
+				</OwnersTag>
 
-				<nav class="site-footer__col" aria-label={copy.a11y.legalNavLabel}>
+				<LegalTag
+					class="site-footer__col"
+					aria-label={LegalTag === 'nav' ? copy.a11y.legalNavLabel : undefined}
+				>
 					<p class="mono site-footer__col-title">{copy.footer.legalTitle}</p>
 					<ul>
-						<li><a href="/privacidad">{copy.footer.privacy}</a></li>
-						<li><a href="/terminos">{copy.footer.terms}</a></li>
-						<li><a href="/cookies">{copy.footer.cookies}</a></li>
+						{
+							legalEntries.map((entry) => (
+								<li>
+									{isAvailable(entry) ? (
+										<a href={entry.href}>{entry.label}</a>
+									) : (
+										<span class="site-footer__pending-item">{entry.label}</span>
+									)}
+								</li>
+							))
+						}
 					</ul>
-				</nav>
+					{
+						hasAnyPending(legalEntries) && (
+							<p class="caption site-footer__pending">{copy.footer.pendingNote}</p>
+						)
+					}
+				</LegalTag>
 
 				<div class="site-footer__col">
 					<p class="mono site-footer__col-title">{copy.footer.languageTitle}</p>
@@ -142,6 +219,18 @@ const copy = getCopy(Astro.currentLocale);
 
 	.site-footer__col a:hover {
 		color: var(--accent);
+	}
+
+	/* Reads as inactive text rather than as a link that failed to work. */
+	.site-footer__pending-item {
+		font-family: var(--font-sans);
+		font-size: var(--text-body-md-size);
+		line-height: var(--text-body-md-line);
+		color: var(--text-tertiary);
+	}
+
+	.site-footer__pending {
+		margin-top: var(--space-3);
 	}
 
 	/* Spanish-primacy notice, shown only on the non-canonical locales. */

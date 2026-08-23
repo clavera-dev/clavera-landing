@@ -261,6 +261,48 @@ const { width, height } = r1.dimensions[1600];
 		}
 	}
 
+	/*
+	  Short phones: bring the primary call to action back above the fold.
+
+	  Brief S1 requires the primary CTA to be visible without scrolling at
+	  375×667. It was not: the image band (267px) plus the mandatory render
+	  disclosure (56px) spent 323px before the first word of copy, pushing the
+	  CTA to y=729 in Spanish and y=790 in Russian — 62px and 123px below the
+	  fold.
+
+	  The budget is recovered from the image band and the vertical rhythm, not
+	  from the copy: no text is shortened, no body size is reduced, the
+	  disclosure keeps its own line, and nothing is locale-specific — Russian is
+	  the longest locale and is what this is sized against, so Spanish and
+	  English clear the fold comfortably.
+
+	  Gated on viewport HEIGHT, so taller phones keep the original composition
+	  untouched.
+	*/
+	@media (max-width: 599px) and (max-height: 700px) {
+		.hero__media picture {
+			/* Deliberately generous headroom rather than a knife-edge fit: with
+			   the display face still loading, the fallback metrics push the
+			   Russian headline onto another line, and a layout that only just
+			   cleared the fold would spill during that first paint. */
+			height: 20svh;
+			min-height: 130px;
+			max-height: 180px;
+		}
+
+		.hero__body {
+			padding-block: var(--space-4) var(--rhythm-tight);
+		}
+
+		.hero__inner {
+			gap: var(--space-3);
+		}
+
+		.hero__actions {
+			margin-top: 0;
+		}
+	}
+
 	/* On a phone the two calls to action read better as a stacked pair at full
 	   width than as two differently-sized buttons on separate lines, and the
 	   spec strip becomes a short stacked list — a wrapped inline row leaves a

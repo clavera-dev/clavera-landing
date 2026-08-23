@@ -1,53 +1,69 @@
 ---
 /**
- * Reserved boundary for the Typeform lead-capture embed.
+ * The one place the page links out to Typeform.
  *
- * Lead capture is intentionally not implemented yet. This component is the one
- * place the rest of the page renders a lead-form CTA — nothing else should
- * change once src/config/typeform.ts is filled in.
+ * The expedited public beta (M3.5) exposes a single Typeform destination — the
+ * long research survey — and it is locale-routed: every locale has its own
+ * entry in src/config/typeform.ts. Nothing else on the page may build a
+ * Typeform URL, so a locale can never be pointed at the wrong survey by a
+ * component that happens to hard-code one.
  *
- * There are two independent Typeform targets (S11 Socios Fundadores and the
- * S13 research survey), each with its own URL. `target` selects which config
- * value this instance reads, so the survey CTA can never pick up the founders
- * URL (or vice versa) by accident.
+ * The control is an ordinary link, not an embed and not a script: it works
+ * with JavaScript disabled and needs no Typeform SDK. It navigates in the same
+ * tab, so there is no undisclosed new window to announce.
  *
- * While a URL is empty the control stays inert: it renders as a disabled
- * button, never as a link to nowhere.
+ * When the survey is not written in the language of the page — English, which
+ * uses the Spanish survey as an approved beta compromise — the notice next to
+ * the link says so, and is wired to the link through `aria-describedby` so a
+ * screen-reader user is told before following it, not after.
+ *
+ * No personal data is put in the URL (PROJECT_DECISIONS.md).
  */
-import { typeformConfig } from '../../config/typeform';
+import { getSurveyDestination, surveyLanguageDiffers } from '../../config/typeform';
+import { getCopy, resolveLocale, LOCALE_DEFINITIONS } from '../../i18n';
 
 interface Props {
-	target: 'founders' | 'survey';
-	ctaLabel: string;
+	/** Distinguishes the instances so their notice ids stay unique and stable. */
+	name: string;
 	size?: 'md' | 'lg';
 	variant?: 'primary' | 'ghost';
 }
 
-const { target, ctaLabel, size = 'md', variant = 'primary' } = Astro.props;
-const formUrl = target === 'founders' ? typeformConfig.foundersFormUrl : typeformConfig.surveyFormUrl;
-const isConfigured = formUrl.length > 0;
+const { name, size = 'md', variant = 'primary' } = Astro.props;
+
+const locale = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+const destination = getSurveyDestination(locale);
+
+/*
+  The notice is shown when — and only when — the survey's language differs from
+  the page's. Both halves are required: the copy string is empty on the locales
+  whose survey matches, and the config is the authority on which those are.
+*/
+const showLanguageNotice = surveyLanguageDiffers(locale) && copy.survey.languageNotice.length > 0;
+const noticeId = `survey-language-${name}`;
 
 const buttonClass = ['button', `button--${variant}`, size === 'lg' && 'button--lg']
 	.filter(Boolean)
 	.join(' ');
 ---
 
-<div class="typeform-boundary" data-typeform-boundary data-typeform-target={target}>
+<div class="typeform-boundary" data-typeform-boundary data-typeform-target="survey">
+	<a
+		class={buttonClass}
+		href={destination.url}
+		hreflang={LOCALE_DEFINITIONS[destination.language].hreflang}
+		aria-describedby={showLanguageNotice ? noticeId : undefined}
+	>
+		{copy.survey.cta}
+		<span class="typeform-boundary__arrow" aria-hidden="true">↗</span>
+	</a>
+
 	{
-		isConfigured ? (
-			<a class={buttonClass} href={formUrl}>
-				{ctaLabel}
-				<span class="typeform-boundary__arrow" aria-hidden="true">
-					→
-				</span>
-			</a>
-		) : (
-			<button class={buttonClass} type="button" disabled>
-				{ctaLabel}
-				<span class="typeform-boundary__arrow" aria-hidden="true">
-					→
-				</span>
-			</button>
+		showLanguageNotice && (
+			<p class="caption typeform-boundary__notice" id={noticeId} data-survey-language-notice>
+				{copy.survey.languageNotice}
+			</p>
 		)
 	}
 </div>
@@ -64,7 +80,11 @@ const buttonClass = ['button', `button--${variant}`, size === 'lg' && 'button--l
 		transition: transform var(--duration-base) var(--ease-out);
 	}
 
-	.button:hover:not(:disabled) .typeform-boundary__arrow {
-		transform: translateX(3px);
+	.button:hover .typeform-boundary__arrow {
+		transform: translate(2px, -2px);
+	}
+
+	.typeform-boundary__notice {
+		max-width: 40ch;
 	}
 </style>

@@ -24,7 +24,10 @@ If sources conflict, the earlier item wins. Do not infer project state from chat
 - Insurance terminology is allowed only in the exact brief-approved FAQ wording.
 - R1-R6 are the approved final render set defined in `PROJECT_DECISIONS.md`.
 - The older entrance render is a separate security/access image and is not R3.
-- The founders form and research survey are separate Typeform targets. Keep integration isolated in `TypeformBoundary.astro` and `src/config/typeform.ts` until explicitly authorized.
+- The public beta exposes exactly one Typeform destination: the long research survey. Keep the integration isolated in `TypeformBoundary.astro` and `src/config/typeform.ts`. The short Socios Fundadores form, the founding-price reveal and `/gracias` are deferred to M9 and must not be reintroduced without a recorded decision.
+- Survey routing is per locale and explicit: `es-AR` → `ARGCABA`, `ru` → `latam`, `en` → `ARGCABA`. Every locale names its own URL — never let one locale fall back to another's survey.
+- `en` deliberately points at the **Spanish** survey as a beta compromise. Wherever a survey link is shown in a locale whose survey is not in that locale's language, the UI must say so next to the link. Never describe the English destination as an English survey. A dedicated EN Typeform URL is outstanding release debt.
+- Never link to a route that does not exist. `/privacidad`, `/terminos`, `/cookies`, `/espacios` and `/desarrolladores` are unbuilt; the footer renders them as plain text, gated by `AVAILABLE_ROUTES` in `Footer.astro`. The three legal routes remain mandatory blockers for public deployment — never invent legal copy to satisfy them.
 
 ## Technical constraints
 

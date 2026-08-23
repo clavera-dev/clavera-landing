@@ -16,6 +16,19 @@ export interface TestLocale {
 	 * Tier-2 market-reference note exception.
 	 */
 	carriesNoteException: boolean;
+	/**
+	 * The public Typeform research survey this locale must link to. Mirrors
+	 * src/config/typeform.ts and is written out literally rather than imported,
+	 * so a wrong edit to the config fails the suite instead of travelling
+	 * through it.
+	 */
+	surveyUrl: string;
+	/**
+	 * The exact disclosure that must sit next to every survey link when the
+	 * survey is not in this locale's language, or null when the survey does
+	 * match and no disclosure may appear.
+	 */
+	surveyLanguageNotice: string | null;
 }
 
 export const LOCALES: TestLocale[] = [
@@ -28,6 +41,8 @@ export const LOCALES: TestLocale[] = [
 		disclosure:
 			'Imágenes de proyecto. No corresponden a una sede en operación. Imagen ilustrativa generada digitalmente.',
 		carriesNoteException: true,
+		surveyUrl: 'https://claveraar.typeform.com/ARGCABA',
+		surveyLanguageNotice: null,
 	},
 	{
 		key: 'en',
@@ -38,6 +53,9 @@ export const LOCALES: TestLocale[] = [
 		disclosure:
 			'Project renderings. They do not depict an operating facility. Illustrative image generated digitally.',
 		carriesNoteException: false,
+		// Beta compromise: English uses the SPANISH survey, and says so.
+		surveyUrl: 'https://claveraar.typeform.com/ARGCABA',
+		surveyLanguageNotice: 'The survey is in Spanish.',
 	},
 	{
 		key: 'ru',
@@ -48,6 +66,8 @@ export const LOCALES: TestLocale[] = [
 		disclosure:
 			'Изображения проекта. Не соответствуют действующему объекту. Иллюстрация, созданная цифровым способом.',
 		carriesNoteException: false,
+		surveyUrl: 'https://claveraar.typeform.com/latam',
+		surveyLanguageNotice: null,
 	},
 ];
 

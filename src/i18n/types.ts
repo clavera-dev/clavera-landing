@@ -155,8 +155,12 @@ export interface Copy {
 		figures: [FigureCopy, FigureCopy, FigureCopy];
 		offerStrong: string;
 		offerRest: string;
+		/**
+		 * Must not imply a working short lead form or a price reveal: the
+		 * Socios Fundadores form is deferred to M9 and is not exposed by the
+		 * public beta (PROJECT_DECISIONS.md, "Release strategy (2026-08-23)").
+		 */
 		note: string;
-		cta: string;
 		disclaimer: string;
 	};
 	faq: {
@@ -171,6 +175,13 @@ export interface Copy {
 		heading: string;
 		note: string;
 		cta: string;
+		/**
+		 * Stated next to every survey link whose Typeform is not written in
+		 * this locale's language. Empty on locales whose survey matches the
+		 * page language — only `en` carries it, because the English beta uses
+		 * the Spanish survey (`src/config/typeform.ts`).
+		 */
+		languageNotice: string;
 	};
 	footer: {
 		claim: string;
@@ -185,6 +196,14 @@ export interface Copy {
 		rights: string;
 		location: string;
 		languageTitle: string;
+		/**
+		 * Interim marker for footer entries whose route does not exist yet.
+		 * Those entries render as plain text rather than as links, so the beta
+		 * candidate contains no clickable 404. It does not discharge the
+		 * underlying obligation: `/privacidad`, `/terminos` and `/cookies`
+		 * remain mandatory blockers for real public deployment.
+		 */
+		pendingNote: string;
 		/**
 		 * Spanish-primacy notice. Required on non-canonical locales
 		 * (brief §5.3); empty string on `es`.

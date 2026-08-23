@@ -175,8 +175,7 @@ export const es: Copy = {
 		],
 		offerStrong: '20% de descuento sobre el precio de lista, garantizado por 24 meses.',
 		offerRest: 'Los Socios Fundadores eligen su lugar antes que nadie.',
-		note: 'Dejar tus datos no implica ningún pago. Te enviamos el precio de Socio Fundador y la disponibilidad en tu zona.',
-		cta: 'Ver mi precio de Socio Fundador',
+		note: 'Las inscripciones de Socios Fundadores todavía no están abiertas y no se acepta ningún pago. Por ahora, lo que más ayuda es la encuesta: define dónde abrimos el primer hub.',
 		disclaimer:
 			'El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, con actualización trimestral por IPC/ICL, garantizado por 24 meses desde el alta.',
 	},
@@ -192,7 +191,7 @@ export const es: Copy = {
 			},
 			{
 				q: '¿Cuánto cuesta?',
-				a: 'Te mostramos el precio de Socio Fundador al dejar tus datos, junto con la disponibilidad en tu zona. Sin compromiso y sin pago. El precio de Socio Fundador es un 20% por debajo del precio de lista, garantizado por 24 meses.',
+				a: 'Todavía no publicamos el precio. El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, garantizado por 24 meses. Las inscripciones de Socios Fundadores abren más adelante y no se acepta ningún pago.',
 			},
 			{
 				q: '¿Qué pasa si me quiero dar de baja?',
@@ -220,6 +219,7 @@ export const es: Copy = {
 		heading: '¿Cómo usás tu bici en Buenos Aires?',
 		note: 'Tres minutos. Nos ayuda a elegir dónde abrir y cómo diseñar el espacio.',
 		cta: 'Responder encuesta · 3 min',
+		languageNotice: '',
 	},
 	footer: {
 		claim: 'Infraestructura urbana de guarda para tu bici.',
@@ -234,6 +234,7 @@ export const es: Copy = {
 		rights: '© 2026 CLAVERA. Todos los derechos reservados.',
 		location: 'Buenos Aires, Argentina',
 		languageTitle: 'Idioma',
+		pendingNote: 'En preparación.',
 		translationNotice: '',
 	},
 	media: {

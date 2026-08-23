@@ -167,11 +167,13 @@ Approved by Kirill on 2026-08-23. This section adds a two-track release strategy
 - The short Socios Fundadores lead/price form is excluded from the expedited beta. The short form, the founding-price reveal, and the `/gracias` flow are not beta requirements.
 - The long research Typeform survey becomes the **only** Typeform destination exposed by the beta.
 - The long survey is now intended for ES, EN, and RU, each using its own public Typeform URL — an approved multilingual expansion of the earlier Spanish-only survey rule (brief §13, item 3).
-- Two of the three public survey URLs are now known and verified as M3.5 inputs; these are public responder URLs, not secrets:
+- **Superseded 2026-08-23 (later same-day decision, approved by Kirill).** The three locale survey destinations are now settled and implemented in M3.5. These are public responder URLs, not secrets:
   - **ES** — `https://claveraar.typeform.com/ARGCABA`: verified public; Spanish title and introduction; introduction and Typeform's own duration estimate both say approximately 3 minutes.
-  - **RU** — `https://claveraar.typeform.com/latam`: verified public; Russian title and introduction; has an unresolved internal inconsistency — the introduction text says approximately 5 minutes, the Typeform duration indicator says 2 minutes, and the current website survey CTA says 3 minutes. This mismatch is an external Typeform/content readiness issue and must be normalized before public advertising; it is not corrected by this documentation task.
-  - **EN** — not supplied; remains pending.
-- The public beta must not expose a disabled, dead, placeholder, or mismatched-locale survey CTA. `/en/` cannot be advertised as having a complete survey conversion path until an English URL is supplied or Kirill makes another explicit decision.
+  - **RU** — `https://claveraar.typeform.com/latam`: verified public; Russian title and introduction. **The previous 2/3/5-minute readiness blocker is removed.** The obsolete 5-minute introduction is gone and the public Russian introduction now states approximately 3 minutes, so it agrees with the website CTA. Typeform's automatic UI estimate may still display 2 minutes; that is recorded honestly as a **non-blocking external display detail** outside our control, not a remaining launch blocker. The website may continue to describe the survey as approximately 3 minutes.
+  - **EN** — **no separate English Typeform will be created for the expedited beta.** `/en/` temporarily uses the Spanish survey `https://claveraar.typeform.com/ARGCABA`. This is an explicit beta compromise, not an English survey.
+- **English survey-language disclosure is mandatory.** The English UI must clearly state that the survey is in Spanish, next to every survey link. The English destination must never be labelled or described as an English survey.
+- **Release debt:** a dedicated EN public Typeform URL is required before the official full-quality release. The beta compromise above does not discharge it.
+- The public beta must not expose a disabled, dead, placeholder, or undisclosed mismatched-locale survey CTA. With the disclosure in place, `/en/` has a working — if compromised — survey path.
 - The short founding-member lead path remains deferred to the full product-completion track (M9) unless Kirill later removes it from the full roadmap explicitly.
 - The beta accepts no payment, deposit, `seña`, or membership contract of any kind.
 
@@ -191,6 +193,32 @@ The beta is a stabilization gate for controlled advertising traffic on the exist
 - Cloudflare access is expected later but was not available to this documentation task.
 - No deployment is authorized by this documentation commit.
 - The beta must not be claimed advertising-ready until the survey path, the mandatory legal pages, the S7 decision, internal-link integrity, QA gates, and hosting readiness are all resolved.
+
+### M3.5 implementation status (2026-08-23)
+
+M3.5 is implemented on `landing-design`. What that does and does not mean:
+
+**Implemented**
+
+- Locale-aware survey routing, isolated in `src/config/typeform.ts` and `src/components/lead-form/TypeformBoundary.astro`: ES → `ARGCABA`, RU → `latam`, EN → `ARGCABA` (Spanish survey, beta only).
+- The English UI discloses that the survey is in Spanish, beside every survey link, wired to the link with `aria-describedby`. ES and RU carry no such notice, because their survey matches the page language.
+- The deferred beta conversion path is removed, not merely disabled: the short Socios Fundadores lead/price form, its price-reveal CTA, and the `/gracias` redirect no longer exist in the source. The long research survey is the only Typeform destination exposed.
+- FAQ-03 no longer promises a price reveal in exchange for submitting details, because that flow does not exist in the beta. The canonical offer definition (20% below list, guaranteed 24 months) is preserved.
+- Footer entries whose routes do not exist render as plain text with a localized "pending" marker instead of as links, so the candidate contains no clickable 404. No legal copy was invented.
+- Brief S1 defect fixed: the hero primary call to action was below the fold at 375×667 in all three locales (Spanish 62px, Russian 123px). It now clears the fold in every locale.
+
+**Explicitly not implied by M3.5 completion**
+
+M3.5 completion means *implementation complete, pending Codex remote-commit review and Kirill visual review*. It is **not** acceptance, deployment, legal approval, product approval, advertising readiness, or finality.
+
+- `/privacidad`, `/terminos`, `/cookies` remain **mandatory and unbuilt**. They still block real public deployment. Rendering them as pending text is a presentation choice for the candidate only and discharges nothing.
+- S7 is **unchanged**, and its written legal approval remains **outstanding**. The Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` note remains unresolved. Absence of S7 approval is never approval.
+- A dedicated EN public Typeform URL remains outstanding release debt.
+- Domain, Meta verification, analytics, consent, SPF/DKIM/DMARC and the other publish gates are untouched and unresolved.
+- Cloudflare/deployment is **not authorized**. No deployment, hosting change, or production setting was touched.
+- M4–M10 remain pending and unstarted.
+
+Legal and strategic-SEO answers did not block assembling, building, testing, or visually auditing the beta candidate — and they remain real public-deployment gates.
 
 ### Preserved tool and workflow decisions
 

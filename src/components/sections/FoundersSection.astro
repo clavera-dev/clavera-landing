@@ -13,6 +13,10 @@ const c = getCopy(Astro.currentLocale).founders;
  * The figures replace the earlier accent pills. Every value here is the
  * approved offer from PROJECT_DECISIONS.md — 40 places, 20% below list,
  * guaranteed 24 months — and no monetary price is shown.
+ *
+ * The offer is stated here because it is canonical approved copy. It does not
+ * imply a working sign-up: the short lead form and the founding-price reveal
+ * are excluded from the public beta and deferred to M9.
  */
 ---
 
@@ -51,7 +55,13 @@ const c = getCopy(Astro.currentLocale).founders;
 			</p>
 			<p class="body-md">{c.note}</p>
 
-			<TypeformBoundary target="founders" ctaLabel={c.cta} size="lg" />
+			{/*
+			  The beta's only Typeform destination is the research survey. The short
+			  Socios Fundadores form and its price reveal are deferred to M9, so this
+			  section states the approved offer and then offers the one action that
+			  actually works — labelled for the survey it really opens.
+			*/}
+			<TypeformBoundary name="fundadores" size="lg" />
 		</div>
 
 		<p class="caption founders__disclaimer">{c.disclaimer}</p>
