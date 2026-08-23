@@ -30,13 +30,16 @@ for (const locale of LOCALES) {
 		});
 
 		/*
-		  Superseded by M3.5, not relaxed. The previous version asserted that both
-		  Typeform controls stayed inert *while no URL was configured* — correct
-		  while the survey URLs were unknown, and wrong now that they are known.
-		  The beta exposes the research survey as a working link from both
-		  places, and the short founders form is gone rather than disabled. The
-		  routing itself, the EN language disclosure, and the absence of the
-		  deferred price-reveal path are covered in depth by survey.spec.ts.
+		  The beta has TWO Typeform flows: the short pilot-interest form
+		  (primary, its URLs still pending) and the long research survey
+		  (secondary, live). Neither is ever a disabled control — a pending
+		  destination renders plain text instead.
+
+		  This supersedes the original assertion that both controls stayed inert
+		  while unconfigured, which held only while every URL was unknown.
+		  Routing, the EN language disclosure and the absence of the deferred
+		  founding-price path live in survey.spec.ts; the pilot flow lives in
+		  pilot.spec.ts.
 		*/
 		test('exposes the two beta flows, with no dead or disabled CTA', async ({ page }) => {
 			await page.goto(locale.path);

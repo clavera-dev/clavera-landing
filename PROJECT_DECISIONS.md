@@ -205,7 +205,7 @@ The beta is a stabilization gate for controlled advertising traffic on the exist
 
 - `/privacidad`, `/terminos`, and `/cookies` are **mandatory** for the public beta. They are not optional and may not be replaced by a fallback of any kind. This applies with particular force to the beta because it sends users to an external Typeform and processes personal data.
 - They require approved Spanish authority copy. Their final Spanish legal content is pending external/legal input, and this documentation task does not create or invent that legal copy.
-- EN/RU versions are courtesy translations of that approved Spanish authority, and each must state that only the Spanish version has legal validity.
+- ~~EN/RU versions are courtesy translations of that approved Spanish authority, and each must state that only the Spanish version has legal validity.~~ **Superseded 2026-08-23 (M3.5.1):** beta legal content is **Spanish-only**. No English or Russian translation of the legal pages will be produced for the beta. `/en/` and `/ru/` link to the Spanish legal pages, accompanied by an explicit Spanish-only notice. See "Legal content direction (2026-08-23, M3.5.1)" below.
 - If the required legal content is not available, public deployment remains blocked. There is no "approved legal fallback" for `/privacidad`, `/terminos`, or `/cookies` — removing the footer links does not remove the underlying requirement to have these routes when the beta collects personal data and links out to Typeform.
 - Of all the beta's legal/publish gates, **only S7** may receive a separately approved beta exclusion, and only if written legal approval for S7 is not received in time. Absence of S7 approval must never be treated as approval.
 - Written legal approval for the S7 comparison table (brief §S7 note 2) remains outstanding, unchanged from the 2026-08-21 worklog entries.
@@ -224,7 +224,7 @@ M3.5 is implemented on `landing-design`. What that does and does not mean:
 
 - Locale-aware survey routing, isolated in `src/config/typeform.ts` and `src/components/lead-form/TypeformBoundary.astro`: ES → `ARGCABA`, RU → `latam`, EN → `ARGCABA` (Spanish survey, beta only).
 - The English UI discloses that the survey is in Spanish, beside every survey link, wired to the link with `aria-describedby`. ES and RU carry no such notice, because their survey matches the page language.
-- The deferred beta conversion path is removed, not merely disabled: the short Socios Fundadores lead/price form, its price-reveal CTA, and the `/gracias` redirect no longer exist in the source. The long research survey is the only Typeform destination exposed.
+- The deferred beta conversion path is removed, not merely disabled: the founding-price reveal CTA and the `/gracias` redirect no longer exist in the source. At M3.5 the long research survey was the only Typeform destination exposed; **M3.5.1 added the short pilot-interest form as the primary flow**, so the beta now has two. The deferred flow that stays removed is the *founding-price* one, not short forms in general.
 - FAQ-03 no longer promises a price reveal in exchange for submitting details, because that flow does not exist in the beta. The canonical offer definition (20% below list, guaranteed 24 months) is preserved.
 - Footer entries whose routes do not exist render as plain text with a localized "pending" marker instead of as links, so the candidate contains no clickable 404. No legal copy was invented.
 - Brief S1 defect fixed: the hero primary call to action was below the fold at 375×667 in all three locales (Spanish 62px, Russian 123px). It now clears the fold in every locale.
@@ -276,6 +276,16 @@ The Founders section keeps the approved offer unchanged: 40 places, 20% off the 
 **The pilot-interest URLs are pending external input and are not live.** They are held as `null` per locale in `src/config/typeform.ts` (`PILOT_INTEREST_DESTINATIONS`), with no locale fallback. While a locale is `null` the UI renders localized plain, non-interactive text — never an anchor, a button, a disabled control, `href="#"`, an empty href, or a placeholder domain. **No placeholder URL values are recorded in this document or any other durable document, and temporary `null` values are not real URLs.**
 
 Attribution: only an explicit allowlist of non-personal parameters may ever be appended — `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `lang`, `source`, `landing_version`. Arbitrary query parameters are never forwarded, and no name, email, phone or other personal datum ever appears in a URL. Values are applied at build time only; forwarding a visitor's own incoming `utm_*` would require client-side JavaScript, so it is deliberately not implemented and the site still ships **zero client JavaScript**.
+
+### Legal content direction (2026-08-23, M3.5.1)
+
+Approved by Kirill. This supersedes the earlier EN/RU courtesy-translation requirement wherever it still appears in this repository.
+
+- **Beta legal content is Spanish-only.** `/privacidad`, `/terminos` and `/cookies` will carry approved Spanish authority content and nothing else. No English or Russian version of the legal text is produced for the beta.
+- **EN and RU link to the Spanish pages**, accompanied by an explicit notice that the legal content is available in Spanish only and that the Spanish version is the only one with legal validity. They do not carry their own legal text, courtesy translation or summary.
+- **The owner chose not to display `domicilio` or an RNBD registration number in the beta.** This is a display decision only.
+- **It does not resolve the underlying legal-sufficiency question.** Whether the beta may lawfully publish and collect personal data without displaying a `domicilio`, and what RNBD registration status is required, remain **unresolved pre-deployment checks**. Choosing not to display these fields is not a finding that they are unnecessary, and nothing here is legal advice, legal approval, or confirmation of sufficiency.
+- No legal text, `domicilio`, RNBD number, approval or publication date is invented or recorded anywhere in this repository.
 
 ### Owner decisions recorded 2026-08-23
 

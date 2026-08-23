@@ -1,24 +1,59 @@
 import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
+import { LOCALES as LOCALE_KEYS } from '../src/i18n/config';
+import {
+	PILOT_INTEREST_DESTINATIONS,
+	getPilotDestination,
+	buildDestinationHref,
+	destinationLanguageDiffers,
+	type SurveyDestination,
+} from '../src/config/typeform';
 
 /**
- * Locale-aware survey routing (M3.5).
+ * Locale-aware RESEARCH-survey routing.
  *
- * The expedited public beta exposes exactly one Typeform destination — the
- * long research survey — and routes it per locale:
+ * The beta has two Typeform flows: the short pilot-interest form (primary,
+ * covered by pilot.spec.ts) and this long research survey (secondary, S13).
+ * This file covers the research flow only, routed per locale:
  *
  *   es-AR → https://claveraar.typeform.com/ARGCABA
  *   ru    → https://claveraar.typeform.com/latam
  *   en    → https://claveraar.typeform.com/ARGCABA   (Spanish survey, disclosed)
  *
  * English deliberately uses the Spanish survey because no dedicated English
- * Typeform exists yet. That is an approved beta compromise, and the English UI
- * must say so — silently sending an English reader to a Spanish form is the
- * failure this file exists to prevent.
+ * research Typeform exists. That is an approved beta compromise, and the
+ * English UI must say so — silently sending an English reader to a Spanish
+ * form is the failure this file exists to prevent.
  */
 
-/** Destinations that must never appear: the deferred M9 conversion path. */
-const FORBIDDEN_DESTINATIONS = ['/gracias', 'typeform.com/to/', 'socios-fundadores'];
+/*
+  The deferred M9 conversion path, matched by what it actually IS.
+
+  CORRECTED: an earlier version of this list banned any URL containing
+  `typeform.com/to/`. That was wrong and would have blocked a legitimate form.
+  `/to/{FORM_ID}` is Typeform's ordinary responder path — the pending pilot
+  form's own display URL has exactly that shape — so banning the path banned
+  the product rather than the deferred flow. See the regression block at the
+  bottom of this file.
+
+  What must actually never appear is the deferred founding-price flow: its
+  exact known destination (`/gracias`), its slug, and the price-reveal CTA
+  labels that were removed from the copy in M3.5.
+*/
+
+/** Exact known legacy destinations of the deferred flow. */
+const FORBIDDEN_DESTINATIONS = ['/gracias', 'socios-fundadores', 'founding-price', 'precio-fundador'];
+
+/**
+ * Semantic markers of the deferred price-reveal flow, in every locale. These
+ * are the exact CTA labels M3.5 removed; their reappearance anywhere in the
+ * document means the flow came back regardless of which URL it points at.
+ */
+const FORBIDDEN_PRICE_REVEAL_MARKERS = [
+	'Ver mi precio de Socio Fundador',
+	'See my Founding Member price',
+	'Узнать мою цену участника-основателя',
+];
 
 for (const locale of LOCALES) {
 	test.describe(`[${locale.key}] survey routing`, () => {
@@ -146,6 +181,16 @@ for (const locale of LOCALES) {
 					`links to ${forbidden}`,
 				).toEqual([]);
 			}
+
+			/*
+			  The stronger half: the deferred flow is identified by what it says,
+			  not by the shape of its URL. textContent, not innerText, so a label
+			  hidden inside a collapsed <details> cannot slip through.
+			*/
+			const text = await page.evaluate(() => document.body.textContent ?? '');
+			for (const marker of FORBIDDEN_PRICE_REVEAL_MARKERS) {
+				expect(text, `price-reveal marker "${marker}"`).not.toContain(marker);
+			}
 		});
 
 		test('shows no CLAVERA monetary price and no payment path', async ({ page }) => {
@@ -192,3 +237,75 @@ for (const locale of LOCALES) {
 		});
 	});
 }
+
+
+/* =========================================================================
+   REGRESSION — a legitimate `/to/{FORM_ID}` URL must be accepted
+   =========================================================================
+
+   Guards the defect this file used to contain: `typeform.com/to/` was on the
+   forbidden list, so the ordinary Typeform responder path was treated as the
+   deferred founding-price flow. The pending pilot form's real display URL has
+   that shape, so the ban would have rejected the actual product.
+
+   The real form id is deliberately NOT committed — the RU form is unpublished
+   and still under external review. A synthetic id of the same shape is used,
+   which is what makes this a shape test rather than a URL test.
+   ========================================================================= */
+
+/** Same shape as a real responder URL. Not a real form. */
+const SAMPLE_PILOT_URL = 'https://claveraar.typeform.com/to/AbCdEfGh';
+
+test.describe('pilot URL shape', () => {
+	test('a /to/{FORM_ID} URL is accepted and is not a forbidden destination', () => {
+		// It must not collide with any exact legacy destination...
+		for (const forbidden of FORBIDDEN_DESTINATIONS) {
+			expect(SAMPLE_PILOT_URL, `wrongly matches "${forbidden}"`).not.toContain(forbidden);
+		}
+		// ...and it must survive href building intact.
+		const href = buildDestinationHref(SAMPLE_PILOT_URL, { lang: 'es', source: 'landing' });
+		expect(href).toBe('https://claveraar.typeform.com/to/AbCdEfGh?lang=es&source=landing');
+		expect(href).toContain('/to/');
+		expect(href).toMatch(/^https:\/\//);
+	});
+
+	test('a /to/ destination satisfies the pilot destination contract', () => {
+		const destination: SurveyDestination = { url: SAMPLE_PILOT_URL, language: 'es' };
+
+		// Same-language destination needs no disclosure; a mismatched one does.
+		expect(destinationLanguageDiffers('es', destination)).toBe(false);
+		expect(destinationLanguageDiffers('en', destination)).toBe(true);
+
+		// The URL is well formed and carries no personal data.
+		const parsed = new URL(destination.url);
+		expect(parsed.protocol).toBe('https:');
+		expect(parsed.pathname.startsWith('/to/')).toBe(true);
+		expect(parsed.search).toBe('');
+	});
+
+	test('activation requires only the central config: nothing else can supply a destination', () => {
+		/*
+		  The chain the rendered page depends on is config → accessor → DOM.
+		  This pins the first link by identity: the accessor returns the very
+		  object held in PILOT_INTEREST_DESTINATIONS, so there is no second
+		  source, no fallback, and no derived default that could inject a URL
+		  the central map does not contain.
+
+		  The second link — DOM state equals config state for every locale — is
+		  asserted in pilot.spec.ts.
+		*/
+		for (const locale of LOCALE_KEYS) {
+			expect(getPilotDestination(locale), `accessor for ${locale}`).toBe(
+				PILOT_INTEREST_DESTINATIONS[locale],
+			);
+		}
+
+		/*
+		  Deliberately NOT asserted here: that the map is currently all-null.
+		  Such an assertion would fail the moment a real URL is supplied, which
+		  would mean activation required editing a test — the exact opposite of
+		  what this test exists to guarantee. Whether a locale is configured yet
+		  is a fact about today, not an invariant.
+		*/
+	});
+});
