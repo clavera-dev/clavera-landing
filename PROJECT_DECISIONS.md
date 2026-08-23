@@ -1,6 +1,6 @@
 # CLAVERA Landing — Current Project Decisions
 
-Last updated: 2026-08-21
+Last updated: 2026-08-23
 
 This document contains the current approved decisions for the first production landing page.
 
@@ -117,6 +117,8 @@ Do not introduce a dependency without explaining why native HTML, CSS or TypeScr
 
 ## Lead capture
 
+Superseded for the expedited beta only on 2026-08-23: see "Release strategy (2026-08-23)" below. The short Socios Fundadores lead/price form, the founding-price reveal, and the `/gracias` flow described in this section are excluded from the M3.5 public beta and remain deferred to the full-quality release track (M9). The rule below still governs the full product-completion track.
+
 For the first release, lead capture uses a separate short Typeform form on the existing Typeform Plus account.
 
 Typeform responses will be synchronized to Google Sheets.
@@ -150,6 +152,48 @@ The secondary domain should permanently redirect to the primary domain.
 - Preserve semantic HTML, keyboard navigation and visible focus states.
 - Optimize images, video, fonts and third-party scripts.
 - The landing page must remain useful before JavaScript finishes loading.
+
+## Release strategy (2026-08-23)
+
+Approved by Kirill on 2026-08-23. This section adds a two-track release strategy on top of the existing phase-one scope. It does not erase any decision above; superseded beta-specific statements are marked inline where they occur.
+
+### Two tracks
+
+- **Track A — Expedited public beta.** The immediate priority is a stable multilingual (`es-AR`/`en`/`ru`) public beta suitable for controlled advertising traffic. Delivered by a new milestone `M3.5 — Expedited public-beta stabilization and release gate`, inserted before M4 in `docs/project/CLAVERA_EXECUTION_PLAN.md`. M3.5 gets one approximately three-hour implementation session after this documentation commit is accepted. It starts from the existing ES/EN/RU site, the approved CLAVERA design system, the approved R1–R6 assets, current multilingual copy, and the accepted test infrastructure. It fixes only high-impact visual, responsive, interaction, accessibility, routing, internal-link, asset-loading, metadata, console, survey-integration, hosting-readiness, and release blockers. It does **not** perform broad redesign, reference-driven recomposition, motion work, slogan rewriting, design-system replacement, framework changes, speculative refactoring, or new dependency installation. Taste, Refero, Impeccable, the Emil Kowalski skills, Motion for JavaScript, and Fable are not run during M3.5. Public deployment requires a later, separate, explicit approval after Codex review and Kirill's own visual check. The beta is not final visual acceptance, not legal approval, not product completion, and not completion of M4–M10.
+- **Track B — Full-quality release.** M4–M10 and the frozen tool registry (`docs/project/CLAVERA_EXECUTION_PLAN.md`) are preserved unchanged and remain pending. After beta launch, work resumes with the Taste audit, reference research, composition specification, Impeccable, motion planning and implementation, full QA and visual regression, product completion, and designer handoff, in the existing milestone order. M4–M10 are not removed or renumbered.
+
+### Beta form decision (supersedes the beta-only Socios Fundadores lead-capture assumption for M3.5)
+
+- The short Socios Fundadores lead/price form is excluded from the expedited beta. The short form, the founding-price reveal, and the `/gracias` flow are not beta requirements.
+- The long research Typeform survey becomes the **only** Typeform destination exposed by the beta.
+- The long survey is now intended for ES, EN, and RU, each using its own public Typeform URL — an approved multilingual expansion of the earlier Spanish-only survey rule (brief §13, item 3).
+- The three public survey URLs will be supplied separately before M3.5 implementation. This documentation commit does not invent or add URLs.
+- The public beta must not expose a disabled, dead, placeholder, or mismatched-locale survey CTA. If one locale's URL is still missing at implementation time, that locale cannot be advertised as having a complete survey conversion path until Kirill makes a separate decision.
+- The short founding-member lead path remains deferred to the full product-completion track (M9) unless Kirill later removes it from the full roadmap explicitly.
+- The beta accepts no payment, deposit, `seña`, or membership contract of any kind.
+
+### Beta versus final-release distinction
+
+The beta is a stabilization gate for controlled advertising traffic on the existing implementation. It is explicitly not: final visual acceptance (still gated at the composition pass after M4/M5), legal approval, product completion, or completion of M4–M10. Full-quality work resumes on Track B after beta launch.
+
+### Legal and publishing gates
+
+- `/privacidad`, `/terminos`, and `/cookies` are required routes (brief B3, Part XI) and are not currently implemented.
+- Their final Spanish legal content is pending external/legal input.
+- EN/RU versions must be translations of the approved Spanish legal authority once it exists, and must state that only the Spanish version has legal validity.
+- Written legal approval for the S7 comparison table (brief §S7 note 2) remains outstanding, unchanged from the 2026-08-21 worklog entries.
+- The Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` market-reference note (see `docs/project/CLAVERA_WORKLOG.md`, 2026-08-21) remains unresolved.
+- If S7 approval is not received before beta launch, S7 requires a separate approved exclusion decision; absence of approval must never be treated as approval.
+- Footer links to routes that do not yet exist must not remain broken in a public beta; the implementation choice (build the route, or remove the link) is deferred to M3.5.
+- Cloudflare access is expected later but was not available to this documentation task.
+- No deployment is authorized by this documentation commit.
+- The beta must not be claimed advertising-ready until the survey path, the legal pages (or an approved legal fallback), the S7 decision, internal-link integrity, QA gates, and hosting readiness are all resolved.
+
+### Preserved tool and workflow decisions
+
+- **Fable budget.** User-stated available balance: 1,000 credits (≈ USD 100). Target project spend: no more than 500 credits (≈ USD 50). At least 500 credits are preserved unless Kirill explicitly approves otherwise. Fable is excluded from M3.5 and from any automatic correction loop; it is reserved for a small number of separately approved high-value visual/architectural synthesis or final-audit tasks, primarily around M4/M5 and possibly M8. No Fable invocation is authorized by this documentation change. Local Claude Code was observed at version 2.1.92 and needs an upgrade before future Fable CLI use; that upgrade is not performed here.
+- **Refero status.** Kirill does not currently have Refero Pro. Refero MCP is not connected and is not a beta blocker. Official pricing observed during research: USD 17 month-to-month or USD 120 billed annually. If the business owner approves it, the preferred option is one month only. No annual purchase, connection, account action, or installation is approved by this commit. Refero remains conditional M4 research tooling (see the frozen tool registry).
+- **Future bounded Claude/Codex workflow (approved direction, not implemented infrastructure).** Claude is the only implementation writer; Codex is the independent reviewer; they never write concurrently to the same worktree. Work runs in a bounded, isolated branch/worktree, with a maximum of two correction cycles per unattended run. No automatic merge to main, deployment, purchase, dependency installation, legal decision, product decision, or visual approval. Fable is excluded from automatic loops. The workflow stops for Kirill at visual, legal, product, spending, and publishing gates. This automation harness is not implemented during M3.5.
 
 ## Approved final render set
 

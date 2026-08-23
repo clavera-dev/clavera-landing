@@ -2,6 +2,44 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-08-23 — Two-track release strategy approved; M3.5 added as next milestone (documentation only)
+
+Kirill approved an expedited public-beta track alongside the existing full-quality track. This entry records the decision. **No application source, test, configuration, dependency, skill, lock file, or asset changed. No audit ran. No tool was installed or purchased. No deployment occurred.** Only `PROJECT_DECISIONS.md`, `docs/project/CLAVERA_EXECUTION_PLAN.md`, and this worklog were edited.
+
+### Two-track decision
+
+- **Track A — expedited public beta**, via a new bounded milestone `M3.5 — Expedited public-beta stabilization and release gate`, inserted before M4. M3.5 is now the current next milestone.
+- **Track B — full-quality release.** M4–M10 and the frozen tool registry are preserved unchanged and remain pending; the skill sequence already approved for M4+ (Taste, Refero, Impeccable, Emil Kowalski skills, Motion for JavaScript) is untouched.
+
+### M3.5 scope
+
+- Budget: one approximately three-hour implementation session, after this documentation commit is accepted.
+- Starts from the existing ES/EN/RU site, the approved CLAVERA design system, approved R1–R6 assets, current multilingual copy, and the accepted M2.5/M3 test infrastructure.
+- Fixes only high-impact visual, responsive, interaction, accessibility, routing, internal-link, asset-loading, metadata, console, survey-integration, hosting-readiness, and release blockers — no broad redesign, reference-driven recomposition, motion work, slogan rewriting, design-system replacement, framework changes, speculative refactoring, or new dependency installation.
+- Taste, Refero, Impeccable, the Emil Kowalski skills, Motion for JavaScript, and Fable do not run during M3.5.
+
+### Beta form decision
+
+- The long research Typeform survey becomes the only Typeform destination exposed by the beta, now intended for ES, EN, and RU, each with its own public URL — an approved multilingual expansion of the earlier Spanish-only survey rule. The three URLs are still pending and are not invented or added by this documentation commit; if one locale's URL is missing at implementation time, that locale cannot be advertised as having a complete survey conversion path until Kirill decides separately.
+- The short Socios Fundadores lead/price form, the founding-price reveal, and the `/gracias` flow are excluded from the beta and remain deferred to the full product-completion track (M9) unless Kirill later removes the short form from the full roadmap explicitly.
+- The beta accepts no payment, deposit, `seña`, or membership contract.
+
+### Legal, S7, route, survey, hosting, and review gates (all still open)
+
+- `/privacidad`, `/terminos`, `/cookies` are required routes and are not currently implemented; final Spanish legal content is pending external/legal input; EN/RU must be translations of the approved Spanish authority stating only ES has legal validity.
+- The S7 written legal approval remains outstanding (unchanged from the 2026-08-21 entries below). The Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` note remains unresolved. If S7 approval is not received before beta launch, S7 requires a separate approved exclusion decision — absence of approval is never treated as approval.
+- Footer links to routes that do not yet exist must not remain broken in a public beta; the implementation choice is deferred to M3.5.
+- Cloudflare access is expected later but was not available to this documentation task; no deployment is authorized here.
+- The beta cannot be claimed advertising-ready until the survey path, legal pages (or an approved legal fallback), the S7 decision, internal-link integrity, QA gates, and hosting readiness are all resolved. Public deployment requires a later, separate, explicit approval after Codex review and Kirill's own visual check.
+
+### Preserved decisions carried forward unimplemented
+
+- **Fable budget:** available balance 1,000 credits (≈ USD 100); target project spend ≤ 500 credits (≈ USD 50); at least 500 credits preserved unless Kirill explicitly approves otherwise; Fable excluded from M3.5 and from automatic correction loops; reserved for a small number of separately approved high-value visual/architectural synthesis or final-audit tasks, primarily around M4/M5 and possibly M8; no Fable invocation authorized by this commit. Local Claude Code observed at version 2.1.92 and needs an upgrade before future Fable CLI use — not performed here.
+- **Refero status:** Kirill does not currently have Refero Pro; Refero MCP is not connected and is not a beta blocker; official pricing observed was USD 17 month-to-month or USD 120 billed annually; if the business owner approves it, the preferred option is one month only; no annual purchase, connection, account action, or installation approved here; Refero remains conditional M4 research tooling.
+- **Future bounded Claude/Codex workflow (approved direction, not implemented infrastructure):** Claude is the only implementation writer; Codex is the independent reviewer; they never write concurrently to the same worktree; work runs in a bounded isolated branch/worktree; maximum two correction cycles per unattended run; no automatic merge to main, deployment, purchase, dependency installation, legal decision, product decision, or visual approval; Fable excluded from automatic loops; the workflow stops for Kirill at visual, legal, product, spending, and publishing gates; this automation harness is not implemented during M3.5.
+
+Full detail is recorded in `PROJECT_DECISIONS.md`, "Release strategy (2026-08-23)", and `docs/project/CLAVERA_EXECUTION_PLAN.md`, the new M3.5 section and the 2026-08-23 decision-log entry.
+
 ## 2026-08-21 — Taste audit skill registered (not run)
 
 The Taste Skill is now installed project-locally and committed to the repository. This is tooling registration only.

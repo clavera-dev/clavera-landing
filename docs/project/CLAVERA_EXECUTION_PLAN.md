@@ -1,9 +1,10 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-08-21
+Status date: 2026-08-23
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
+Current next milestone: `M3.5 — Expedited public-beta stabilization and release gate`
 
 ## Purpose
 
@@ -53,6 +54,8 @@ Claude prompts are written in English. Model, thinking, and permission settings 
 ### Registry freeze — 2026-08-20
 
 The registry below is frozen for the current delivery cycle. Do not add another skill, plugin, MCP server, component catalog, workflow framework, or runtime library merely because it is recommended in a social post or tool list. A new candidate may be reconsidered only when a concrete uncovered need is recorded in this plan first.
+
+**Freeze reaffirmed 2026-08-23.** The two-track release strategy (see the decision log entry below and `PROJECT_DECISIONS.md`, "Release strategy (2026-08-23)") does not unfreeze this registry. M3.5 is scoped to run entirely on tools already installed and accepted: Frontend Design, Playwright, `@axe-core/playwright`, Astro diagnostics, and the TypeScript language service. Taste, Refero, Impeccable, the Emil Kowalski skills, and Motion for JavaScript remain M4+ tooling and are explicitly excluded from M3.5. Fable is not part of this registry's approved-and-required or approved-conditionally sections; it is tracked separately in `PROJECT_DECISIONS.md` as reserved, budget-limited M4/M5/M8 tooling and is excluded from M3.5 and from any automatic correction loop.
 
 Current sequence:
 
@@ -303,6 +306,18 @@ Status: **technically accepted by Codex at commit `906f68b`** (`906f68bfe582d8d2
 - enforce Appendix В terminology against the built output in all three locales, across visible copy, metadata, alt/ARIA text and public URLs/filenames;
 - keep the Tier-2 allowlist to the three S7 column headers plus the one scoped canonical Spanish sentence, with negative controls proving the scanner detects what it claims to.
 
+### M3.5 — Expedited public-beta stabilization and release gate
+
+Status: pending. Approved 2026-08-23 as an insertion before M4, in response to the Track A expedited-beta decision recorded in `PROJECT_DECISIONS.md` ("Release strategy (2026-08-23)"). This milestone does not replace or reorder M4–M10; it is a bounded, additional gate.
+
+- Scope: one approximately three-hour implementation session, starting from the existing ES/EN/RU site, the approved CLAVERA design system, the approved R1–R6 assets, current multilingual copy, and the accepted M2.5/M3 test infrastructure.
+- In scope: high-impact visual, responsive, interaction, accessibility, routing, internal-link, asset-loading, metadata, console, survey-integration, hosting-readiness, and release blockers only.
+- Out of scope: broad redesign, reference-driven recomposition, motion work, slogan rewriting, design-system replacement, framework changes, speculative refactoring, and new dependency installation.
+- Tooling excluded from M3.5: Taste, Refero, Impeccable, the Emil Kowalski skills, Motion for JavaScript, and Fable.
+- Beta form: the long research Typeform survey is the only Typeform destination exposed by the beta, with separate ES/EN/RU public URLs supplied before implementation. The short Socios Fundadores lead/price form, the founding-price reveal, and the `/gracias` flow are excluded from the beta and remain deferred to M9. No payment, deposit, `seña`, or membership contract is accepted in the beta.
+- Legal/publish gates that must be resolved, or explicitly and separately excluded, before public deployment: `/privacidad`, `/terminos`, `/cookies` routes (currently unimplemented; Spanish legal content pending external/legal input; EN/RU as translations of the approved Spanish authority with a Spanish-only legal-validity statement); the outstanding S7 written legal approval; the unresolved Appendix В.2 / §S7 conflict with the canonical Spanish `cocheras` note; no broken footer links to not-yet-existing routes.
+- Public deployment itself requires a later, separate, explicit approval after Codex review and Kirill's own visual check. This milestone's acceptance is not visual acceptance, not legal approval, not product completion, and not completion of M4–M10.
+
 ### M4 — Reference research and composition specification
 
 Status: pending.
@@ -418,4 +433,10 @@ Approved by Kirill: yes.
 
 Reason: `c5171d2` was reviewed only as a technical baseline, and the page must now be redesigned against three locales. Accepting its visuals now would freeze a Spanish-only composition.
 Affected milestones: M2, M5, M8, M10.
+Approved by Kirill: yes.
+
+### 2026-08-23 — Two-track release strategy and multilingual long-survey beta decision
+
+Reason: Kirill wants a stable multilingual (`es-AR`/`en`/`ru`) public beta ready for controlled advertising traffic ahead of the full-quality composition and QA work in M4–M10. Kirill explicitly approved this scope and sequence change: a new bounded milestone `M3.5 — Expedited public-beta stabilization and release gate` is inserted before M4, with one approximately three-hour implementation session after the documentation commit is accepted. The long research Typeform survey becomes the only Typeform destination exposed by the beta, now intended for ES, EN, and RU with separate public URLs (an approved multilingual expansion of the earlier Spanish-only survey rule), while the short Socios Fundadores lead/price form, founding-price reveal, and `/gracias` flow are excluded from the beta and remain deferred to M9. No beta payments are accepted. Full details, including the legal/publish gates, the preserved Fable budget, the Refero status, and the future bounded Claude/Codex workflow direction, are recorded in `PROJECT_DECISIONS.md`, "Release strategy (2026-08-23)".
+Affected milestones: new M3.5 inserted before M4; M4–M10 preserved unchanged and remain pending; tool registry freeze reaffirmed, not lifted.
 Approved by Kirill: yes.
