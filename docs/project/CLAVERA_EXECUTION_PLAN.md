@@ -1,10 +1,10 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-09-28
+Status date: 2026-09-29
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
-Current next milestone: `M4 — Reference research and composition specification` (blocked until M3.5 is reviewed and accepted; Taste audit, baseline and M4.1 evidence pack done, public reference research still pending)
+Current active milestone: `M4 — Reference research and composition specification`. Taste audit, local baseline and M4.1 evidence pack are done; M4.2 public reference research and below-the-fold audit remain. These local design and evidence tasks proceed while M3.5 review and lawyer approval remain pending. No publication or legal acceptance follows from M4 progress.
 Current milestone in review: `M3.5.1 — Beta-conversion preparation and correction` — implementation complete, pending Codex remote-commit review and Kirill visual review (builds on M3.5). Review state unchanged by M3.5.2.
 Proposed milestone in progress: `M3.5.2 — Owner handoff v1.1 beta corrections` — uncommitted, on branch `codex/clavera-beta-handoff-v1-1`; pending Codex review. See the M3.5.2 section below.
 Owner response v1.2 update (2026-09-28): exact ES/EN/RU e-bike and evaluated-amenity copy, confirmed working zones, and a visible searchable combobox have been added to that same uncommitted candidate. Spanish legal pages have been exported together as a local lawyer-review PDF. No review gate has been lifted, and no deployment has occurred.
