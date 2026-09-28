@@ -1,0 +1,12 @@
+# M4 public references — first verified pass
+
+Accessed 2026-09-29 through the public pages linked below. This pass verifies page content and information order. It does not claim pixel-level visual comparison or mobile viewport inspection. The sites are references for presentation patterns only; none of their commercial, security, price, availability, location or membership claims may be reused for CLAVERA.
+
+| Source | Verified pattern | CLAVERA use | Boundary |
+|---|---|---|---|
+| [Vitsœ — How to start](https://www.vitsoe.com/us/606/inquiry?imgref=15) | A four-step explanation precedes an inquiry form. The page explicitly says an inquiry does not commit the visitor to a purchase. | P9: place a short, legible process before the single survey action; make the non-binding research purpose clear. | CLAVERA must use its approved legal copy and may not promise Vitsœ's service or copy its wording. |
+| [Spokesafe — How to make a booking](https://help.spokesafe.com/en/articles/9265186-how-to-make-a-booking-using-the-spokesafe-app) | The sequence separates location, facilities/vehicle type, duration, rack, payment and access into discrete steps. | P4/P9: distinguish the visitor's zone of interest from future service details in a numbered index. | CLAVERA has no confirmed location, booking, payment or live facility. Those steps cannot appear as current CLAVERA capabilities. |
+| [Rapha — What is the RCC?](https://content.rapha.cc/us/en/a/story/what-is-the-rcc) | Membership story is broken into distinct benefit, ride, local community and join sections rather than one long claim. | P3/P10: use separated statements and section transitions to give each approved idea room. | CLAVERA cannot imply an existing club, members, locations, benefits or social proof. Do not borrow imagery or branding. |
+| [Cyclehoop — Home](https://cyclehoop.com/) | The home page identifies Bikehangar as a distinct service/product and gives it its own path. | P9: make the CLAVERA concept identifiable before asking for interest. | CLAVERA is not an operating bike parking provider; avoid terminology from this site that conflicts with its legal stop list. |
+
+The original M4 matrix P1, P2, P5–P8, P11 still lacks verified *visual* examples at target viewports. Keep these rows open until directly viewed and documented. Do not fill them with assumptions from search snippets or these text-only observations. No Refero, subscription, paid API or purchase was used.
