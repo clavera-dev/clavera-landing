@@ -1,0 +1,313 @@
+---
+/**
+ * Zone selector (owner handoff v1.1 §3.2), used in the hero and in S10.
+ *
+ * Searchable single-select combobox, alphabetical, with zone names in their
+ * original Spanish on every locale. No zone is highlighted or ranked.
+ * The working list is in src/config/candidate-zones.ts (owner response v1.2).
+ *
+ * "Seguir" opens the research survey. Every allowed zone has a build-time
+ * href; visitor text is used only to filter the list and never enters a URL.
+ *
+ * Progressive enhancement. Moving a selection into a URL fragment needs
+ * JavaScript, so this is the page's one client script. Without JavaScript
+ * the combobox stays hidden — it could not do anything — and "Seguir" is still
+ * an ordinary link to the survey, without a zone.
+ */
+import {
+	buildResearchHref,
+	getResearchDestination,
+	destinationLanguageDiffers,
+} from '../../config/typeform';
+import { CANDIDATE_ZONES, CANDIDATE_ZONES_STATUS } from '../../config/zones';
+import { getCopy, resolveLocale, LOCALE_DEFINITIONS } from '../../i18n';
+
+interface Props {
+	/** Keeps ids unique between the hero and S10 instances. */
+	name: string;
+}
+
+const { name } = Astro.props;
+
+const locale = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+const c = copy.zoneSelector;
+
+const destination = getResearchDestination(locale);
+const baseHref = buildResearchHref(locale);
+const zones = CANDIDATE_ZONES.map((zone) => ({
+	...zone,
+	href: buildResearchHref(locale, zone.slug),
+}));
+
+const inputId = `zone-search-${name}`;
+const listId = `zone-list-${name}`;
+const captionId = `zone-caption-${name}`;
+const noticeId = `zone-language-${name}`;
+
+// English opens the Spanish survey, and must say so next to the link.
+const languageNotice = copy.survey.languageNotice;
+const showLanguageNotice =
+	destinationLanguageDiffers(locale, destination) && languageNotice.length > 0;
+---
+
+<div
+	class="zone-selector"
+	class:list={{ 'zone-selector--hero': name === 'hero' }}
+	data-zone-selector
+	data-zone-list-status={CANDIDATE_ZONES_STATUS}
+>
+	<label class="zone-selector__heading" for={inputId}>{c.heading}</label>
+
+	{/*
+	  The caption follows the control as helper text, still wired to the select
+	  by aria-describedby. Above it, it pushed the hero's primary action below
+	  the 375×667 fold that brief S1 requires.
+	*/}
+	<div class="zone-selector__row">
+		<div class="zone-selector__field" data-zone-field hidden>
+			<input
+				id={inputId}
+				type="search"
+				class="zone-selector__input"
+				placeholder={c.placeholder}
+				role="combobox"
+				aria-autocomplete="list"
+				aria-expanded="false"
+				aria-controls={listId}
+				aria-describedby={captionId}
+				autocomplete="off"
+				data-zone-input
+			/>
+			<ul id={listId} class="zone-selector__list" role="listbox" hidden data-zone-list>
+				{
+					zones.map((zone, index) => (
+						<li id={`${listId}-${index}`} role="option" aria-selected="false" data-zone-option data-slug={zone.slug} data-href={zone.href} lang="es-AR">
+							{zone.label}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<a
+			class="button button--primary button--lg zone-selector__continue"
+			href={baseHref}
+			hreflang={LOCALE_DEFINITIONS[destination.language].hreflang}
+			aria-describedby={showLanguageNotice ? noticeId : undefined}
+			data-zone-continue
+		>
+			{c.cta}
+		</a>
+	</div>
+
+	<p class="body-md zone-selector__caption" id={captionId}>{c.caption}</p>
+
+	{
+		showLanguageNotice && (
+			<p class="caption zone-selector__notice" id={noticeId} data-destination-language-notice>
+				{languageNotice}
+			</p>
+		)
+	}
+</div>
+
+<script>
+	// Search only filters build-time options. Typed input never reaches a URL.
+	const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+	document.querySelectorAll<HTMLElement>('[data-zone-selector]').forEach((root) => {
+		const field = root.querySelector<HTMLElement>('[data-zone-field]');
+		const input = root.querySelector<HTMLInputElement>('[data-zone-input]');
+		const list = root.querySelector<HTMLElement>('[data-zone-list]');
+		const options = Array.from(root.querySelectorAll<HTMLElement>('[data-zone-option]'));
+		const link = root.querySelector<HTMLAnchorElement>('[data-zone-continue]');
+		if (!field || !input || !list || !link) return;
+		const baseHref = link.href;
+		let active = -1;
+		let selected = '';
+		const visible = () => options.filter((option) => !option.hidden);
+		const close = () => {
+			list.hidden = true;
+			input.setAttribute('aria-expanded', 'false');
+			input.removeAttribute('aria-activedescendant');
+			active = -1;
+		};
+		const highlight = (index: number) => {
+			const shown = visible();
+			active = Math.max(0, Math.min(index, shown.length - 1));
+			for (const option of options) option.classList.remove('is-active');
+			const option = shown[active];
+			if (option) {
+				option.classList.add('is-active');
+				input.setAttribute('aria-activedescendant', option.id);
+				option.scrollIntoView({ block: 'nearest' });
+			}
+		};
+		const filter = () => {
+			const query = normalize(input.value.trim());
+			for (const option of options) option.hidden = !normalize(option.textContent ?? '').includes(query);
+			list.hidden = false;
+			input.setAttribute('aria-expanded', 'true');
+			input.removeAttribute('aria-activedescendant');
+			active = -1;
+		};
+		const choose = (option: HTMLElement) => {
+			selected = option.dataset.slug ?? '';
+			input.value = (option.textContent ?? '').trim();
+			link.href = option.dataset.href ?? baseHref;
+			for (const item of options) item.setAttribute('aria-selected', String(item === option));
+			close();
+		};
+		input.addEventListener('focus', filter);
+		input.addEventListener('input', () => {
+			selected = '';
+			link.href = baseHref;
+			for (const item of options) item.setAttribute('aria-selected', 'false');
+			filter();
+		});
+		input.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape') { close(); return; }
+			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+				event.preventDefault();
+				if (list.hidden) filter();
+				const count = visible().length;
+				if (count) highlight((active + (event.key === 'ArrowDown' ? 1 : count - 1)) % count);
+			}
+			if (event.key === 'Enter' && !list.hidden && active >= 0) {
+				event.preventDefault();
+				const option = visible()[active];
+				if (option) choose(option);
+			}
+		});
+		for (const option of options) {
+			option.addEventListener('pointerdown', (event) => event.preventDefault());
+			option.addEventListener('click', () => choose(option));
+		}
+		document.addEventListener('pointerdown', (event) => {
+			if (!root.contains(event.target as Node)) close();
+		});
+		input.addEventListener('blur', () => {
+			// Keep a chosen value, but discard unmatched search text when leaving.
+			setTimeout(() => {
+				if (!field.contains(document.activeElement)) {
+					if (!selected) input.value = '';
+					close();
+				}
+			}, 0);
+		});
+		field.hidden = false;
+	});
+</script>
+
+<style>
+	.zone-selector {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-3);
+		width: 100%;
+		max-width: 36rem;
+	}
+
+	.zone-selector__heading {
+		font-family: var(--font-display);
+		font-size: var(--text-h4-size);
+		line-height: var(--text-h4-line);
+		letter-spacing: var(--text-h4-tracking);
+		font-weight: var(--text-h4-weight);
+		color: var(--text-primary);
+		text-wrap: balance;
+	}
+
+	.zone-selector__caption {
+		max-width: 48ch;
+	}
+
+	.zone-selector__row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		width: 100%;
+	}
+
+	.zone-selector__field {
+		position: relative;
+		/* Grows to take the row; wraps above the button only when too narrow.
+		   10rem keeps search and button on one row inside a 375px phone's
+		   335px content box in all three locales. */
+		flex: 1 1 10rem;
+		min-width: 0;
+	}
+
+	.zone-selector__field[hidden] {
+		display: none;
+	}
+
+	.zone-selector__input {
+		width: 100%;
+		min-height: 100%;
+		padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+		font-family: var(--font-sans);
+		font-size: var(--text-body-md-size);
+		line-height: var(--text-body-md-line);
+		color: var(--text-primary);
+		background-color: var(--bg-base);
+		border: 1px solid var(--border-hairline-strong);
+		border-radius: var(--radius-sm);
+	}
+
+	.zone-selector__list {
+		position: absolute;
+		z-index: 20;
+		top: 100%;
+		left: 0;
+		right: 0;
+		max-height: 16rem;
+		overflow-y: auto;
+		margin: var(--space-1) 0 0;
+		padding: var(--space-1);
+		list-style: none;
+		background: var(--bg-base);
+		border: 1px solid var(--border-hairline-strong);
+		border-radius: var(--radius-sm);
+		box-shadow: 0 12px 24px rgb(0 0 0 / 18%);
+	}
+
+	.zone-selector__list[hidden],
+	.zone-selector__list [hidden] { display: none; }
+
+	.zone-selector__list [role='option'] {
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+	}
+
+	.zone-selector__list [role='option']:hover,
+	.zone-selector__list .is-active { background: var(--bg-surface); }
+
+	.zone-selector__input:hover {
+		border-color: var(--accent);
+	}
+
+	.zone-selector__input:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: 2px;
+	}
+
+	.zone-selector__continue {
+		flex: 0 0 auto;
+	}
+
+	.zone-selector__notice {
+		max-width: 40ch;
+	}
+
+	/* Matches the short-phone rhythm trim in Hero.astro: brief S1 requires the
+	   "Seguir" CTA above the fold at 375×667, and the label-to-row gap is part
+	   of that budget. Same reduction for every locale; the S10 instance keeps
+	   its normal gap, since it is not subject to the above-the-fold rule. */
+	@media (max-width: 599px) and (max-height: 700px) {
+		.zone-selector--hero {
+			gap: var(--space-2);
+		}
+	}
+</style>

@@ -97,7 +97,9 @@ for (const locale of LOCALES) {
 
 		test('hero primary CTA is visible without scrolling on 375x667', async ({ page }) => {
 			// Brief S1: "высота первого экрана такова, что основной CTA виден без
-			// скролла на 375×667" — the smallest phone the brief names.
+			// скролла на 375×667" — the smallest phone the brief names. Since the
+			// owner handoff v1.1 §3.2 the hero's primary action is the zone
+			// selector's "Seguir", which sits beside or under the search input.
 			await page.setViewportSize({ width: 375, height: 667 });
 			await page.goto(locale.path);
 
@@ -106,20 +108,21 @@ for (const locale of LOCALES) {
 			// measuring mid-swap reports a height the reader never sees.
 			await page.evaluate(() => document.fonts.ready);
 
-			const cta = page.locator('.hero__actions a').first();
-			const box = await cta.boundingBox();
-			expect(box, 'hero CTA has a box').not.toBeNull();
-			expect(box!.y + box!.height, 'hero CTA bottom within the first screen').toBeLessThanOrEqual(
-				667,
-			);
+			for (const selector of ['#top [data-zone-continue]', '#top .zone-selector__input']) {
+				const box = await page.locator(selector).boundingBox();
+				expect(box, `${selector} has a box`).not.toBeNull();
+				expect(box!.y + box!.height, `${selector} bottom within the first screen`).toBeLessThanOrEqual(
+					667,
+				);
+			}
 		});
 
 		test('survey CTA fits its column and keeps its label on screen at 375px', async ({ page }) => {
 			await page.setViewportSize({ width: 375, height: 812 });
 			await page.goto(locale.path);
 
-			const links = page.locator('[data-typeform-boundary] a');
-			// The pilot boundary renders text while its URL is pending, so only
+			const links = page.locator('[data-typeform-boundary] a, [data-zone-continue]');
+			// The pilot boundary renders nothing while its URL is pending, so only
 			// the live destinations are measured here.
 			expect(await links.count(), 'live destination links').toBeGreaterThan(0);
 
@@ -180,26 +183,48 @@ for (const locale of LOCALES) {
 			expect(offenders, 'footer elements outside the viewport').toEqual([]);
 		});
 
-		test('S7 keeps its approved shape: no CLAVERA figure in the cost row', async ({ page }) => {
+		test('S7 carries no price in any column, and its B3 line stays visible', async ({ page }) => {
 			await page.goto(locale.path);
 
-			// S7 must not be altered by this milestone. This pins the one property
-			// that matters most legally: the CLAVERA cost cell carries no number.
-			const costCell = await page.evaluate(() => {
+			// Owner handoff v1.1 B3 (Spec §4): no prices anywhere in the table.
+			const priced = await page.evaluate(() => {
 				const table = document.querySelector('#comparacion table');
 				if (!table) return null;
-				const rows = Array.from(table.querySelectorAll('tbody tr'));
-				// The CLAVERA column is the last one in every locale.
-				for (const row of rows) {
-					const cells = Array.from(row.querySelectorAll('td'));
-					if (cells.length === 0) continue;
-					const last = cells[cells.length - 1] as HTMLElement;
-					if (/ARS|\d{2}\.\d{3}|\d{2},\d{3}/.test(last.innerText)) return last.innerText;
-				}
-				return '';
+				return Array.from(table.querySelectorAll('td'))
+					.map((cell) => (cell as HTMLElement).innerText)
+					.filter((text) => /ARS|\$|\d{2}\.\d{3}|\d{2},\d{3}|\d{2} \d{3}/.test(text));
 			});
+			expect(priced, 'S7 cells with a currency figure').toEqual([]);
 
-			expect(costCell, 'CLAVERA column contains a currency figure').toBe('');
+			// The mandatory line sits under the table, visible and never collapsed.
+			const note = page.locator('#comparacion .comparison__note');
+			await expect(note).toBeVisible();
+			await expect(note).toHaveText(locale.s7Disclaimer);
+			expect(await note.evaluate((el) => el.closest('details') === null)).toBe(true);
+		});
+
+		test('the footer carries the controller formula and language clause in Spanish', async ({
+			page,
+		}) => {
+			await page.goto(locale.path);
+
+			// Owner handoff v1.1 B2: verbatim, in Spanish, on every locale.
+			const notice = page.locator('footer [data-controller-notice]');
+			await expect(notice).toHaveCount(1);
+			await expect(notice).toHaveAttribute('lang', 'es-AR');
+			await expect(notice).toContainText(
+				'CLAVERA es la denominación bajo la cual Anna Kazanova, CUIT 20-96380996-5, con domicilio en Aráoz 2686, CABA, desarrolla su actividad.',
+			);
+			await expect(notice).toContainText('Contacto: hola@clavera.ar');
+			await expect(notice).toContainText(
+				'La versión en español (es-AR) es la única con validez legal. Las traducciones son de cortesía.',
+			);
+
+			await expect(page.locator('footer a[href="https://www.tiktok.com/@clavera.ar"]')).toHaveCount(1);
+
+			// The RNBD number has not been issued and must not be published (B1).
+			const footer = (await page.locator('footer').textContent()) ?? '';
+			expect(footer).not.toMatch(/RNBD/i);
 		});
 	});
 }

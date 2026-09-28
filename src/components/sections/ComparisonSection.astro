@@ -10,8 +10,10 @@ const c = getCopy(Astro.currentLocale).comparison;
  * documentation rather than atmosphere. The switch is what makes the
  * argument feel measured instead of sold.
  *
- * "Cochera de auto" appears as a price anchor, which is the one use of that
- * word the brand vocabulary permits — never to name CLAVERA's own service.
+ * No prices (owner handoff v1.1 B3). "Cochera de auto (alternativa)" names
+ * the alternative only, never CLAVERA's own service. The note under the table
+ * is the mandatory B3 line saying what CLAVERA is not. It must stay visible,
+ * never collapsed. Written legal approval for S7 is still outstanding.
  */
 
 ---
@@ -61,7 +63,7 @@ const c = getCopy(Astro.currentLocale).comparison;
 
 	<p class="mono comparison__hint" aria-hidden="true">{c.scrollHint}</p>
 
-	<p class="caption comparison__note">{c.note}</p>
+	<p class="body-md comparison__note">{c.note}</p>
 </Section>
 
 <style>

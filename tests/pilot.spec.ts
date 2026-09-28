@@ -11,12 +11,13 @@ import {
 import { WHATSAPP_NUMBER, whatsappHref } from '../src/config/contact';
 
 /**
- * The pilot-interest flow (M3.5.1).
+ * The pilot-interest ("Avisame") flow.
  *
  * The pilot Typeform is being created externally. Until its URLs arrive the
- * configuration holds `null` for every locale and the page must show localized
- * plain text — never an anchor, a button, a disabled control, `href="#"`, an
- * empty href, or a placeholder domain.
+ * configuration holds `null` for every locale and, per the owner handoff v1.1
+ * B4, the page shows NOTHING for it — no anchor, no button, no disabled
+ * control, no `href="#"`, no placeholder, and no "en preparación" text — while
+ * the research survey becomes the primary action of "Sumate al piloto".
  *
  * These tests are written so they keep working once the URLs land: the DOM
  * assertions branch on the configured state rather than hard-coding "pending".
@@ -145,31 +146,54 @@ test.describe('attribution', () => {
 
 for (const locale of LOCALES) {
 	test.describe(`[${locale.key}] pilot interest`, () => {
-		test('renders exactly one pilot boundary, in the founders section', async ({ page }) => {
+		test('renders the pilot boundary only when configured, and only in the pilot block', async ({
+			page,
+		}) => {
+			const configured = getPilotDestination(locale.key) !== null;
 			await page.goto(locale.path);
-			const pilot = page.locator('[data-typeform-flow="pilot"]');
-			await expect(pilot).toHaveCount(1);
-			await expect(page.locator('#fundadores [data-typeform-flow="pilot"]')).toHaveCount(1);
+			const expected = configured ? 1 : 0;
+			await expect(page.locator('[data-typeform-flow="pilot"]')).toHaveCount(expected);
+			await expect(page.locator('#fundadores [data-typeform-flow="pilot"]')).toHaveCount(expected);
 		});
 
-		test('a pending destination renders text and no control at all', async ({ page }) => {
+		test('a pending Avisame form shows nothing, and the survey is the primary action', async ({
+			page,
+		}) => {
 			const configured = getPilotDestination(locale.key) !== null;
 			test.skip(configured, 'this locale now has a real pilot URL');
 
 			await page.goto(locale.path);
-			const pilot = page.locator('[data-typeform-flow="pilot"]');
+			const block = page.locator('#fundadores');
 
-			await expect(pilot).toHaveAttribute('data-typeform-state', 'pending');
-			// Not an anchor, not a button, not a disabled control, not focusable.
-			await expect(pilot.locator('a')).toHaveCount(0);
-			await expect(pilot.locator('button')).toHaveCount(0);
-			await expect(pilot.locator('[disabled], [aria-disabled="true"], [tabindex]')).toHaveCount(0);
+			// No Avisame control, label or pending text of any kind.
+			const labels: Record<string, string[]> = {
+				es: ['Avisame', 'en preparación'],
+				en: ['Notify me', 'being prepared'],
+				ru: ['Сообщить мне', 'готовится'],
+			};
+			const text = (await block.textContent()) ?? '';
+			for (const label of labels[locale.key]) {
+				expect(text, `"${label}" in the pilot block`).not.toContain(label);
+			}
+			await expect(block.locator('[data-typeform-pending]')).toHaveCount(0);
+			await expect(block.locator('button, [disabled], [aria-disabled="true"]')).toHaveCount(0);
 
-			// Localized plain text, actually visible.
-			const pending = pilot.locator('[data-typeform-pending]');
-			await expect(pending).toHaveCount(1);
-			await expect(pending).toBeVisible();
-			await expect(pending).not.toHaveText('');
+			// The survey takes the primary slot, without the "3 more minutes" prompt
+			// that only makes sense next to Avisame.
+			const primary = block.locator('[data-typeform-flow="research"] a.button--primary');
+			await expect(primary).toHaveCount(1);
+			const surveyCta: Record<string, string> = {
+				es: 'Respondé la encuesta',
+				en: 'Take the survey',
+				ru: 'Пройти опрос',
+			};
+			await expect(primary).toContainText(surveyCta[locale.key]);
+			const prompt: Record<string, string> = {
+				es: '¿Tenés 3 minutos más?',
+				en: 'Got 3 more minutes?',
+				ru: 'Есть ещё 3 минуты?',
+			};
+			expect(text).not.toContain(prompt[locale.key]);
 		});
 
 		test('a configured destination renders an ordinary same-tab link', async ({ page }) => {
@@ -216,7 +240,7 @@ for (const locale of LOCALES) {
 			const required: Record<string, string[]> = {
 				es: ['preliminar', 'no reserva', 'no genera ningún contrato', 'no se acepta ningún pago'],
 				en: ['preliminary', 'reserves no space', 'creates no contract', 'no payment is accepted'],
-				ru: ['предварительное', 'не резервирует', 'не создаёт никакого договора', 'не предполагает оплаты'],
+				ru: ['предварительное', 'не резервирует', 'не создаёт договора', 'не предполагает оплаты'],
 			};
 
 			for (const phrase of required[locale.key]) {
@@ -226,26 +250,55 @@ for (const locale of LOCALES) {
 			}
 		});
 
-		test('the pilot CTA is not reservation wording in header or hero', async ({ page }) => {
+		test('the header CTA is interest wording and still leads to the pilot block', async ({
+			page,
+		}) => {
 			await page.goto(locale.path);
 
 			const headerCta = (await page.locator('.site-header .button').first().innerText()).trim();
-			const heroCta = (await page.locator('.hero__actions a').first().innerText()).trim();
-
 			const expected: Record<string, string> = {
 				es: 'Me interesa el piloto',
 				en: 'I’m interested in the pilot',
 				ru: 'Мне интересен пилот',
 			};
-
 			expect(headerCta).toBe(expected[locale.key]);
-			expect(heroCta).toBe(expected[locale.key]);
 
-			// Both still lead to the founders section, per the approved anchor map.
+			// The anchor stays #fundadores (handoff v1.1 §4.2).
 			await expect(page.locator('.site-header .button').first()).toHaveAttribute(
 				'href',
 				`${locale.path}#fundadores`,
 			);
+
+			// The hero's old pilot button is replaced by the zone selector.
+			await expect(page.locator('#top [data-zone-selector]')).toHaveCount(1);
+			await expect(page.locator('#top a[href$="#fundadores"]')).toHaveCount(0);
+		});
+
+		test('carries no founding-offer figure, discount or price line', async ({ page }) => {
+			await page.goto(locale.path);
+
+			// Handoff v1.1 B4: the chip, the 40 / −20 % / 24 figures, the discount
+			// sentence and the price-calculation/indexation line are all gone.
+			const header = (await page.locator('.site-header').textContent()) ?? '';
+			const block = (await page.locator('#fundadores').textContent()) ?? '';
+			for (const text of [header, block]) {
+				expect(text).not.toMatch(/\b40\b/);
+				expect(text).not.toMatch(/\b24\b/);
+				expect(text).not.toContain('%');
+				expect(text).not.toMatch(/IPC|ICL/);
+			}
+
+			const chip: Record<string, string> = {
+				es: 'Sumate al piloto',
+				en: 'Join the pilot',
+				ru: 'Присоединиться к пилоту',
+			};
+			expect(header).toContain(chip[locale.key]);
+
+			const body = await page.evaluate(() => document.body.textContent ?? '');
+			for (const gone of ['Socios Fundadores', 'Socio Fundador', 'Founding Member', 'основател']) {
+				expect(body, `"${gone}"`).not.toContain(gone);
+			}
 		});
 	});
 }

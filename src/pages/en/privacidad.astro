@@ -1,0 +1,14 @@
+---
+/**
+ * English courtesy translation, served at `/en/privacidad`.
+ *
+ * Kept at the same route slug as the Spanish original ("privacidad") rather
+ * than translated ("privacy") so the three locales' legal pages share one
+ * path shape and a language switch is a plain segment swap — matching how
+ * `/`, `/en/`, `/ru/` already work for the main page.
+ */
+import LegalPage from '../../components/legal/LegalPage.astro';
+import { privacy } from '../../content/legal/privacy';
+---
+
+<LegalPage route="privacidad" doc={privacy.en} />

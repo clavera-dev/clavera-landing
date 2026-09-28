@@ -6,12 +6,16 @@ import type { Copy } from './types';
  * This is the product-copy authority. English and Russian must preserve this
  * meaning; they may not soften a claim, drop a legal qualifier, or introduce a
  * fact that is not here.
+ *
+ * 2026-09-28: updated to the owner handoff v1.1 (CLAVERA_Dev_Handoff_Beta_v1_1,
+ * 2026-09-23). Section references in comments below are to that handoff.
  */
 export const es: Copy = {
 	meta: {
 		title: 'CLAVERA — Guarda segura de bicicletas en Buenos Aires',
+		// B5. No 24/7 here: meta carries no planned-service qualifier.
 		description:
-			'Guardería segura de bicicletas y movilidad personal por membresía en Buenos Aires. Lugar asignado, acceso digital y vigilancia, a minutos de tu casa.',
+			'Guardería segura de bicicletas y movilidad personal por membresía en Buenos Aires. Lugar asignado, acceso digital personal y registro de cada ingreso.',
 		ogTitle: 'Tu bici merece un lugar seguro en la ciudad.',
 	},
 	a11y: {
@@ -22,16 +26,22 @@ export const es: Copy = {
 		legalNavLabel: 'Legal',
 	},
 	header: {
-		note: 'Socios fundadores · 40 lugares',
+		note: 'Sumate al piloto',
 		cta: 'Me interesa el piloto',
 	},
 	hero: {
 		eyebrow: 'Guarda segura · Buenos Aires',
 		headingHtml: 'Tu bici merece un lugar seguro en la ciudad.',
-		lede: 'CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía. Tu lugar asignado, acceso digital y vigilancia, a minutos de tu casa.',
-		ctaPrimary: 'Me interesa el piloto',
+		lede: 'CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía. Tu lugar asignado, acceso digital personal y registro de cada ingreso.',
 		ctaSecondary: 'Ver cómo funciona',
 		facts: ['Lugar asignado', 'Ingreso controlado', 'Cerrado y seco'],
+	},
+	// §3.2
+	zoneSelector: {
+		heading: '¿Dónde necesitás guardar tu bici?',
+		caption: 'Cerca de tu casa, tu trabajo o una estación. Con tu respuesta armamos el mapa de demanda.',
+		placeholder: 'Elegí tu zona',
+		cta: 'Seguir',
 	},
 	problem: {
 		index: '01',
@@ -56,13 +66,16 @@ export const es: Copy = {
 		plannedNote: 'Así se proyecta cada hub CLAVERA. Son propiedades previstas del servicio futuro: todavía no hay ninguna sede en operación.',
 		pillars: [
 			{ n: '01', title: 'Lugar asignado', copy: 'Con tu nombre, independiente y siempre libre para vos.' },
-			{ n: '02', title: 'Acceso digital personal', copy: 'QR o código personal. Entrás y salís sin depender de nadie.' },
-			{ n: '03', title: 'Cerrado, seco y limpio', copy: 'Sin lluvia, sin humedad de vereda, sin polvo. Mantenimiento periódico.' },
-			{ n: '04', title: 'Vigilancia y registro', copy: 'Cámaras y registro individual de cada ingreso y egreso.' },
+			// §3.1 — 24/7 only here and in the access FAQ, both under a planned-service qualifier.
+			{ n: '02', title: 'Acceso digital personal, 24/7', copy: 'Con tu QR o código personal entrás y salís a cualquier hora, todos los días, sin depender de nadie.' },
+			// §3.5
+			{ n: '03', title: 'Cerrado, seco y limpio', copy: 'Sin lluvia, sin humedad de vereda, sin polvo. Limpieza periódica del espacio.' },
+			// B5
+			{ n: '04', title: 'Registro de accesos', copy: 'Cada ingreso y egreso queda registrado a tu nombre.' },
 			{ n: '05', title: 'Retiro sin mover otras bicis', copy: 'Cada lugar es independiente: sacás la tuya sin tocar la del vecino.' },
 			{ n: '06', title: 'Inventario por número de cuadro', copy: 'Marca, modelo y número de cuadro registrados al ingresar.' },
 			{ n: '07', title: 'Membresía mensual', copy: 'Sin garantía, sin contrato anual, sin comisión inmobiliaria.' },
-			{ n: '08', title: 'Zona de limpieza', copy: 'Un espacio de autoservicio preparado para limpiar tu bicicleta dentro del hub.' },
+			// 08 "Zona de limpieza" removed (§3.5).
 		],
 	},
 	works: {
@@ -82,7 +95,12 @@ export const es: Copy = {
 		eyebrow: 'Tu movilidad, bien cuidada',
 		heading: 'Diseñado para lo que realmente usás.',
 		items: ['Bicicleta urbana', 'Ruta y MTB', 'E-bike', 'Cargo', 'Plegable', 'Monopatín eléctrico'],
-		note: 'Lockers individuales opcionales para casco y equipo. Por seguridad, no se cargan baterías dentro del hub.',
+		// Owner response v1.2 §1.4 supersedes handoff B6.
+		batteryNote:
+			'E-bikes y monopatines eléctricos: si la batería es removible, te la llevás con vos; si está integrada, la bici se guarda en una zona separada. No se cargan baterías dentro del hub.',
+		// §3.5
+		evaluatingNote:
+			'Estamos evaluando sumar lockers individuales para casco y equipo, una estación de autoservicio con herramientas básicas y guarda por temporada. Contanos en la encuesta si te interesan.',
 	},
 	security: {
 		index: '05',
@@ -90,14 +108,16 @@ export const es: Copy = {
 		eyebrow: 'Seguridad y acceso',
 		heading: 'Nadie entra de pasada.',
 		lede: 'Cada socio se identifica. Cada acceso queda registrado. Cada bici está asociada a su marca, modelo y número de cuadro.',
+		// §3.4, in this order.
 		items: [
 			'Identificación individual con DNI al asociarte',
 			'Acceso digital personal, no transferible',
-			'Cámaras y registro de ingresos y egresos',
-			'Estructuras de guarda profesionales, fijadas e independientes por lugar — sin bicis apoyadas unas sobre otras',
-			'Sin carga de baterías dentro del hub',
+			'Registro individual de ingresos y egresos',
+			'Estructuras de guarda fijadas e independientes por lugar — sin bicis apoyadas unas sobre otras',
+			'Espacio cerrado y seco: sin lluvia ni humedad de vereda',
+			'Sin carga de baterías; e-bikes con batería integrada en zona separada',
 		],
-		plannedNote: 'Identificación, cámaras y registro de accesos son propiedades previstas del servicio. Todavía no hay ninguna sede en operación.',
+		plannedNote: 'Identificación y registro de accesos son propiedades previstas del servicio. Todavía no hay ninguna sede en operación.',
 	},
 	comparison: {
 		index: '06',
@@ -105,7 +125,8 @@ export const es: Copy = {
 		eyebrow: 'Por qué CLAVERA',
 		heading: 'Ni la calle, ni un lugar pensado para autos.',
 		tableCaption: 'Comparación de opciones de guarda',
-		columns: ['Calle / balcón', 'Cochera de auto', 'CLAVERA'],
+		// B3
+		columns: ['Calle / balcón', 'Cochera de auto (alternativa)', 'CLAVERA'],
 		rowHeader: 'Criterio',
 		rows: [
 			{
@@ -120,11 +141,11 @@ export const es: Copy = {
 				label: 'Costo mensual',
 				values: [
 					'«Gratis», hasta el primer robo',
-					'80.000 – 150.000 ARS, más garantía y comisión',
+					'Alquiler mensual, más garantía y comisión',
 					'Membresía mensual, sin garantía ni comisión',
 				],
 			},
-			{ label: 'Compromiso', values: ['—', 'Contrato anual', 'Mes a mes'] },
+			{ label: 'Compromiso', values: ['—', 'Habitualmente, contrato anual', 'Mes a mes'] },
 			{
 				label: 'Pensado para bicis',
 				values: ['No', 'No', 'Sí: cada lugar independiente, retiro sin mover otras bicis'],
@@ -132,7 +153,7 @@ export const es: Copy = {
 			{ label: 'Clima', values: ['Lluvia, humedad, óxido', 'Variable', 'Cerrado, seco y limpio'] },
 		],
 		scrollHint: 'Deslizá para ver la tabla completa →',
-		note: 'Valores de referencia de mercado para cocheras en CABA, agosto 2026.',
+		note: 'CLAVERA no es una cochera ni un estacionamiento: es un servicio de depósito y custodia de bicicletas y dispositivos de movilidad personal por membresía, con lugar asignado.',
 	},
 	hub: {
 		index: '07',
@@ -148,9 +169,10 @@ export const es: Copy = {
 		rail: 'Para quién',
 		eyebrow: 'Para quién',
 		heading: 'Si te pasa alguna de estas, CLAVERA es para vos.',
+		// §3.6: the first two lines replaced, the rest unchanged.
 		items: [
-			'Tu bici vale más que el candado que la cuida — y duerme en el balcón.',
-			'Tenés una e-bike o una cargo que no entra en el ascensor.',
+			'Tu bici duerme en el balcón, al sol y a la lluvia.',
+			'Tu bici vale más que el candado que la cuida.',
 			'Usás la bici todos los días y cada salida empieza con el ascensor.',
 			'Sos una familia con más bicis que balcón.',
 			'Tu edificio no tiene bicicletero, o el que hay está lleno.',
@@ -159,38 +181,22 @@ export const es: Copy = {
 	zones: {
 		index: '09',
 		rail: 'Zonas',
-		eyebrow: 'Barrios en evaluación',
-		heading: 'Estamos construyendo el mapa de demanda antes de elegir las ubicaciones.',
-		lede: 'Nos interesa saber dónde hace falta. Estas son las zonas donde estamos trabajando.',
-		items: [
-			'Almagro',
-			'Belgrano',
-			'Chacarita',
-			'Colegiales',
-			'Núñez',
-			'Palermo',
-			'Palermo Hollywood',
-			'Paternal',
-			'Villa Crespo',
-		],
-		note: 'Cada barrio avanza a su ritmo: en algunos buscamos un hub completo, en otros un espacio más chico dentro de un edificio o un espacio existente.',
-		disclaimer: 'Barrios en evaluación. No implica compromiso de apertura, fecha ni disponibilidad.',
+		// §3.2: the area list is gone; the section holds the zone selector.
+		eyebrow: 'Mapa de demanda',
+		heading: '¿Dónde la necesitás?',
+		disclaimer:
+			'Todavía no elegimos ubicaciones: las define la demanda. Elegir una zona no implica compromiso de apertura, fecha ni disponibilidad.',
 	},
+	// B4: "Sumate al piloto" replaces Socios Fundadores. No offer numbers.
 	founders: {
 		index: '10',
-		rail: 'Fundadores',
-		eyebrow: 'Socios Fundadores',
-		heading: 'Los primeros 40 lugares empiezan acá.',
-		figures: [
-			{ value: '40', unit: 'lugares', note: 'Cupo de Socios Fundadores' },
-			{ value: '−20%', unit: '', note: 'Sobre el precio de lista' },
-			{ value: '24', unit: 'meses', note: 'Descuento garantizado' },
-		],
-		offerStrong: '20% de descuento sobre el precio de lista, garantizado por 24 meses.',
-		offerRest: 'Los Socios Fundadores eligen su lugar antes que nadie.',
-		note: 'Es una manifestación preliminar de interés: no reserva ningún lugar, no genera ningún contrato y no se acepta ningún pago. Si querés, te contactamos más adelante para contarte cómo sigue el piloto.',
-		disclaimer:
-			'El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, con actualización trimestral por IPC/ICL, garantizado por 24 meses desde el alta.',
+		rail: 'Piloto',
+		eyebrow: 'Piloto',
+		heading: 'Sumate al piloto',
+		lede: 'Dejanos tu zona y cómo contactarte. Te avisamos cuando haya novedades del piloto cerca tuyo.',
+		note: 'Es una manifestación preliminar de interés: no reserva ningún lugar, no genera ningún contrato y no se acepta ningún pago.',
+		surveyPrompt: '¿Tenés 3 minutos más?',
+		surveyCta: 'Respondé la encuesta',
 	},
 	faq: {
 		index: '11',
@@ -202,24 +208,36 @@ export const es: Copy = {
 				q: '¿Qué es CLAVERA?',
 				a: 'CLAVERA es una guardería segura de bicicletas y movilidad personal por membresía en Buenos Aires. Cada socio tiene un lugar asignado, acceso digital personal y registro de cada ingreso. No es un taller ni un lugar para autos.',
 			},
+			// §3.1
+			{
+				q: '¿En qué horario puedo entrar?',
+				a: 'El acceso está pensado para funcionar las 24 horas, todos los días, con tu código personal. Es una propiedad prevista del servicio: todavía no hay ninguna sede en operación.',
+			},
+			// B4
 			{
 				q: '¿Cuánto cuesta?',
-				a: 'Todavía no publicamos el precio. El precio de Socio Fundador se define como un 20% por debajo del precio de lista vigente, garantizado por 24 meses. Las inscripciones de Socios Fundadores abren más adelante y no se acepta ningún pago.',
+				a: 'Todavía no publicamos el precio. Lo publicamos junto con las condiciones completas antes de cualquier contratación. No se acepta ningún pago.',
 			},
+			// §3.7
 			{
 				q: '¿Qué pasa si me quiero dar de baja?',
-				a: 'La membresía es mensual. Avisás con 30 días de anticipación y se da de baja sin penalidades.',
+				a: 'La membresía es mes a mes, sin permanencia mínima. Las condiciones completas, incluida la baja, se publican antes de cualquier contratación.',
 			},
 			{
 				q: '¿Necesito tener mi bici asegurada?',
 				a: 'No. Recibimos bicicletas aseguradas y no aseguradas. Al ingresar registramos marca, modelo y número de cuadro.',
 			},
-			{ q: '¿Puedo cargar mi e-bike ahí?', a: 'No. Por seguridad, no se cargan baterías dentro del hub.' },
+			// B6
+			{
+				q: '¿Puedo guardar mi e-bike?',
+				a: 'Sí. E-bikes y monopatines eléctricos: si la batería es removible, te la llevás con vos; si está integrada, la bici se guarda en una zona separada. No se cargan baterías dentro del hub.',
+			},
 			{ q: '¿Hacen reparaciones?', a: 'No. CLAVERA no es un taller: es infraestructura de guarda.' },
 			{ q: '¿Guardan autos o motos?', a: 'No. CLAVERA es exclusivamente para bicicletas y micromovilidad personal.' },
+			// §3.3
 			{
-				q: '¿Dónde va a estar el primer hub?',
-				a: 'Estamos construyendo el mapa de demanda antes de elegir la ubicación. Los barrios en evaluación están listados más arriba, sin ningún orden de prioridad. El primer hub abre donde la demanda esté más concentrada.',
+				q: '¿Dónde va a estar CLAVERA?',
+				a: 'Todavía no está decidido: lo define la demanda. Elegí tu zona más arriba y respondé la encuesta: la búsqueda de un espacio empieza donde se concentre el interés.',
 			},
 			{
 				q: '¿Cómo se retira la bici?',
@@ -228,13 +246,13 @@ export const es: Copy = {
 		],
 	},
 	pilot: {
-		cta: 'Quiero participar',
-		pendingNote: 'Formulario de interés en preparación.',
+		cta: 'Avisame',
 	},
+	// §3.3
 	survey: {
-		eyebrow: 'Ayudanos a diseñar el primer hub',
+		eyebrow: 'Ayudanos a diseñar CLAVERA',
 		heading: '¿Cómo usás tu bici en Buenos Aires?',
-		note: 'Tres minutos. Nos ayuda a elegir dónde abrir y cómo diseñar el espacio.',
+		note: 'Tres minutos. Nos ayuda a entender dónde hace falta y cómo diseñar el espacio.',
 		cta: 'Responder encuesta · 3 min',
 		languageNotice: '',
 	},
@@ -253,7 +271,14 @@ export const es: Copy = {
 		languageTitle: 'Idioma',
 		pendingNote: 'En preparación.',
 		whatsappPending: 'WhatsApp Business — próximamente.',
-		translationNotice: '',
+	},
+	legalPage: {
+		backToHome: 'Volver al inicio',
+		lastUpdatedLabel: 'Última actualización',
+		lastUpdatedPending: 'Pendiente de publicación',
+		versionLabel: 'Versión',
+		courtesyNotice: '',
+		readInSpanish: '',
 	},
 	media: {
 		disclosure:
@@ -272,7 +297,8 @@ export const es: Copy = {
 				caption: 'Zona de autolavado',
 			},
 			entrance: {
-				alt: 'Ingreso de un hub CLAVERA, con puerta de acceso, panel de acceso digital y cámara de seguridad.',
+				// B5: no camera in the description.
+				alt: 'Ingreso de un hub CLAVERA, con puerta de acceso y panel de acceso digital.',
 				caption: 'Ingreso controlado',
 			},
 			r4: {

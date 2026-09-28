@@ -1,22 +1,30 @@
 ---
 import Section from '../layout/Section.astro';
 import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
-import { getCopy } from '../../i18n';
+import { getPilotDestination } from '../../config/typeform';
+import { getCopy, resolveLocale } from '../../i18n';
 
 const c = getCopy(Astro.currentLocale).founders;
+const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== null;
 
 /**
- * The conversion moment, and the only place on the page that gets full amber
- * weight: an amber rule across the top edge, the offer set as three large
- * mono figures, and the page's largest call to action.
+ * "Sumate al piloto" (owner handoff v1.1 B4), which replaces the Socios
+ * Fundadores block. The anchor stays `#fundadores` because the header CTA
+ * points at it.
  *
- * The figures replace the earlier accent pills. Every value here is the
- * approved offer from PROJECT_DECISIONS.md — 40 places, 20% below list,
- * guaranteed 24 months — and no monetary price is shown.
+ * Every founding-offer number is gone — the 40 / −20 % / 24 figures, the
+ * discount sentence and the price-calculation line — and so is the
+ * "Formulario de interés en preparación" line.
  *
- * The offer is stated here because it is canonical approved copy. It does not
- * imply a reservation: the pilot-interest form below is a non-binding
- * expression of interest, and the founding-price reveal remains deferred.
+ * Buttons. The primary action is "Avisame", the short pilot form, but its URL
+ * has not been delivered, and until it is the button is not shown at all.
+ * Meanwhile the research survey is the primary action. Once the Avisame URL
+ * is configured in src/config/typeform.ts, this renders "Avisame" as primary,
+ * then "¿Tenés 3 minutos más?" with the survey as the secondary link — with
+ * no other change.
+ *
+ * Still the page's one full-weight amber moment: the amber rule along the top
+ * edge and its largest call to action.
  */
 ---
 
@@ -33,38 +41,34 @@ const c = getCopy(Astro.currentLocale).founders;
 		<div class="founders__head">
 			<p class="eyebrow">{c.eyebrow}</p>
 			<h2 id="fundadores-heading" class="founders__heading">{c.heading}</h2>
+			<p class="lede founders__lede">{c.lede}</p>
 		</div>
-
-		<dl class="founders__figures">
-			{
-				c.figures.map((figure) => (
-					<div class="founders__figure">
-						<dt class="mono founders__figure-note">{figure.note}</dt>
-						<dd class="founders__figure-value">
-							{figure.value}
-							{figure.unit && <span class="founders__figure-unit">{figure.unit}</span>}
-						</dd>
-					</div>
-				))
-			}
-		</dl>
 
 		<div class="founders__action">
-			<p class="lede founders__offer">
-				<strong>{c.offerStrong}</strong> {c.offerRest}
-			</p>
-			<p class="body-md">{c.note}</p>
+			{
+				pilotLive ? (
+					<div class="founders__buttons">
+						<TypeformBoundary flow="pilot" name="fundadores" size="lg" />
+						<div class="founders__secondary">
+							<p class="body-md">{c.surveyPrompt}</p>
+							<TypeformBoundary
+								flow="research"
+								name="fundadores"
+								variant="ghost"
+								label={c.surveyCta}
+							/>
+						</div>
+					</div>
+				) : (
+					<>
+						<TypeformBoundary flow="pilot" name="fundadores" size="lg" />
+						<TypeformBoundary flow="research" name="fundadores" size="lg" label={c.surveyCta} />
+					</>
+				)
+			}
 
-			{/*
-			  The pilot-interest form is the primary beta conversion. It is
-			  non-binding: no price, no payment, no reservation, no contract, no
-			  promise of admission. While its URL is still pending the boundary
-			  renders plain text, never a control.
-			*/}
-			<TypeformBoundary flow="pilot" name="fundadores" size="lg" />
+			<p class="body-md founders__note" data-founders-note>{c.note}</p>
 		</div>
-
-		<p class="caption founders__disclaimer">{c.disclaimer}</p>
 	</div>
 </Section>
 
@@ -93,48 +97,8 @@ const c = getCopy(Astro.currentLocale).founders;
 		text-wrap: balance;
 	}
 
-	/* Figures ------------------------------------------------------------- */
-
-	.founders__figures {
-		margin: 0;
-		display: grid;
-		grid-template-columns: 1fr;
-		border-top: 1px solid var(--border-hairline);
-	}
-
-	.founders__figure {
-		display: flex;
-		flex-direction: column-reverse;
-		gap: var(--space-2);
-		padding-block: var(--space-6);
-		border-bottom: 1px solid var(--border-hairline);
-	}
-
-	.founders__figure-value {
-		margin: 0;
-		display: flex;
-		align-items: baseline;
-		flex-wrap: wrap;
-		gap: var(--space-1) var(--space-3);
-		font-family: var(--font-mono);
-		font-size: var(--text-display-lg-size);
-		line-height: 1;
-		font-weight: 500;
-		font-variant-numeric: tabular-nums;
-		letter-spacing: -0.02em;
-		color: var(--accent);
-	}
-
-	.founders__figure-unit {
-		font-family: var(--font-sans);
-		font-size: var(--text-h4-size);
-		font-weight: 500;
-		color: var(--text-secondary);
-		letter-spacing: 0;
-	}
-
-	.founders__figure-note {
-		color: var(--text-tertiary);
+	.founders__lede {
+		max-width: var(--measure);
 	}
 
 	/* Action -------------------------------------------------------------- */
@@ -142,47 +106,33 @@ const c = getCopy(Astro.currentLocale).founders;
 	.founders__action {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-5);
+		gap: var(--space-6);
 		max-width: var(--measure);
 	}
 
-	.founders__offer {
-		color: var(--text-secondary);
+	.founders__buttons {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-6) var(--space-10);
 	}
 
-	.founders__action :global(.typeform-boundary) {
-		margin-top: var(--space-4);
+	.founders__secondary {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-3) var(--space-4);
 	}
 
-	.founders__disclaimer {
+	.founders__note {
 		max-width: 70ch;
 		padding-top: var(--space-6);
 		border-top: 1px solid var(--border-hairline);
 	}
 
-	@media (min-width: 700px) {
-		.founders__figures {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-		}
-
-		.founders__figure {
-			padding-block: var(--space-8);
-			padding-right: var(--space-6);
-		}
-
-		.founders__figure + .founders__figure {
-			padding-left: var(--space-8);
-			border-left: 1px solid var(--border-hairline);
-		}
-	}
-
 	@media (min-width: 900px) {
 		.founders__inner {
 			gap: var(--space-16);
-		}
-
-		.founders__figure-value {
-			font-size: var(--text-display-xl-size);
 		}
 	}
 </style>

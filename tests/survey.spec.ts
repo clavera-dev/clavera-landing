@@ -3,8 +3,10 @@ import { LOCALES } from './locales';
 import { LOCALES as LOCALE_KEYS } from '../src/i18n/config';
 import {
 	PILOT_INTEREST_DESTINATIONS,
+	RESEARCH_FRAGMENT_ALLOWLIST,
 	getPilotDestination,
 	buildDestinationHref,
+	buildResearchHref,
 	destinationLanguageDiffers,
 	type SurveyDestination,
 } from '../src/config/typeform';
@@ -12,19 +14,26 @@ import {
 /**
  * Locale-aware RESEARCH-survey routing.
  *
- * The beta has two Typeform flows: the short pilot-interest form (primary,
- * covered by pilot.spec.ts) and this long research survey (secondary, S13).
- * This file covers the research flow only, routed per locale:
+ * The beta has two Typeform flows: the short "Avisame" pilot form (covered by
+ * pilot.spec.ts; not shown while its URL is pending) and this research
+ * survey. This file covers the research flow only, routed per locale:
  *
  *   es-AR → https://claveraar.typeform.com/ARGCABA
  *   ru    → https://claveraar.typeform.com/latam
  *   en    → https://claveraar.typeform.com/ARGCABA   (Spanish survey, disclosed)
+ *
+ * Since the owner handoff v1.1 §4.1 every survey link carries fragment
+ * attribution (`#recruitment_source=…&campaign=site_<locale>…`), plus
+ * `candidate_zone=<slug>` when a zone was chosen in the selector.
  *
  * English deliberately uses the Spanish survey because no dedicated English
  * research Typeform exists. That is an approved beta compromise, and the
  * English UI must say so — silently sending an English reader to a Spanish
  * form is the failure this file exists to prevent.
  */
+
+/** Every link on the page that opens the research survey. */
+const SURVEY_LINKS = '[data-typeform-flow="research"] a, [data-zone-continue]';
 
 /*
   The deferred M9 conversion path, matched by what it actually IS.
@@ -57,63 +66,121 @@ const FORBIDDEN_PRICE_REVEAL_MARKERS = [
 
 for (const locale of LOCALES) {
 	test.describe(`[${locale.key}] survey routing`, () => {
-		test('every research link points at this locale’s survey and nothing else', async ({ page }) => {
+		test('every research link points at this locale’s survey with its §4.1 attribution', async ({
+			page,
+		}) => {
 			await page.goto(locale.path);
 
+			// S13 and the "Sumate al piloto" block each carry one research
+			// boundary, whether or not the Avisame form is live.
 			const links = page.locator('[data-typeform-flow="research"] a');
-			await expect(links, 'research survey links on the page').toHaveCount(1);
+			await expect(links, 'research boundary links on the page').toHaveCount(2);
 
-			const hrefs = await links.evaluateAll((els) =>
-				els.map((el) => el.getAttribute('href') ?? ''),
-			);
-			// Exactly the accepted mapping — bare, with nothing appended.
-			expect(hrefs, 'research destinations').toEqual([locale.surveyUrl]);
+			const hrefs = await page
+				.locator(SURVEY_LINKS)
+				.evaluateAll((els) => els.map((el) => el.getAttribute('href') ?? ''));
+			// Two boundaries plus the two zone selectors, none with a zone chosen.
+			expect(hrefs, 'research destinations').toEqual(Array(4).fill(locale.surveyHref));
+			// The locale table and the central config agree.
+			expect(buildResearchHref(locale.key)).toBe(locale.surveyHref);
 		});
 
-		test('does not link to any other locale’s survey', async ({ page }) => {
+		test('the fragment carries only allowlisted, non-personal parameters', async ({ page }) => {
 			await page.goto(locale.path);
-
-			const otherSurveys = LOCALES.map((l) => l.surveyUrl).filter(
-				(url) => url !== locale.surveyUrl,
+			const hrefs = await page.evaluate(() =>
+				Array.from(document.querySelectorAll('a[href*="typeform.com"], option[data-href]')).map(
+					(el) => el.getAttribute('href') ?? el.getAttribute('data-href') ?? '',
+				),
 			);
+			expect(hrefs.length).toBeGreaterThan(4);
 
-			const allHrefs = await page.evaluate(() =>
-				Array.from(document.querySelectorAll('a[href]')).map((a) => a.getAttribute('href') ?? ''),
-			);
-
-			for (const url of otherSurveys) {
-				expect(allHrefs, `must not link to ${url}`).not.toContain(url);
+			for (const href of hrefs) {
+				const url = new URL(href);
+				// Nothing in the query string: attribution lives in the fragment.
+				expect(url.search, `query string on ${href}`).toBe('');
+				const params = new URLSearchParams(url.hash.slice(1));
+				for (const key of params.keys()) {
+					expect(RESEARCH_FRAGMENT_ALLOWLIST as readonly string[], `fragment key ${key}`).toContain(key);
+				}
+				expect(params.get('campaign'), 'campaign names this locale').toBe(`site_${locale.key}`);
+				expect(params.get('recruitment_source')).toBe('clavera_ar');
+				// No free text, e-mail or phone ever reaches a fragment value.
+				for (const value of params.values()) {
+					expect(value, `fragment value "${value}"`).toMatch(/^[A-Za-z0-9_.-]+$/);
+				}
 			}
 		});
 
-		test('survey links are ordinary links that work without JavaScript', async ({ page }) => {
+		test('does not link to any other locale’s survey or campaign', async ({ page }) => {
 			await page.goto(locale.path);
 
-			// A real href on a real anchor — not a button, not a script hook.
-			// Nothing here may depend on a Typeform embed or client JS.
-			// Two boundaries: the pilot flow (pending) and the research flow (live).
-			const boundaries = page.locator('[data-typeform-boundary]');
-			await expect(boundaries).toHaveCount(2);
-			await expect(boundaries.locator('button')).toHaveCount(0);
-			await expect(
-				page.locator('[data-typeform-flow="research"] a[href^="https://claveraar.typeform.com/"]'),
-			).toHaveCount(1);
-
-			// The whole page ships zero client-side JavaScript; assert it, because
-			// a Typeform embed would be the obvious way for that to regress.
-			const scripts = await page.evaluate(() =>
-				Array.from(document.querySelectorAll('script')).map(
-					(s) => s.getAttribute('src') ?? '(inline)',
+			const hrefs = await page.evaluate(() =>
+				Array.from(document.querySelectorAll('a[href*="typeform.com"], option[data-href]')).map(
+					(el) => el.getAttribute('href') ?? el.getAttribute('data-href') ?? '',
 				),
 			);
-			expect(scripts, 'client scripts').toEqual([]);
+
+			for (const href of hrefs) {
+				const url = new URL(href);
+				expect(`${url.origin}${url.pathname}`, 'survey base URL').toBe(locale.surveyUrl);
+			}
+		});
+
+		test.describe('without JavaScript', () => {
+			test.use({ javaScriptEnabled: false });
+
+			test('survey links are ordinary links that still work', async ({ page }) => {
+				/*
+				  With JavaScript disabled the zone <select> cannot move a choice
+				  into the fragment, so it stays hidden, and "Seguir" is still an
+				  ordinary link to the survey, without a zone.
+				*/
+				await page.goto(locale.path);
+
+				await expect(page.locator('[data-typeform-boundary] button')).toHaveCount(0);
+				await expect(page.locator('[data-zone-field]')).toHaveCount(2);
+				for (const field of await page.locator('[data-zone-field]').all()) {
+					await expect(field).toBeHidden();
+				}
+
+				const hrefs = await page
+					.locator(SURVEY_LINKS)
+					.evaluateAll((els) => els.map((el) => el.getAttribute('href') ?? ''));
+				expect(hrefs).toEqual(Array(4).fill(locale.surveyHref));
+			});
+		});
+
+		test('ships no third-party or Typeform script — only the zone selector’s own', async ({
+			page,
+		}) => {
+			await page.goto(locale.path);
+
+			/*
+			  The zone selector is the page's one client script (handoff v1.1
+			  §3.2, §4.1). It is first-party, bundled by Astro, and may be inlined.
+			  A Typeform embed or an analytics tag would be the obvious way for
+			  this to regress.
+			*/
+			const scripts = await page.evaluate(() =>
+				Array.from(document.querySelectorAll('script')).map((s) => ({
+					src: s.getAttribute('src'),
+					type: s.getAttribute('type'),
+				})),
+			);
+			expect(scripts.length, 'client scripts').toBeLessThanOrEqual(1);
+			for (const script of scripts) {
+				if (script.src !== null) {
+					expect(script.src, 'script is first-party').toMatch(/^\/_astro\//);
+				}
+				expect(script.type).toBe('module');
+			}
 		});
 
 		test('survey links carry an accessible name and the survey’s own hreflang', async ({
 			page,
 		}) => {
 			await page.goto(locale.path);
-			const links = page.locator('[data-typeform-flow="research"] a');
+			const links = page.locator(SURVEY_LINKS);
 
 			for (const link of await links.all()) {
 				const name = (await link.textContent())?.trim() ?? '';
@@ -139,8 +206,9 @@ for (const locale of LOCALES) {
 				return;
 			}
 
-			// One disclosure beside the research link whose survey is Spanish.
-			await expect(notices, 'a disclosure beside every mismatched link').toHaveCount(1);
+			// One disclosure beside each of the four links that open the Spanish
+			// survey: S13, "Sumate al piloto", and the two zone selectors.
+			await expect(notices, 'a disclosure beside every mismatched link').toHaveCount(4);
 
 			for (const notice of await notices.all()) {
 				await expect(notice).toHaveText(locale.surveyLanguageNotice);
@@ -149,7 +217,7 @@ for (const locale of LOCALES) {
 
 			// Wired to the link, so it is announced before the link is followed
 			// rather than only being visible to sighted readers.
-			const links = page.locator('[data-typeform-flow="research"] a');
+			const links = page.locator(SURVEY_LINKS);
 			for (const link of await links.all()) {
 				const describedBy = await link.getAttribute('aria-describedby');
 				expect(describedBy, 'aria-describedby on the survey link').toBeTruthy();
@@ -193,20 +261,27 @@ for (const locale of LOCALES) {
 			}
 		});
 
-		test('shows no CLAVERA monetary price and no payment path', async ({ page }) => {
+		test('shows no monetary price, percentage or payment path anywhere', async ({ page }) => {
 			await page.goto(locale.path);
 
-			// The S7 market anchor for the car-storage alternative is approved and
-			// is the ONLY currency figure permitted on the page, so it is excluded
-			// by location rather than by pattern.
+			/*
+			  Since the owner handoff v1.1 (B3, B4, §6.1) there is no currency
+			  figure anywhere, S7 included, and no founding-offer percentage.
+			  textContent, so collapsed FAQ answers are scanned too, plus metadata.
+			*/
 			const outsideComparison = await page.evaluate(() => {
+				const meta = Array.from(document.querySelectorAll('meta'))
+					.map((m) => m.getAttribute('content') ?? '')
+					.join(' ');
+				// Script source is not copy: minified names may contain `$`.
 				const clone = document.body.cloneNode(true) as HTMLElement;
-				clone.querySelector('#comparacion')?.remove();
-				return clone.innerText;
+				clone.querySelectorAll('script, style').forEach((el) => el.remove());
+				return `${document.title} ${meta} ${clone.textContent ?? ''}`;
 			});
 
-			expect(outsideComparison, 'currency figure outside S7').not.toMatch(/\bARS\b/);
-			expect(outsideComparison).not.toMatch(/\$\s?\d/);
+			expect(outsideComparison, 'currency code').not.toMatch(/\bARS\b/);
+			expect(outsideComparison, 'currency sign').not.toContain('$');
+			expect(outsideComparison, 'percentage').not.toContain('%');
 
 			/*
 			  No payment, deposit or membership contract is accepted in the beta.

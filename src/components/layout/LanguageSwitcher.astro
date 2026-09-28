@@ -10,16 +10,22 @@
  * `hash` lets a caller keep the reader in place across a language switch —
  * the footer switcher passes none, but an in-page switcher can.
  *
+ * `paths` overrides the target of each link with an explicit root-relative
+ * path per locale, for pages that are not the locale home — the legal pages
+ * pass their own three paths so switching language on `/en/privacidad` lands
+ * on `/privacidad`, not on the Spanish homepage.
+ *
  * Order is fixed by the brief (Part V): ES · EN · RU.
  */
-import { SWITCHER_ORDER, LOCALE_DEFINITIONS, localeHref, resolveLocale, getCopy } from '../../i18n';
+import { SWITCHER_ORDER, LOCALE_DEFINITIONS, localeHref, resolveLocale, getCopy, type Locale } from '../../i18n';
 
 interface Props {
 	hash?: string;
 	class?: string;
+	paths?: Record<Locale, string>;
 }
 
-const { hash = '', class: className } = Astro.props;
+const { hash = '', class: className, paths } = Astro.props;
 const current = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
 ---
@@ -34,7 +40,7 @@ const copy = getCopy(Astro.currentLocale);
 					<li>
 						<a
 							class="lang__link"
-							href={localeHref(code, hash)}
+							href={paths ? paths[code] : localeHref(code, hash)}
 							hreflang={definition.hreflang}
 							lang={definition.lang}
 							aria-current={isCurrent ? 'true' : undefined}

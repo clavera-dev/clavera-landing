@@ -2,30 +2,35 @@ import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
 
 /**
- * Internal-link integrity (M3.5).
+ * Internal-link integrity (M3.5; legal pages added in the handoff v1.1
+ * second pass).
  *
  * The beta candidate must contain no clickable link to a route that does not
- * exist. `/privacidad`, `/terminos`, `/cookies`, `/espacios` and
- * `/desarrolladores` are not built yet, so the footer renders those entries as
- * plain text instead of anchors.
- *
- * That is an interim presentation choice ONLY. The three legal routes remain
- * mandatory blockers for real public deployment — this file proves the beta
- * has no broken link, not that the legal obligation is discharged.
+ * exist. `/espacios` and `/desarrolladores` are not built, so the footer
+ * renders those entries as plain text instead of anchors. `/privacidad`,
+ * `/terminos` and `/cookies` ARE now built, in all three locales, and the
+ * footer links to them normally — see src/components/legal/LegalPage.astro
+ * and PROJECT_DECISIONS.md.
  */
 
 /** Routes the build actually produces. */
-const EXISTING_ROUTES = new Set(['/', '/en/', '/ru/']);
-
-/** Mandatory routes that do not exist yet and must therefore not be linked. */
-const UNBUILT_ROUTES = [
+const EXISTING_ROUTES = new Set([
+	'/',
+	'/en/',
+	'/ru/',
 	'/privacidad',
 	'/terminos',
 	'/cookies',
-	'/espacios',
-	'/desarrolladores',
-	'/gracias',
-];
+	'/en/privacidad',
+	'/en/terminos',
+	'/en/cookies',
+	'/ru/privacidad',
+	'/ru/terminos',
+	'/ru/cookies',
+]);
+
+/** Routes that do not exist yet and must therefore not be linked. */
+const UNBUILT_ROUTES = ['/espacios', '/desarrolladores', '/gracias'];
 
 for (const locale of LOCALES) {
 	test.describe(`[${locale.key}] links`, () => {
@@ -59,6 +64,9 @@ for (const locale of LOCALES) {
 				const out: string[] = [];
 				document.querySelectorAll('a[href]').forEach((a) => {
 					const href = a.getAttribute('href') ?? '';
+					// External fragments are not in-page anchors: the survey links
+					// carry Typeform hidden-field attribution after `#`.
+					if (/^[a-z]+:/i.test(href)) return;
 					const hash = href.includes('#') ? href.slice(href.indexOf('#') + 1) : '';
 					if (!hash) return;
 					if (!document.getElementById(hash)) out.push(href);
@@ -82,15 +90,28 @@ for (const locale of LOCALES) {
 			}
 		});
 
-		test('names the pending legal routes as text, so the gate stays visible', async ({ page }) => {
+		test('names the still-unbuilt routes as text, so the gate stays visible', async ({ page }) => {
 			await page.goto(locale.path);
 
-			// The obligation must not vanish from the page just because the routes
-			// are not built: the entries are still listed, and marked pending.
-			// Five unbuilt routes plus the pending WhatsApp Business entry.
+			// /privacidad, /terminos and /cookies are now real links (see
+			// EXISTING_ROUTES above). What remains pending: /espacios,
+			// /desarrolladores, and the WhatsApp Business entry.
 			const footer = page.locator('footer');
-			await expect(footer.locator('[class*="pending-item"]'), 'pending entries').toHaveCount(6);
+			await expect(footer.locator('[class*="pending-item"]'), 'pending entries').toHaveCount(3);
 			await expect(footer.locator('[class*="site-footer__pending"]').last()).toBeVisible();
+		});
+
+		test('links to its own locale’s legal pages, and they resolve', async ({ page }) => {
+			await page.goto(locale.path);
+
+			const prefix = locale.path === '/' ? '' : locale.path.replace(/\/$/, '');
+			for (const route of ['privacidad', 'terminos', 'cookies']) {
+				const href = `${prefix}/${route}`;
+				const link = page.locator(`footer a[href="${href}"]`);
+				await expect(link, `footer link to ${href}`).toHaveCount(1);
+				const response = await page.request.get(href);
+				expect(response.status(), `GET ${href}`).toBe(200);
+			}
 		});
 
 		test('every internal navigation actually loads', async ({ page }) => {

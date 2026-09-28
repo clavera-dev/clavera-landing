@@ -4,19 +4,22 @@
  *
  * Two flows, both locale-routed from src/config/typeform.ts:
  *
- *   flow="pilot"    — the short pilot-interest form, the primary beta
- *                     conversion. Its URLs are still being created, so its
- *                     destination may be `null`.
- *   flow="research" — the long research survey, a secondary action.
+ *   flow="pilot"    — the short "Avisame" form. Its URLs are still being
+ *                     created, so its destination may be `null`.
+ *   flow="research" — the research survey. Primary in "Sumate al piloto"
+ *                     while the Avisame form is absent; secondary otherwise.
  *
  * Nothing else on the page may build a Typeform URL, so a locale can never be
- * pointed at the wrong destination by a component that hard-codes one.
+ * pointed at the wrong destination by a component that hard-codes one. (The
+ * zone selector asks src/config/typeform.ts for its per-zone hrefs through the
+ * same `buildResearchHref`.)
  *
- * PENDING DESTINATIONS. When a flow has no URL for this locale the component
- * renders localized plain, non-interactive text. It never renders an anchor
- * with `href="#"`, an empty href, a placeholder domain, a disabled button, or
- * any other control that looks actionable and is not. Supplying the URL in the
- * central config is the only change needed to turn the text into a real link.
+ * PENDING DESTINATIONS. When the pilot flow has no URL for this locale the
+ * component renders NOTHING (owner handoff v1.1 B4: "do not show the button
+ * until the URL is delivered", and the "en preparación" line is removed). It
+ * never renders an anchor with `href="#"`, an empty href, a placeholder
+ * domain, a disabled button, or any other control that looks actionable and
+ * is not. Supplying the URL in the central config is the only change needed.
  *
  * Configured destinations are ordinary same-tab links: they work with
  * JavaScript disabled, need no Typeform SDK, and this component ships no
@@ -27,7 +30,7 @@
  * to the link says so, wired through `aria-describedby` so a screen-reader
  * user is told before following it, not after.
  *
- * Only allowlisted, non-personal attribution parameters are ever appended
+ * Only allowlisted, non-personal attribution is ever appended
  * (src/config/typeform.ts). No personal data is put in a URL.
  */
 import {
@@ -35,6 +38,7 @@ import {
 	getResearchDestination,
 	destinationLanguageDiffers,
 	buildDestinationHref,
+	buildResearchHref,
 	type PendingDestination,
 } from '../../config/typeform';
 import { getCopy, resolveLocale, LOCALE_DEFINITIONS } from '../../i18n';
@@ -45,9 +49,11 @@ interface Props {
 	name: string;
 	size?: 'md' | 'lg';
 	variant?: 'primary' | 'ghost';
+	/** Overrides the flow's default label, e.g. "Respondé la encuesta". */
+	label?: string;
 }
 
-const { flow, name, size = 'md', variant = 'primary' } = Astro.props;
+const { flow, name, size = 'md', variant = 'primary', label: labelOverride } = Astro.props;
 
 const locale = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
@@ -55,8 +61,7 @@ const copy = getCopy(Astro.currentLocale);
 const destination: PendingDestination =
 	flow === 'pilot' ? getPilotDestination(locale) : getResearchDestination(locale);
 
-const label = flow === 'pilot' ? copy.pilot.cta : copy.survey.cta;
-const pendingText = flow === 'pilot' ? copy.pilot.pendingNote : '';
+const label = labelOverride ?? (flow === 'pilot' ? copy.pilot.cta : copy.survey.cta);
 
 /*
   The notice is shown when — and only when — the destination's language differs
@@ -70,40 +75,36 @@ const showLanguageNotice =
 const noticeId = `destination-language-${name}`;
 
 /*
-  Attribution applies to the PILOT flow only.
+  Attribution differs per flow.
 
-  The research-survey mapping is accepted and must render exactly the approved
-  bare URLs, so nothing is appended to it. The pilot destinations are new, so
-  they carry allowlisted, non-personal build-time attribution: `lang` and
-  `source` are known when the page is generated. The visitor's own incoming
-  `utm_*` values are deliberately NOT forwarded — reading them would mean
-  shipping client-side JavaScript to a page that ships none.
+  Research: the handoff v1.1 §4.1 fragment (`#recruitment_source=…`), fixed per
+  locale, with no `candidate_zone` because no zone is chosen here — the zone
+  selector builds its own per-zone hrefs through the same function.
+
+  Pilot: allowlisted, non-personal build-time query attribution (`lang`,
+  `source`). The visitor's own incoming `utm_*` values are NOT forwarded.
 */
 const href =
 	destination === null
 		? null
 		: flow === 'pilot'
 			? buildDestinationHref(destination.url, { lang: locale, source: 'landing' })
-			: destination.url;
+			: buildResearchHref(locale);
 
 const buttonClass = ['button', `button--${variant}`, size === 'lg' && 'button--lg']
 	.filter(Boolean)
 	.join(' ');
 ---
 
-<div
-	class="typeform-boundary"
-	data-typeform-boundary
-	data-typeform-flow={flow}
-	data-typeform-state={href === null ? 'pending' : 'live'}
->
-	{
-		href === null ? (
-			/* Plain text, not a control: nothing here is focusable or clickable. */
-			<p class="body-md typeform-boundary__pending" data-typeform-pending>
-				{pendingText}
-			</p>
-		) : (
+{/* A pending destination renders nothing at all — see the header comment. */}
+{
+	href !== null && (
+		<div
+			class="typeform-boundary"
+			data-typeform-boundary
+			data-typeform-flow={flow}
+			data-typeform-state="live"
+		>
 			<a
 				class={buttonClass}
 				href={href}
@@ -115,17 +116,15 @@ const buttonClass = ['button', `button--${variant}`, size === 'lg' && 'button--l
 					↗
 				</span>
 			</a>
-		)
-	}
 
-	{
-		showLanguageNotice && (
-			<p class="caption typeform-boundary__notice" id={noticeId} data-destination-language-notice>
-				{languageNotice}
-			</p>
-		)
-	}
-</div>
+			{showLanguageNotice && (
+				<p class="caption typeform-boundary__notice" id={noticeId} data-destination-language-notice>
+					{languageNotice}
+				</p>
+			)}
+		</div>
+	)
+}
 
 <style>
 	.typeform-boundary {
@@ -145,11 +144,5 @@ const buttonClass = ['button', `button--${variant}`, size === 'lg' && 'button--l
 
 	.typeform-boundary__notice {
 		max-width: 40ch;
-	}
-
-	/* Reads as a status line, not as a control that failed to render. */
-	.typeform-boundary__pending {
-		color: var(--text-tertiary);
-		max-width: var(--measure);
 	}
 </style>

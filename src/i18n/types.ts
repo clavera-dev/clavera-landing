@@ -32,12 +32,6 @@ export interface FaqCopy {
 	a: string;
 }
 
-export interface FigureCopy {
-	value: string;
-	unit: string;
-	note: string;
-}
-
 export interface ComparisonRowCopy {
 	label: string;
 	values: [string, string, string];
@@ -63,10 +57,20 @@ export interface Copy {
 	hero: {
 		eyebrow: string;
 		headingHtml: string;
+		/** No 24/7, no cameras, no "a minutos" (handoff v1.1 B5). */
 		lede: string;
-		ctaPrimary: string;
 		ctaSecondary: string;
 		facts: string[];
+	};
+	/**
+	 * The zone selector, used in the hero and in S10 (handoff v1.1 §3.2). Zone
+	 * names come from src/config/candidate-zones.ts and are never translated.
+	 */
+	zoneSelector: {
+		heading: string;
+		caption: string;
+		placeholder: string;
+		cta: string;
 	};
 	problem: {
 		index: string;
@@ -85,8 +89,8 @@ export interface Copy {
 		heading: string;
 		lede: string;
 		/**
-		 * Identifies the eight properties as planned properties of the future
-		 * service, not of an operating location.
+		 * Identifies the properties as planned properties of the future service,
+		 * not of an operating location. Pillar 02's 24/7 claim depends on it.
 		 */
 		plannedNote: string;
 		pillars: PillarCopy[];
@@ -104,7 +108,10 @@ export interface Copy {
 		eyebrow: string;
 		heading: string;
 		items: string[];
-		note: string;
+		/** Mixed removable/integrated battery handling (owner response v1.2 §1.4). */
+		batteryNote: string;
+		/** Lockers, basic tools and seasonal storage are under evaluation (owner response v1.2 §1.5). */
+		evaluatingNote: string;
 	};
 	security: {
 		index: string;
@@ -114,9 +121,9 @@ export interface Copy {
 		lede: string;
 		items: string[];
 		/**
-		 * Cameras, access logging and identification are planned properties of
-		 * the future service. No hub is in operation, and this must not read as
-		 * a description of one.
+		 * Access logging and identification are planned properties of the
+		 * future service. No hub is in operation, and this must not read as a
+		 * description of one. No cameras (handoff v1.1 B5).
 		 */
 		plannedNote: string;
 	};
@@ -130,6 +137,10 @@ export interface Copy {
 		rowHeader: string;
 		rows: ComparisonRowCopy[];
 		scrollHint: string;
+		/**
+		 * The mandatory line under the table stating what CLAVERA is not
+		 * (handoff v1.1 B3). Verbatim; never collapsed.
+		 */
 		note: string;
 	};
 	hub: {
@@ -153,31 +164,27 @@ export interface Copy {
 		rail: string;
 		eyebrow: string;
 		heading: string;
-		lede: string;
-		/** Barrio names are never translated (brief §5.3). */
-		items: string[];
-		note: string;
 		/**
-		 * States that the areas are under evaluation and imply no commitment to
-		 * open, no date and no availability.
+		 * Under the S10 selector: no location chosen yet, and choosing a zone
+		 * implies no commitment to open, no date and no availability.
 		 */
 		disclaimer: string;
 	};
+	/**
+	 * "Sumate al piloto" (handoff v1.1 B4), which replaces the Socios
+	 * Fundadores block. No founding-offer number, discount or price line.
+	 */
 	founders: {
 		index: string;
 		rail: string;
 		eyebrow: string;
 		heading: string;
-		figures: [FigureCopy, FigureCopy, FigureCopy];
-		offerStrong: string;
-		offerRest: string;
-		/**
-		 * Must not imply a working short lead form or a price reveal: the
-		 * Socios Fundadores form is deferred to M9 and is not exposed by the
-		 * public beta (PROJECT_DECISIONS.md, "Release strategy (2026-08-23)").
-		 */
+		lede: string;
+		/** Preliminary interest: reserves nothing, no contract, no payment. */
 		note: string;
-		disclaimer: string;
+		/** Shown before the survey link only when the Avisame form is live. */
+		surveyPrompt: string;
+		surveyCta: string;
 	};
 	faq: {
 		index: string;
@@ -187,19 +194,15 @@ export interface Copy {
 		items: FaqCopy[];
 	};
 	/**
-	 * The short pilot-interest form — the primary beta conversion.
+	 * The short pilot-interest ("Avisame") form.
 	 *
 	 * Non-binding: it reserves no space, creates no contract, accepts no
-	 * payment, and promises no admission to the pilot.
+	 * payment, and promises no admission to the pilot. While its URL is `null`
+	 * in src/config/typeform.ts nothing is rendered for it (handoff v1.1 B4).
 	 */
 	pilot: {
 		/** Shown only once a real destination exists for this locale. */
 		cta: string;
-		/**
-		 * Shown instead of any control while the locale's Typeform URL is still
-		 * `null` in src/config/typeform.ts. Plain text, never a fake link.
-		 */
-		pendingNote: string;
 	};
 	survey: {
 		eyebrow: string;
@@ -240,11 +243,32 @@ export interface Copy {
 		 * text — never a `wa.me` link, a dummy number or a disabled control.
 		 */
 		whatsappPending: string;
+		/*
+		  The controller formula and the Spanish-primacy clause are the same
+		  Spanish text on every locale, so they live in src/config/legal.ts
+		  rather than here.
+		*/
+	};
+	/**
+	 * Chrome shared by the three legal pages (/privacidad, /terminos,
+	 * /cookies). The document body itself (title, sections) lives in
+	 * src/content/legal, not here, because it is long, numbered, and shared
+	 * across the three route pairs rather than per-section product copy.
+	 */
+	legalPage: {
+		backToHome: string;
+		lastUpdatedLabel: string;
+		/** Shown while src/config/legal.ts LEGAL_LAST_UPDATED is null. */
+		lastUpdatedPending: string;
+		versionLabel: string;
 		/**
-		 * Spanish-primacy notice. Required on non-canonical locales
-		 * (brief §5.3); empty string on `es`.
+		 * Shown only on `en` and `ru`: states this is a courtesy translation
+		 * and the Spanish version alone is legally valid. Empty on `es`, whose
+		 * page already carries that clause in its own body text (Terms §10).
 		 */
-		translationNotice: string;
+		courtesyNotice: string;
+		/** Link label next to `courtesyNotice`, pointing at the ES equivalent. */
+		readInSpanish: string;
 	};
 	media: {
 		/** Mandatory generated-render disclosure, verbatim per brief (blocker). */
@@ -252,6 +276,7 @@ export interface Copy {
 		renders: {
 			r1: RenderCopy;
 			r2: RenderCopy;
+			/** Not rendered since handoff v1.1 §3.5; kept so reinstating it is one line. */
 			r3: RenderCopy;
 			entrance: RenderCopy;
 			r4: RenderCopy;

@@ -1,11 +1,13 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-08-23
+Status date: 2026-09-28
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
 Current next milestone: `M4 — Reference research and composition specification` (blocked until M3.5 is reviewed and accepted)
-Current milestone in review: `M3.5.1 — Beta-conversion preparation and correction` — implementation complete, pending Codex remote-commit review and Kirill visual review (builds on M3.5)
+Current milestone in review: `M3.5.1 — Beta-conversion preparation and correction` — implementation complete, pending Codex remote-commit review and Kirill visual review (builds on M3.5). Review state unchanged by M3.5.2.
+Proposed milestone in progress: `M3.5.2 — Owner handoff v1.1 beta corrections` — uncommitted, on branch `codex/clavera-beta-handoff-v1-1`; pending Codex review. See the M3.5.2 section below.
+Owner response v1.2 update (2026-09-28): exact ES/EN/RU e-bike and evaluated-amenity copy, confirmed working zones, and a visible searchable combobox have been added to that same uncommitted candidate. Spanish legal pages have been exported together as a local lawyer-review PDF. No review gate has been lifted, and no deployment has occurred.
 
 ## Purpose
 
@@ -332,6 +334,29 @@ Status: **implementation complete on `landing-design` (2026-08-23), pending inde
 - **S7 unchanged.** No legal page created, no legal content invented.
 - **Legal content is Spanish-only.** EN/RU will link to the Spanish legal pages with an explicit Spanish-only notice; no EN/RU legal translation is produced for the beta. The owner chose not to display `domicilio` or an RNBD number in the beta — a display decision that leaves the legal-sufficiency question, and RNBD registration status, unresolved pre-deployment checks.
 - Unresolved external publish/legal items: controller `domicilio`, RNBD registration/status, final approved Spanish privacy/terms/cookies text, final publication date. A dedicated EN research-survey URL is full-release debt only, not a beta deployment blocker.
+- *(2026-09-28 note: several M3.5.1 rules above are superseded for the beta by M3.5.2. This milestone's own review state is unchanged.)*
+
+### M3.5.2 — Owner handoff v1.1 beta corrections
+
+Status: **proposed; implementation across two Claude passes, both uncommitted, on `codex/clavera-beta-handoff-v1-1` (2026-09-28), pending Codex review and Kirill's visual review.** Not acceptance, not legal approval, not deployment. It does not replace or reorder M4–M10 and does not change M3.5.1's unaccepted review state.
+
+Source: `CLAVERA_Dev_Handoff_Beta_v1_1.md` v1.1 (2026-09-23), which supersedes specifically conflicting older decisions for this work, and (second pass) `CLAVERA_Legal_Spec_v3_0_received.md`, confirmed authentic against the owner's Downloads copy by matching SHA-256 (`fe70ffb2d724c0f98b31f5be135ad96cdf4ad6aad746f50a0a5d70a89ae232cc`) — the first pass wrongly recorded this file as unverified/absent; see `PROJECT_DECISIONS.md`'s "Correction (2026-09-28, second pass)" and `CLAVERA_WORKLOG.md`'s second-pass entry for the full record. The full dated reconciliation table (old decision → handoff clause → impact → status/blocker, with section citations) is in `PROJECT_DECISIONS.md`, "Owner handoff v1.1 reconciliation (2026-09-28)". Summary:
+
+| Area | Handoff clause | Status |
+|---|---|---|
+| Legal pages ES-only → three locales, ES sole legal authority | header rule, B1, §5 | **Implemented (second pass).** All nine routes built from the confirmed Spec §2.2/§6.6/§7.2, patched per §5; ES authoritative, EN/RU courtesy with a Spanish-authority notice and link back. Lawyer sign-off, the real publication date, and the RNBD number remain outstanding — see below |
+| Controller `domicilio` now supplied (previously omitted) | B1, B2 | Footer formula implemented; RNBD still unpublished, and now also absent from the legal-page text itself |
+| Founding offer numbers and discount removed | §0.2, B4 | Implemented; M9 future of the offer is an open owner question |
+| Pilot (Avisame) URL absent → survey primary; no button, no pending text | B4, §4.2, §6.6, §7 | Implemented; URL pending |
+| 24/7 planned access (overrides "no 24/7") | §0.3, §3.1, B5, §6.2 | Implemented in pillar 02 and FAQ only; brief S6 condition is a residual risk |
+| Nine areas → expanded zone selector | §0.4, §3.2, §7; v1.2 §1.8 | Working list confirmed in v1.2; searchable combobox implemented; no location confirmed |
+| No cameras / surveillance / "a minutos" | B5, §3.4 | Implemented |
+| E-bike mixed battery handling | v1.2 §1.4 supersedes B6 | Implemented in vehicles, security, FAQ, all three locales |
+| S7 price removal; cocheras/terminology exception | B3, §6.1 | Implemented verbatim; B3 vs §6.1 conflict recorded; S7 legal approval outstanding |
+| Survey URL fragment attribution incl. `candidate_zone` | §4.1 | Implemented; needs one small client script (zero-JS claim corrected) |
+| Remaining legal Spec and human acceptance gates | §6, §7; v1.2 §2 | **Legal Spec no longer a blocker.** Local ES legal-text PDF ready for lawyer. Publication gates: lawyer sign-off, real publication date, RNBD number or written launch ruling, visual review and publication approval. Avisame URL and WhatsApp number remain pending feature inputs; their controls stay absent |
+
+Required checks: `git diff --check`, `yarn astro check`, `yarn build`, the Playwright suite (including the new `tests/legal.spec.ts`), and focused ES/EN/RU visual checks at desktop and mobile, including the 375×667 fold check for the hero primary CTA in all three locales. Neither pass could run `yarn`/`astro`/Playwright in this sandbox — Codex runs them.
 
 ### M4 — Reference research and composition specification
 
@@ -473,3 +498,9 @@ Approved by Kirill: yes.
 Reason: the real pilot-interest Typeform is being created concurrently, so the whole integration was built now against safe non-link pending placeholders rather than waiting. The beta gains a second, primary flow — a short non-binding pilot-interest form that reveals no price, takes no payment, reserves nothing and creates no contract — alongside the existing research survey. Kirill also approved the nine-area beta set (alphabetized, unnumbered, under evaluation), the owner/controller details, the processor list, the no-browser-tracking rule, the Spanish-only legal direction, and the pending WhatsApp number. Two real defects were found and fixed while implementing the new CTA wording: the longer pilot label wrapped in English and Russian at 375px, pushing the rendered header to 74px against a declared `--header-h` of 64px, and the header wordmark was being flex-squashed from 107px to 98px in English.
 Affected milestones: M3.5.1 added after M3.5 (implementation complete, pending review). M4–M10 unchanged and still pending. Tool registry freeze unchanged — no dependency, skill, plugin or tool was installed.
 Approved by Kirill: yes.
+
+### 2026-09-28 — Owner handoff v1.1 reconciled; M3.5.2 proposed
+
+Reason: the owner handoff `CLAVERA_Dev_Handoff_Beta_v1_1.md` (v1.1, 2026-09-23) changes the beta's legal, offer, claims, areas and survey-attribution decisions. It was reconciled against every older decision it touches, in a dated table in `PROJECT_DECISIONS.md`, with the older text preserved and marked superseded. ~~The first pass treated Legal Spec v3.0 as unavailable and left the three legal routes unbuilt.~~ The second pass confirmed the Spec's provenance and prepared all nine legal routes; see the later correction entry and current M3.5.2 status. The zone selector's draft list is provisional until Anna verifies it. The selector brings the site's first client script — a small progressive enhancement, no dependency — so the "zero client JavaScript" statement is corrected.
+Affected milestones: new M3.5.2 (proposed, uncommitted, pending review). M3.5.1 review state unchanged. M4–M10 unchanged and pending. Tool registry freeze unchanged — no dependency, skill, plugin or tool installed.
+Approved by Kirill: implementation requested in the 2026-09-28 task; acceptance pending Codex review and Kirill's visual review.

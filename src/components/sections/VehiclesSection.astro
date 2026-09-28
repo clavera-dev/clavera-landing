@@ -43,7 +43,10 @@ const c = getCopy(Astro.currentLocale).vehicles;
 			}
 		</ul>
 
-		<p class="body-md vehicles__note">{c.note}</p>
+		<div class="vehicles__note">
+			<p class="body-md" data-battery-note>{c.batteryNote}</p>
+			<p class="body-md">{c.evaluatingNote}</p>
+		</div>
 	</div>
 </Section>
 
@@ -101,6 +104,9 @@ const c = getCopy(Astro.currentLocale).vehicles;
 	}
 
 	.vehicles__note {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
 		max-width: 52ch;
 		padding-top: var(--space-6);
 		border-top: 1px solid var(--border-hairline);

@@ -11,18 +11,20 @@ import type { Copy } from './types';
  * `car space`, `hourly rate`, `municipal bike rack`, `valet`. CLAVERA is
  * always "secure storage" / "storage hub".
  *
- * `Car garage` is the one Tier-2 term (Appendix В.2) and appears ONLY as the
- * S7 column header — the single location the appendix permits — and is still
- * pending the lawyer's written approval. The market-reference note is
- * deliberately neutral and carries no Tier-1 or Tier-2 term or root. Meta
- * strings and the render disclosure are the brief's own approved English
- * wording.
+ * S7 (owner handoff v1.1 B3, 2026-09-23): the column header is
+ * `Car garage (alternative)`, and the mandatory line under the table says
+ * CLAVERA "is not a car garage or a car park". Both are verbatim handoff text
+ * and are exempted from the Tier-1 scan only as exact strings (see
+ * tests/terminology.ts). The handoff conflicts with its own §6.1 zero-match
+ * list here; that conflict is recorded in PROJECT_DECISIONS.md. Written legal
+ * approval for S7 is still outstanding. The render disclosure is the brief's
+ * own approved English wording.
  */
 export const en: Copy = {
 	meta: {
 		title: 'CLAVERA — Secure bike storage in Buenos Aires',
 		description:
-			'Membership-based secure storage for bikes and personal mobility in Buenos Aires. Assigned space, digital access, surveillance.',
+			'Membership-based secure storage for bikes and personal mobility in Buenos Aires. Assigned space, personal digital access and a record of every entry.',
 		ogTitle: 'Your bike deserves a safe place in the city.',
 	},
 	a11y: {
@@ -33,16 +35,21 @@ export const en: Copy = {
 		legalNavLabel: 'Legal',
 	},
 	header: {
-		note: 'Founding members · 40 spaces',
+		note: 'Join the pilot',
 		cta: 'I’m interested in the pilot',
 	},
 	hero: {
 		eyebrow: 'Secure storage · Buenos Aires',
 		headingHtml: 'Your bike deserves a safe place in the city.',
-		lede: 'CLAVERA is membership-based secure storage for bikes and personal mobility. Your assigned space, digital access and surveillance, minutes from home.',
-		ctaPrimary: 'I’m interested in the pilot',
+		lede: 'CLAVERA is membership-based secure storage for bikes and personal mobility. Your assigned space, personal digital access and a record of every entry.',
 		ctaSecondary: 'See how it works',
 		facts: ['Assigned space', 'Controlled entry', 'Enclosed and dry'],
+	},
+	zoneSelector: {
+		heading: 'Where do you need to store your bike?',
+		caption: 'Near your home, your work or a station. Your answer builds our demand map.',
+		placeholder: 'Choose your area',
+		cta: 'Continue',
 	},
 	problem: {
 		index: '01',
@@ -67,13 +74,12 @@ export const en: Copy = {
 		plannedNote: 'This is how every CLAVERA hub is designed. These are planned properties of the future service: no location is in operation yet.',
 		pillars: [
 			{ n: '01', title: 'Assigned space', copy: 'In your name, independent and always free for you.' },
-			{ n: '02', title: 'Personal digital access', copy: 'A personal QR or code. You come and go without depending on anyone.' },
-			{ n: '03', title: 'Enclosed, dry and clean', copy: 'No rain, no damp from the pavement, no dust. Serviced on a schedule.' },
-			{ n: '04', title: 'Surveillance and logging', copy: 'Cameras and an individual record of every entry and exit.' },
+			{ n: '02', title: 'Personal digital access, 24/7', copy: 'With your personal QR or code you come and go at any time, every day, without depending on anyone.' },
+			{ n: '03', title: 'Enclosed, dry and clean', copy: 'No rain, no damp from the pavement, no dust. The space is cleaned regularly.' },
+			{ n: '04', title: 'Access log', copy: 'Every entry and exit is recorded in your name.' },
 			{ n: '05', title: 'Take yours out without moving others', copy: 'Every space is independent: you take yours without touching your neighbour’s.' },
 			{ n: '06', title: 'Inventory by frame number', copy: 'Make, model and frame number recorded on arrival.' },
 			{ n: '07', title: 'Monthly membership', copy: 'No deposit, no annual contract, no agency fee.' },
-			{ n: '08', title: 'Cleaning bay', copy: 'A self-service space set up to clean your bike inside the hub.' },
 		],
 	},
 	works: {
@@ -93,7 +99,10 @@ export const en: Copy = {
 		eyebrow: 'Your mobility, properly looked after',
 		heading: 'Designed for what you actually ride.',
 		items: ['City bike', 'Road and MTB', 'E-bike', 'Cargo bike', 'Folding bike', 'Electric scooter'],
-		note: 'Optional individual lockers for helmet and gear. For safety, batteries are not charged inside the hub.',
+		batteryNote:
+			'E-bikes and e-scooters: if the battery is removable, you take it with you; if it is built in, the bike is stored in a separate area. Batteries are not charged inside the hub.',
+		evaluatingNote:
+			'We are evaluating individual lockers for helmets and gear, a self-service station with basic tools, and seasonal storage. Tell us in the survey if you are interested.',
 	},
 	security: {
 		index: '05',
@@ -104,11 +113,12 @@ export const en: Copy = {
 		items: [
 			'Individual ID check when you join',
 			'Personal digital access, non-transferable',
-			'Cameras and a log of entries and exits',
-			'Professional storage structures, fixed and independent per space — no bikes leaning on each other',
-			'No battery charging inside the hub',
+			'Individual log of entries and exits',
+			'Fixed storage structures, independent per space — no bikes leaning on each other',
+			'Enclosed and dry: no rain, no damp from the pavement',
+			'No battery charging; e-bikes with built-in batteries in a separate area',
 		],
-		plannedNote: 'Identification, cameras and access logging are planned properties of the service. No location is in operation yet.',
+		plannedNote: 'Identification and access logging are planned properties of the service. No location is in operation yet.',
 	},
 	comparison: {
 		index: '06',
@@ -116,7 +126,7 @@ export const en: Copy = {
 		eyebrow: 'Why CLAVERA',
 		heading: 'Neither the street, nor a space designed for cars.',
 		tableCaption: 'Comparison of storage options',
-		columns: ['Street / balcony', 'Car garage', 'CLAVERA'],
+		columns: ['Street / balcony', 'Car garage (alternative)', 'CLAVERA'],
 		rowHeader: 'Criterion',
 		rows: [
 			{
@@ -131,11 +141,11 @@ export const en: Copy = {
 				label: 'Monthly cost',
 				values: [
 					'“Free”, until the first theft',
-					'80,000 – 150,000 ARS, plus deposit and agency fee',
+					'Monthly rent, plus deposit and agency fee',
 					'Monthly membership, no deposit, no agency fee',
 				],
 			},
-			{ label: 'Commitment', values: ['—', 'Annual contract', 'Month to month'] },
+			{ label: 'Commitment', values: ['—', 'Usually an annual contract', 'Month to month'] },
 			{
 				label: 'Designed for bikes',
 				values: ['No', 'No', 'Yes: every space independent, take yours out without moving others'],
@@ -143,7 +153,7 @@ export const en: Copy = {
 			{ label: 'Weather', values: ['Rain, damp, rust', 'Variable', 'Enclosed, dry and clean'] },
 		],
 		scrollHint: 'Swipe to see the full table →',
-		note: 'Market reference values for the automobile-storage alternative in CABA, August 2026.',
+		note: 'CLAVERA is not a car garage or a car park: it is a membership-based storage and safekeeping service for bicycles and personal mobility devices, with an assigned space.',
 	},
 	hub: {
 		index: '07',
@@ -160,8 +170,8 @@ export const en: Copy = {
 		eyebrow: 'Who it is for',
 		heading: 'If any of these sound like you, CLAVERA is for you.',
 		items: [
-			'Your bike is worth more than the lock protecting it — and it sleeps on the balcony.',
-			'You have an e-bike or a cargo bike that does not fit in the lift.',
+			'Your bike sleeps on the balcony, in the sun and the rain.',
+			'Your bike is worth more than the lock protecting it.',
 			'You ride every day and every trip out starts with the lift.',
 			'You are a family with more bikes than balcony.',
 			'Your building has no bike room, or the one it has is full.',
@@ -170,38 +180,20 @@ export const en: Copy = {
 	zones: {
 		index: '09',
 		rail: 'Areas',
-		eyebrow: 'Areas under evaluation',
-		heading: 'We are mapping demand before choosing the locations.',
-		lede: 'We want to know where it is needed. These are the areas we are working in.',
-		items: [
-			'Almagro',
-			'Belgrano',
-			'Chacarita',
-			'Colegiales',
-			'Núñez',
-			'Palermo',
-			'Palermo Hollywood',
-			'Paternal',
-			'Villa Crespo',
-		],
-		note: 'Each area moves at its own pace: in some we are looking for a full hub, in others a smaller space inside a building or an existing space.',
-		disclaimer: 'Areas under evaluation. This implies no commitment to open, no date and no availability.',
+		eyebrow: 'Demand map',
+		heading: 'Where do you need it?',
+		disclaimer:
+			'We have not chosen any locations yet: demand decides. Choosing an area implies no commitment to open, no date and no availability.',
 	},
 	founders: {
 		index: '10',
-		rail: 'Founders',
-		eyebrow: 'Founding Members',
-		heading: 'The first 40 spaces start here.',
-		figures: [
-			{ value: '40', unit: 'spaces', note: 'Founding Member allocation' },
-			{ value: '−20%', unit: '', note: 'Off the list price' },
-			{ value: '24', unit: 'months', note: 'Discount guaranteed' },
-		],
-		offerStrong: '20% off the list price, guaranteed for 24 months.',
-		offerRest: 'Founding Members choose their space before anyone else.',
-		note: 'This is a preliminary expression of interest: it reserves no space, creates no contract, and no payment is accepted. If you want, we may contact you later about how the pilot progresses.',
-		disclaimer:
-			'The Founding Member price is defined as 20% below the list price in force, adjusted quarterly by IPC/ICL, guaranteed for 24 months from sign-up.',
+		rail: 'Pilot',
+		eyebrow: 'Pilot',
+		heading: 'Join the pilot',
+		lede: 'Tell us your area and how to reach you. We will let you know when there is news about the pilot near you.',
+		note: 'This is a preliminary expression of interest: it reserves no space, creates no contract, and no payment is accepted.',
+		surveyPrompt: 'Got 3 more minutes?',
+		surveyCta: 'Take the survey',
 	},
 	faq: {
 		index: '11',
@@ -214,23 +206,30 @@ export const en: Copy = {
 				a: 'CLAVERA is membership-based secure storage for bikes and personal mobility in Buenos Aires. Every member has an assigned space, personal digital access and a record of every entry. It is not a workshop and not a space for cars.',
 			},
 			{
+				q: 'When can I get in?',
+				a: 'Access is designed to work 24 hours a day, every day, with your personal code. This is a planned property of the service: no location is in operation yet.',
+			},
+			{
 				q: 'How much does it cost?',
-				a: 'We have not published the price yet. The Founding Member price is defined as 20% below the list price in force, guaranteed for 24 months. Founding Member registration opens later, and no payment is accepted.',
+				a: 'We have not published the price yet. It will be published together with the full conditions before any sign-up. No payment is accepted.',
 			},
 			{
 				q: 'What if I want to cancel?',
-				a: 'The membership is monthly. You give 30 days’ notice and it is cancelled with no penalty.',
+				a: 'Membership is month to month, with no minimum term. Full conditions, including cancellation, are published before any sign-up.',
 			},
 			{
 				q: 'Do I need my bike to be insured?',
 				a: 'No. We take insured and uninsured bikes. On arrival we record make, model and frame number.',
 			},
-			{ q: 'Can I charge my e-bike there?', a: 'No. For safety, batteries are not charged inside the hub.' },
+			{
+				q: 'Can I store my e-bike?',
+				a: 'Yes. E-bikes and e-scooters: if the battery is removable, you take it with you; if it is built in, the bike is stored in a separate area. Batteries are not charged inside the hub.',
+			},
 			{ q: 'Do you do repairs?', a: 'No. CLAVERA is not a workshop: it is storage infrastructure.' },
 			{ q: 'Do you take cars or motorbikes?', a: 'No. CLAVERA is exclusively for bikes and personal micromobility.' },
 			{
-				q: 'Where will the first hub be?',
-				a: 'We are mapping demand before choosing the location. The areas under evaluation are listed above, in no order of priority. The first hub opens where demand is most concentrated.',
+				q: 'Where will CLAVERA be?',
+				a: 'Not decided yet: demand decides. Choose your area above and take the survey: the search for a space starts where interest is concentrated.',
 			},
 			{
 				q: 'How do I take the bike out?',
@@ -239,13 +238,12 @@ export const en: Copy = {
 		],
 	},
 	pilot: {
-		cta: 'Join the pilot',
-		pendingNote: 'The pilot-interest form is being prepared.',
+		cta: 'Notify me',
 	},
 	survey: {
-		eyebrow: 'Help us design the first hub',
+		eyebrow: 'Help us design CLAVERA',
 		heading: 'How do you use your bike in Buenos Aires?',
-		note: 'Three minutes. It helps us choose where to open and how to design the space.',
+		note: 'Three minutes. It helps us understand where it is needed and how to design the space.',
 		cta: 'Take the survey · 3 min',
 		languageNotice: 'The survey is in Spanish.',
 	},
@@ -264,8 +262,15 @@ export const en: Copy = {
 		languageTitle: 'Language',
 		pendingNote: 'In preparation.',
 		whatsappPending: 'WhatsApp Business — coming soon.',
-		translationNotice:
-			'La versión en español (es-AR) es la única con validez legal. Las traducciones son de cortesía.',
+	},
+	legalPage: {
+		backToHome: 'Back to home',
+		lastUpdatedLabel: 'Last updated',
+		lastUpdatedPending: 'Publication pending',
+		versionLabel: 'Version',
+		courtesyNotice:
+			'This is a courtesy translation. The Spanish (es-AR) version is the only one with legal validity.',
+		readInSpanish: 'Read it in Spanish',
 	},
 	media: {
 		disclosure:
@@ -284,7 +289,7 @@ export const en: Copy = {
 				caption: 'Self-service cleaning bay',
 			},
 			entrance: {
-				alt: 'Entrance to a CLAVERA hub, with an access door, a digital access panel and a security camera.',
+				alt: 'Entrance to a CLAVERA hub, with an access door and a digital access panel.',
 				caption: 'Controlled entrance',
 			},
 			r4: {

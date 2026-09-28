@@ -76,52 +76,56 @@ export const TIER1_COMPARISON_ROOTS: ForbiddenTerm[] = [
 ];
 
 /**
- * Appendix В.2 — the Tier-2 column-header phrases.
+ * Appendix В.2 — the Tier-2 column-header phrases, in the owner handoff v1.1
+ * B3 wording ("(alternativa)" appended).
  *
- * Each is permitted ONLY as the exact text of an S7 `<th scope="col">`
- * ("заголовок колонки таблицы S7"), and only with the lawyer's written
- * approval, which is still outstanding for all three languages. Appearing
- * elsewhere inside `#comparacion` — a cell, the caption, the note, a heading —
- * is a violation, which is why `findHeaderPlacementViolations` checks the DOM
- * location rather than mere membership of the S7 block.
- *
- * The English and Russian market-reference notes are neutral and carry no
- * Tier-2 term, so no declined or plural form appears here.
+ * Each is permitted ONLY as the exact text of an S7 `<th scope="col">`, and
+ * only with the lawyer's written approval, which is still outstanding for all
+ * three languages. Appearing elsewhere inside `#comparacion` — a cell, the
+ * caption, the note, a heading — is a violation, which is why
+ * `findHeaderPlacementViolations` checks the DOM location rather than mere
+ * membership of the S7 block.
  */
 export const TIER2_COLUMN_HEADERS: string[] = [
-	'Cochera de auto',
-	'Car garage',
-	'Автомобильная кочера',
+	'Cochera de auto (alternativa)',
+	'Car garage (alternative)',
+	'Автомобильная кочера (альтернатива)',
 ];
 
 /*
-  AUTHORITY CONFLICT — canonical Spanish market-reference note.
+  AUTHORITY CONFLICT — the mandatory S7 line (owner handoff v1.1 B3).
 
-  The brief contradicts itself. §S7 note 2 (line 350) says the word `cochera`
-  is used "только как заголовок колонки и только в этой таблице", and
-  Appendix В.2 names the column header as the sole permitted location. But the
-  brief's own approved S7 copy (line 345) reads:
+  B3 requires a line directly under the table, per locale, stating that
+  CLAVERA is not a `cochera`/`estacionamiento` (ES), a `car garage`/`car park`
+  (EN), or a `кочера`/`стоянка` (RU). Those words are Tier 1 under Appendix
+  В.1, and the handoff's own §6.1 checklist demands zero matches for
+  `estacionamiento`, `garage` and `стоянк` — while exempting only
+  `cochera`/`кочера` "in the (alternativa) column and the line under it".
 
-      Valores de referencia de mercado para cocheras en CABA, {mes} 2026.
+  B3 is the specific P0 text, so each line ships verbatim, and this exception
+  exists to match it. It is deliberately the ENTIRE sentence, per locale, not
+  the bare words: any other occurrence of those terms anywhere on the page
+  still fails, and each sentence may appear only on its own locale, only as
+  the full text of `#comparacion .comparison__note`. Resolution is an
+  owner/lawyer question (PROJECT_DECISIONS.md, reconciliation row 9).
 
-  which uses `cocheras` in the NOTE, not the column header.
-
-  The brief is the authority for canonical Spanish copy, so the sentence is
-  published verbatim and this exception exists to match it. The exception is
-  deliberately the entire sentence, not the bare word: any other occurrence of
-  `cochera`/`cocheras` anywhere on the page still fails. English and Russian
-  get no equivalent exception — their notes are neutral.
-
-  Resolution is a lawyer question, tracked as an outstanding blocker.
+  This replaces the earlier single Spanish `cocheras` market-note exception,
+  whose sentence B3 removes.
 */
-export const TIER2_NOTE_EXCEPTION =
-	'Valores de referencia de mercado para cocheras en CABA, agosto 2026.';
+export const S7_DISCLAIMER_EXCEPTIONS: Record<'es' | 'en' | 'ru', string> = {
+	es: 'CLAVERA no es una cochera ni un estacionamiento: es un servicio de depósito y custodia de bicicletas y dispositivos de movilidad personal por membresía, con lugar asignado.',
+	en: 'CLAVERA is not a car garage or a car park: it is a membership-based storage and safekeeping service for bicycles and personal mobility devices, with an assigned space.',
+	ru: 'CLAVERA — не кочера и не стоянка: это сервис хранения велосипедов и устройств персональной мобильности по подписке, с закреплённым местом.',
+};
 
 /**
  * Everything stripped from a corpus before Tier-1 scanning: the permitted
- * column headers plus the one scoped Spanish note sentence.
+ * column headers plus the three scoped S7 disclaimer sentences.
  */
-export const TIER2_S7_ALLOWLIST: string[] = [...TIER2_COLUMN_HEADERS, TIER2_NOTE_EXCEPTION];
+export const TIER2_S7_ALLOWLIST: string[] = [
+	...TIER2_COLUMN_HEADERS,
+	...Object.values(S7_DISCLAIMER_EXCEPTIONS),
+];
 
 /** Appendix В.4 — forbidden promises, all languages. Literal-string subset. */
 export const FORBIDDEN_PROMISES: ForbiddenTerm[] = [
@@ -134,9 +138,15 @@ export const FORBIDDEN_PROMISES: ForbiddenTerm[] = [
 	latin('climatizado'),
 	latin('climate-controlled'),
 	cyrillic('климат-контроль'),
-	latin('24/7'),
-	cyrillic('круглосуточ'),
 ];
+
+/*
+  24/7 is no longer banned outright. The owner handoff v1.1 (§3.1, §6.2)
+  permits it ONLY in S3 pillar 02 and in the access-hours FAQ, both framed as
+  a planned property — never in meta, title or hero. Placement is enforced by
+  `find247PlacementViolations` below, not by the promise list above.
+*/
+export const ALWAYS_ON_TERMS: ForbiddenTerm[] = [latin('24/7'), cyrillic('круглосуточ')];
 
 /** Brand names that must never reach public output (PROJECT_DECISIONS.md). */
 export const FORBIDDEN_BRANDS: ForbiddenTerm[] = [latin('monTEK'), latin('Hamax')];
@@ -231,43 +241,38 @@ export interface NoteExceptionInput {
 	 * when that element does not exist.
 	 */
 	noteText: string | null;
-	/** True only for the canonical Spanish route, which ships the exception. */
-	expectPresent: boolean;
+	/** The locale being checked; its own sentence is the only one allowed. */
+	locale: 'es' | 'en' | 'ru';
 }
 
 /**
- * Enforces the one Tier-2 note exception at its exact DOM location.
+ * Enforces the S7 disclaimer exceptions at their exact DOM location.
  *
- * The exception exists solely because the brief's own canonical Spanish S7
- * copy uses `cocheras` in the market-reference note while §S7 note 2 and
- * Appendix В.2 restrict the term to the column header (see the AUTHORITY
- * CONFLICT block above). Because it is a legal carve-out, it is pinned rather
- * than merely tolerated:
+ * Because each is a legal carve-out (see the AUTHORITY CONFLICT block above),
+ * it is pinned rather than merely tolerated:
  *
- *   Spanish route — the sentence occurs exactly once in the entire document,
- *   the note element exists, and its complete text IS that sentence. Deleting
- *   it, rewording it, moving it, or repeating it anywhere else all fail.
+ *   The locale's own sentence occurs exactly once in the entire document, the
+ *   note element exists, and its complete text IS that sentence. Deleting it,
+ *   rewording it, moving it, or repeating it anywhere else all fail.
  *
- *   English and Russian routes — the sentence occurs zero times. Those locales
- *   get no carve-out; their notes are neutral.
+ *   The other locales' sentences occur zero times.
  */
 export function findNoteExceptionViolations(input: NoteExceptionInput): string[] {
 	const problems: string[] = [];
-	const occurrences = countOccurrences(input.fullText, TIER2_NOTE_EXCEPTION);
 
-	if (!input.expectPresent) {
-		if (occurrences !== 0) {
-			problems.push(
-				`canonical Spanish note must not appear on this locale: ${occurrences} occurrence(s)`,
-			);
+	for (const [locale, sentence] of Object.entries(S7_DISCLAIMER_EXCEPTIONS)) {
+		const occurrences = countOccurrences(input.fullText, sentence);
+		if (locale !== input.locale) {
+			if (occurrences !== 0) {
+				problems.push(
+					`the ${locale} S7 disclaimer must not appear on this locale: ${occurrences} occurrence(s)`,
+				);
+			}
+			continue;
 		}
-		return problems;
-	}
-
-	if (occurrences !== 1) {
-		problems.push(
-			`canonical Spanish note must occur exactly once, found ${occurrences} occurrence(s)`,
-		);
+		if (occurrences !== 1) {
+			problems.push(`the S7 disclaimer must occur exactly once, found ${occurrences} occurrence(s)`);
+		}
 	}
 
 	if (input.noteText === null) {
@@ -275,12 +280,44 @@ export function findNoteExceptionViolations(input: NoteExceptionInput): string[]
 		return problems;
 	}
 
-	if (input.noteText !== TIER2_NOTE_EXCEPTION) {
-		problems.push(
-			`note text is not the canonical sentence verbatim: "${input.noteText}"`,
-		);
+	if (input.noteText !== S7_DISCLAIMER_EXCEPTIONS[input.locale]) {
+		problems.push(`note text is not the S7 disclaimer verbatim: "${input.noteText}"`);
 	}
 
+	return problems;
+}
+
+export interface AlwaysOnPlacementInput {
+	/** Metadata and document title. */
+	metadata: string;
+	/** innerText/textContent of the hero section. */
+	hero: string;
+	/** textContent of the whole body. */
+	body: string;
+	/** textContent of S3 pillar 02 plus the access-hours FAQ item. */
+	permitted: string;
+}
+
+/**
+ * 24/7 (and Russian «круглосуточ…») may appear only in S3 pillar 02 and the
+ * access-hours FAQ (owner handoff v1.1 §6.2): never in metadata, title or
+ * hero, and no occurrence anywhere else in the body.
+ */
+export function find247PlacementViolations(input: AlwaysOnPlacementInput): string[] {
+	const problems: string[] = [];
+	for (const term of ALWAYS_ON_TERMS) {
+		if (term.pattern.test(input.metadata)) problems.push(`"${term.label}" in metadata/title`);
+		if (term.pattern.test(input.hero)) problems.push(`"${term.label}" in the hero`);
+
+		const global = new RegExp(term.pattern.source, 'giu');
+		const inBody = input.body.match(global)?.length ?? 0;
+		const inPermitted = input.permitted.match(global)?.length ?? 0;
+		if (inBody !== inPermitted) {
+			problems.push(
+				`"${term.label}": ${inBody} occurrence(s) in the body, ${inPermitted} in the permitted places`,
+			);
+		}
+	}
 	return problems;
 }
 

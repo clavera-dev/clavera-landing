@@ -2,16 +2,15 @@
 import Section from '../layout/Section.astro';
 
 /**
- * Card 03 ("Acceso amplio" / extended-hours access) stays removed:
- * PROJECT_DECISIONS.md says operating-hour wording is unconfirmed and must
- * not be claimed yet. Card 08 ("Zona de limpieza") restores the set to
- * eight entries using the approved final R3 render (self-service bicycle
- * cleaning zone) instead — a confirmed, non-hours property.
+ * Seven properties since the owner handoff v1.1 (2026-09-23): pillar 02
+ * carries 24/7 access (§3.1) — one of only two places it may appear, both
+ * under the planned-service note below — and pillar 08 ("Zona de limpieza")
+ * is removed (§3.5).
  *
- * Presented as an index, not as eight cards: numbered rows divided by
- * hairline reveal lines, echoing the numbered bays in the renders. Eight
- * identical bordered boxes would have flattened the page at exactly the
- * point where it needs to feel like a specification.
+ * Presented as an index, not as cards: numbered rows divided by hairline
+ * reveal lines, echoing the numbered bays in the renders. Identical bordered
+ * boxes would have flattened the page at exactly the point where it needs to
+ * feel like a specification.
  *
  * R2 (vertical lifting storage systems) opens the section, running off the
  * right edge of the page. It is the render that shows the single idea the
@@ -39,7 +38,7 @@ const c = getCopy(Astro.currentLocale).solution;
 			<h2 id="solucion-heading" class="heading-h2">{c.heading}</h2>
 			<p class="lede">{c.lede}</p>
 			{/*
-			  No hub is in operation. The eight properties below are written in
+			  No hub is in operation. The properties below are written in
 			  the present tense as product properties, so this line states
 			  plainly that they are planned properties of the future service.
 			*/}

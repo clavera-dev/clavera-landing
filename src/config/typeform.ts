@@ -19,8 +19,14 @@
  *      action in S13.
  *
  * These are public responder URLs, not secrets.
+ *
+ * 2026-09-28 (owner handoff v1.1): the pilot form is the short "Avisame" form.
+ * While its URL is absent it is not shown at all, and the research survey is
+ * the primary action (handoff B4). Research links carry the handoff §4.1
+ * fragment attribution, including the selected `candidate_zone`.
  */
 import type { Locale } from '../i18n/config';
+import { isCandidateZoneSlug } from './zones';
 
 export interface SurveyDestination {
 	/** Public Typeform responder URL. */
@@ -38,9 +44,10 @@ export interface SurveyDestination {
 /**
  * A destination that may not exist yet.
  *
- * `null` means "no URL has been supplied". It is never a stand-in for a URL:
- * a null destination renders localized plain text, never an anchor, a button,
- * a disabled control, `href="#"`, an empty href, or a placeholder domain.
+ * `null` means "no URL has been supplied". It is never a stand-in for a URL.
+ * A null pilot destination renders nothing at all (handoff v1.1 B4) — never
+ * an anchor, a button, a disabled control, `href="#"`, an empty href, or a
+ * placeholder domain.
  */
 export type PendingDestination = SurveyDestination | null;
 
@@ -70,18 +77,89 @@ export const RESEARCH_SURVEY_DESTINATIONS: Record<Locale, SurveyDestination> = {
 	en: { url: RESEARCH_ES, language: 'es' },
 };
 
+/**
+ * Handoff v1.1 §4.1 — the ONLY parameters that may ever appear in a
+ * research-survey URL fragment. Typeform reads hidden fields from the
+ * fragment. Every entry is non-personal: campaign metadata plus the zone slug
+ * the visitor picked from the fixed list in candidate-zones.ts.
+ */
+export const RESEARCH_FRAGMENT_ALLOWLIST = [
+	'recruitment_source',
+	'campaign',
+	'consent_v',
+	'survey_version',
+	'language',
+	'candidate_zone',
+] as const;
+
+export type ResearchFragmentParam = (typeof RESEARCH_FRAGMENT_ALLOWLIST)[number];
+
+/**
+ * Locale → fixed fragment attribution (handoff v1.1 §4.1). `language` is the
+ * language of the survey itself, not of the page, which is why English also
+ * says `es`. Russian keeps its `latam` form and carries only the fields the
+ * handoff lists for it.
+ */
+const RESEARCH_FRAGMENT: Record<Locale, Partial<Record<ResearchFragmentParam, string>>> = {
+	es: {
+		recruitment_source: 'clavera_ar',
+		campaign: 'site_es',
+		consent_v: '2026-09',
+		survey_version: 'ARGCABA_ES_v2_0',
+		language: 'es',
+	},
+	en: {
+		recruitment_source: 'clavera_ar',
+		campaign: 'site_en',
+		consent_v: '2026-09',
+		survey_version: 'ARGCABA_ES_v2_0',
+		language: 'es',
+	},
+	ru: {
+		recruitment_source: 'clavera_ar',
+		campaign: 'site_ru',
+	},
+};
+
+/**
+ * The research-survey href for a locale, optionally carrying a chosen zone.
+ *
+ * `candidate_zone` is added only for a slug from candidate-zones.ts and is
+ * omitted when no zone is chosen (§4.1). Any other value throws at build time.
+ */
+export function buildResearchHref(locale: Locale, zoneSlug?: string): string {
+	const target = new URL(getResearchDestination(locale).url);
+	const params = new URLSearchParams();
+
+	const values: Partial<Record<ResearchFragmentParam, string>> = { ...RESEARCH_FRAGMENT[locale] };
+	if (zoneSlug !== undefined) {
+		if (!isCandidateZoneSlug(zoneSlug)) {
+			throw new Error(`buildResearchHref: "${zoneSlug}" is not a candidate-zone slug`);
+		}
+		values.candidate_zone = zoneSlug;
+	}
+
+	for (const key of RESEARCH_FRAGMENT_ALLOWLIST) {
+		const value = values[key];
+		if (typeof value === 'string' && value !== '') params.set(key, value);
+	}
+
+	target.hash = params.toString();
+	return target.toString();
+}
+
 /* -------------------------------------------------------------------------
-   2. Pilot interest — pending
+   2. Pilot interest ("Avisame") — pending
    ------------------------------------------------------------------------- */
 
 /**
- * Locale → pilot-interest form.
+ * Locale → pilot-interest ("Avisame") form.
  *
  * >>> THIS IS THE ONLY PLACE THE REAL PILOT URLS ARE ENTERED. <<<
  *
  * The Typeform is being created externally. Until each URL is supplied its
- * entry stays `null`, and every pilot call to action renders localized plain
- * text instead of a control. Activation is exactly this: replace a `null`
+ * entry stays `null` and the pilot call to action is not rendered at all
+ * (handoff v1.1 B4). Activation is exactly this: replace a `null`
  * with `{ url: '…', language: '…' }`. No component, template, test or
  * document needs to change.
  *
@@ -125,8 +203,11 @@ export function destinationLanguageDiffers(
  * The ONLY query parameters that may ever be appended to a destination URL.
  *
  * Every entry is non-personal campaign/source metadata. A name, email, phone,
- * `barrio`, vehicle type or any other personal datum must never appear in a
- * URL (PROJECT_DECISIONS.md), and arbitrary parameters are never forwarded.
+ * vehicle type or any other personal datum must never appear in a URL
+ * (PROJECT_DECISIONS.md), and arbitrary parameters are never forwarded. A
+ * free-form `barrio` is never accepted here either; the only zone value that
+ * may reach a URL is a fixed candidate-zone slug in the research fragment
+ * (RESEARCH_FRAGMENT_ALLOWLIST, handoff v1.1 §4.1).
  */
 export const ATTRIBUTION_PARAM_ALLOWLIST = [
 	'utm_source',
@@ -145,12 +226,10 @@ export type AttributionParam = (typeof ATTRIBUTION_PARAM_ALLOWLIST)[number];
  * Builds a destination href with allowlisted attribution parameters only.
  *
  * Deliberately build-time. Forwarding the *visitor's* incoming `utm_*` values
- * would require reading `location.search` in the browser, which means shipping
- * client-side JavaScript to a page that currently ships none. That trade is
- * not worth it, so it is not done: only values known when the page is
- * generated are appended. If visitor-side forwarding is ever approved, the
- * "zero client JavaScript" claim in the project documents must be corrected in
- * the same change.
+ * would require reading `location.search` in the browser, so it is not done:
+ * only values known when the page is generated are appended. (The page's only
+ * client script is the zone selector's, which swaps between prebuilt
+ * research hrefs and forwards nothing.)
  *
  * Uses the native URL API — no dependency, no cookies, no localStorage.
  */

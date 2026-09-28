@@ -1,27 +1,54 @@
 ---
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
-import { getCopy, resolveLocale, LOCALE_DEFINITIONS, SWITCHER_ORDER, DEFAULT_LOCALE, localeHome } from '../i18n';
+import {
+	getCopy,
+	resolveLocale,
+	LOCALE_DEFINITIONS,
+	SWITCHER_ORDER,
+	DEFAULT_LOCALE,
+	localeHome,
+	type Locale,
+} from '../i18n';
 import '../styles/global.css';
 
 /**
  * Every locale is a full static document with its own `lang`, its own
  * self-referencing canonical, and the complete alternate set. Nothing here
  * depends on client-side JavaScript.
+ *
+ * `title`/`description`/`path` are optional overrides for pages that are not
+ * the main landing document. `alternatePaths` overrides the per-locale
+ * hreflang targets, which default to each locale's home — the legal pages
+ * pass their own three paths so a language switch on `/en/privacidad` reaches
+ * `/privacidad`, not `/`.
  */
+interface Props {
+	title?: string;
+	description?: string;
+	path?: string;
+	alternatePaths?: Record<Locale, string>;
+}
+
+const { title, description, path, alternatePaths } = Astro.props;
+
 const locale = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
 const definition = LOCALE_DEFINITIONS[locale];
+const pageTitle = title ?? copy.meta.title;
+const pageDescription = description ?? copy.meta.description;
 
 /** Self-referencing canonical — never points at the root for a sub-locale. */
-const canonicalUrl = new URL(localeHome(locale), Astro.site);
+const canonicalUrl = new URL(path ?? localeHome(locale), Astro.site);
+
+const pathFor = (code: Locale) => alternatePaths?.[code] ?? localeHome(code);
 
 /** hreflang for all three locales plus x-default → the canonical Spanish. */
 const alternates = SWITCHER_ORDER.map((code) => ({
 	hreflang: LOCALE_DEFINITIONS[code].hreflang,
-	href: new URL(localeHome(code), Astro.site).href,
+	href: new URL(pathFor(code), Astro.site).href,
 }));
-const xDefault = new URL(localeHome(DEFAULT_LOCALE), Astro.site).href;
+const xDefault = new URL(pathFor(DEFAULT_LOCALE), Astro.site).href;
 ---
 
 <!doctype html>
@@ -41,8 +68,8 @@ const xDefault = new URL(localeHome(DEFAULT_LOCALE), Astro.site).href;
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-		<title>{copy.meta.title}</title>
-		<meta name="description" content={copy.meta.description} />
+		<title>{pageTitle}</title>
+		<meta name="description" content={pageDescription} />
 		<link rel="canonical" href={canonicalUrl.href} />
 
 		{alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
@@ -50,21 +77,21 @@ const xDefault = new URL(localeHome(DEFAULT_LOCALE), Astro.site).href;
 
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="CLAVERA" />
-		<meta property="og:title" content={copy.meta.ogTitle} />
-		<meta property="og:description" content={copy.meta.description} />
+		<meta property="og:title" content={title ?? copy.meta.ogTitle} />
+		<meta property="og:description" content={pageDescription} />
 		<meta property="og:url" content={canonicalUrl.href} />
 		<meta property="og:locale" content={definition.lang.replace('-', '_')} />
 
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content={copy.meta.ogTitle} />
-		<meta name="twitter:description" content={copy.meta.description} />
+		<meta name="twitter:title" content={title ?? copy.meta.ogTitle} />
+		<meta name="twitter:description" content={pageDescription} />
 	</head>
 	<body>
 		<a class="skip-link" href="#contenido">{copy.a11y.skipLink}</a>
-		<Header />
+		<Header alternatePaths={alternatePaths} />
 		<main id="contenido">
 			<slot />
 		</main>
-		<Footer />
+		<Footer alternatePaths={alternatePaths} />
 	</body>
 </html>

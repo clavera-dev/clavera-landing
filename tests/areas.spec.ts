@@ -1,165 +1,183 @@
 import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
+import { CANDIDATE_ZONES, CANDIDATE_ZONES_STATUS } from '../src/config/zones';
+import { buildResearchHref } from '../src/config/typeform';
 
 /**
- * The owner-approved nine-area beta set (M3.5.1).
+ * The zone selector (owner handoff v1.1 §3.2, owner response v1.2 §1.8).
  *
- * The areas are under evaluation. Nothing on the page may imply an opening
- * order, a priority ranking, a "first district", a confirmed location, a date,
- * an address or an application count.
- *
- * Barrio names are never translated or transliterated (brief §5.3), so the
- * same nine strings must appear in Spanish, English and Russian.
+ * The working zone list has been confirmed by the owner. These tests read the
+ * list from the one config file so a future targeted update stays isolated.
+ * What they pin are the rules any list must follow: alphabetical barrios, no
+ * numbering or ranking, original Spanish names in every locale, no
+ * addresses, pins, dates or counters, and `candidate_zone` in the survey
+ * fragment only for a chosen zone.
  */
 
-/** Exact set, in the exact order they must be presented. */
-const AREAS = [
-	'Almagro',
-	'Belgrano',
-	'Chacarita',
-	'Colegiales',
-	'Núñez',
-	'Palermo',
-	'Palermo Hollywood',
-	'Paternal',
-	'Villa Crespo',
-];
+const BARRIOS = CANDIDATE_ZONES.filter((z) => !['otro_caba', 'fuera_caba'].includes(z.slug));
 
-/** Names removed from the earlier four-area set that must not linger. */
-const REMOVED_AREAS = ['Recoleta'];
+test.describe('candidate-zone configuration', () => {
+	test('uses the owner-confirmed working list', () => {
+		expect(CANDIDATE_ZONES_STATUS).toBe('working');
+	});
+
+	test('lists the barrios alphabetically, then the two catch-all options', () => {
+		const labels = BARRIOS.map((z) => z.label);
+		const sorted = [...labels].sort((a, b) => a.localeCompare(b, 'es'));
+		expect(labels, 'barrios in collated alphabetical order').toEqual(sorted);
+
+		const tail = CANDIDATE_ZONES.slice(-2).map((z) => z.slug);
+		expect(tail).toEqual(['otro_caba', 'fuera_caba']);
+	});
+
+	test('uses URL-safe, unique slugs', () => {
+		const slugs = CANDIDATE_ZONES.map((z) => z.slug);
+		expect(new Set(slugs).size).toBe(slugs.length);
+		for (const slug of slugs) expect(slug).toMatch(/^[a-z0-9_]+$/);
+		// The four slugs the handoff itself gives as examples.
+		for (const given of ['palermo_hollywood', 'belgrano_r', 'otro_caba', 'fuera_caba']) {
+			expect(slugs).toContain(given);
+		}
+	});
+});
 
 for (const locale of LOCALES) {
-	test.describe(`[${locale.key}] beta areas`, () => {
-		test('lists exactly the nine approved areas, in alphabetical order', async ({ page }) => {
+	test.describe(`[${locale.key}] zone selector`, () => {
+		test('appears in the hero and in S10, and the old area list is gone', async ({ page }) => {
 			await page.goto(locale.path);
+			await expect(page.locator('#top [data-zone-selector]')).toHaveCount(1);
+			await expect(page.locator('#zonas [data-zone-selector]')).toHaveCount(1);
 
-			const names = await page
-				.locator('#zonas .zones__name')
-				.evaluateAll((els) => els.map((el) => (el.textContent ?? '').trim()));
-
-			expect(names, 'rendered area names').toEqual(AREAS);
+			// No area list, no ordered list, no index markers.
+			await expect(page.locator('#zonas ul:not([role="listbox"]), #zonas ol')).toHaveCount(0);
+			await expect(page.locator('#zonas .zones__name, #zonas .zones__n')).toHaveCount(0);
 		});
 
-		test('the order really is alphabetical, not merely the expected array', async ({ page }) => {
+		test('offers exactly the configured zones, in order', async ({ page }) => {
 			await page.goto(locale.path);
-			const names = await page
-				.locator('#zonas .zones__name')
-				.evaluateAll((els) => els.map((el) => (el.textContent ?? '').trim()));
 
-			// Independent check: sorting must not change anything. Uses Spanish
-			// collation so `Núñez` is ordered the way a reader expects.
-			const sorted = [...names].sort((a, b) => a.localeCompare(b, 'es'));
-			expect(names, 'names are in collated alphabetical order').toEqual(sorted);
+			for (const scope of ['#top', '#zonas']) {
+				const options = await page
+					.locator(`${scope} [data-zone-option]`)
+					.evaluateAll((els) =>
+						els.map((el) => ({
+							value: (el as HTMLElement).dataset.slug,
+							label: (el.textContent ?? '').trim(),
+						})),
+					);
+
+				expect(options, `${scope} zones`).toEqual(
+					CANDIDATE_ZONES.map((z) => ({ value: z.slug, label: z.label })),
+				);
+			}
 		});
 
 		test('uses the original Spanish names, untranslated and untransliterated', async ({ page }) => {
 			await page.goto(locale.path);
-			const names = await page
-				.locator('#zonas .zones__name')
+			const labels = await page
+				.locator('#zonas [data-zone-option]')
 				.evaluateAll((els) => els.map((el) => (el.textContent ?? '').trim()));
 
-			for (const name of names) {
-				// A Cyrillic character in a barrio name means it was transliterated
-				// — the exact failure the Russian locale is most likely to have.
-				expect(/[Ѐ-ӿ]/.test(name), `"${name}" is transliterated`).toBe(false);
+			for (const label of labels) {
+				expect(/[Ѐ-ӿ]/.test(label), `"${label}" is transliterated`).toBe(false);
 			}
-
-			// And the specific transliterations that would be produced.
-			const body = await page.locator('#zonas').innerText();
 			for (const bad of ['Чакарита', 'Палермо', 'Бельграно', 'Альмагро', 'Ньюньес', 'Патерналь']) {
-				expect(body, `transliterated name ${bad}`).not.toContain(bad);
+				expect(labels.join(' '), `transliterated name ${bad}`).not.toContain(bad);
 			}
 		});
 
 		test('carries no numbering, ranking or implied opening order', async ({ page }) => {
 			await page.goto(locale.path);
-
-			// An ordered list is itself a ranking claim.
-			await expect(page.locator('#zonas ol'), 'ordered list in the areas section').toHaveCount(0);
-			await expect(page.locator('#zonas ul')).toHaveCount(1);
-
-			// No index markers next to the names.
-			await expect(page.locator('#zonas .zones__n')).toHaveCount(0);
-
-			// No CSS-generated counters either.
-			const generated = await page.evaluate(() => {
-				const items = Array.from(document.querySelectorAll('#zonas li'));
-				return items
-					.map((el) => window.getComputedStyle(el, '::before').content)
-					.filter((c) => c && c !== 'none' && c !== 'normal' && c !== '""');
-			});
-			expect(generated, 'generated list markers').toEqual([]);
-
-			// The area rows must not begin with a number.
-			const rows = await page
-				.locator('#zonas li')
+			const labels = await page
+				.locator('[data-zone-option]')
 				.evaluateAll((els) => els.map((el) => (el.textContent ?? '').trim()));
-			for (const row of rows) {
-				expect(/^\d/.test(row), `area row starts with a number: "${row}"`).toBe(false);
+			for (const label of labels) {
+				expect(/^\d/.test(label), `option starts with a number: "${label}"`).toBe(false);
+			}
+
+			// No zone is preselected.
+			const selected = await page
+				.locator('[data-zone-input]')
+				.evaluateAll((els) => els.map((el) => (el as HTMLInputElement).value));
+			expect(selected).toEqual(['', '']);
+
+			const body = (await page.evaluate(() => document.body.textContent ?? '')).toLowerCase();
+			const ranking: Record<string, string[]> = {
+				es: ['zonas prioritarias', 'barrios prioritarios', 'primer hub'],
+				en: ['priority areas', 'priority neighbourhoods', 'first hub'],
+				ru: ['приоритетные районы', 'первый хаб'],
+			};
+			for (const phrase of ranking[locale.key]) {
+				expect(body, `ranking phrase "${phrase}"`).not.toContain(phrase);
 			}
 		});
 
-		test('states that the areas are under evaluation and commit to nothing', async ({ page }) => {
+		test('states under the S10 selector that no location is chosen and nothing is committed', async ({
+			page,
+		}) => {
 			await page.goto(locale.path);
 
-			const disclaimer = page.locator('[data-zones-disclaimer]');
+			const disclaimer = page.locator('#zonas [data-zones-disclaimer]');
 			await expect(disclaimer).toHaveCount(1);
 			await expect(disclaimer).toBeVisible();
 
 			const expected: Record<string, string> = {
-				es: 'Barrios en evaluación. No implica compromiso de apertura, fecha ni disponibilidad.',
-				en: 'Areas under evaluation. This implies no commitment to open, no date and no availability.',
-				ru: 'Районы на рассмотрении. Это не означает обязательства открыть хаб, срока или наличия мест.',
+				es: 'Todavía no elegimos ubicaciones: las define la demanda. Elegir una zona no implica compromiso de apertura, fecha ni disponibilidad.',
+				en: 'We have not chosen any locations yet: demand decides. Choosing an area implies no commitment to open, no date and no availability.',
+				ru: 'Мы ещё не выбрали локации: их определяет спрос. Выбор зоны не означает обязательства открыть хаб, срока или наличия мест.',
 			};
 			await expect(disclaimer).toHaveText(expected[locale.key]);
 		});
 
-		test('shows no address, date, counter or confirmed location', async ({ page }) => {
+		test('shows no address, date, counter or map pin', async ({ page }) => {
 			await page.goto(locale.path);
 			const zones = await page.locator('#zonas').innerText();
 
-			// A street number would be the clearest breach.
-			expect(zones, 'street address in the areas section').not.toMatch(/\b\d{3,5}\b/);
-			// No opening dates.
+			expect(zones, 'street address in the zones section').not.toMatch(/\b\d{3,5}\b/);
 			expect(zones).not.toMatch(/\b20\d{2}\b/);
-			for (const month of ['enero', 'marzo', 'january', 'march', 'января', 'марта']) {
-				expect(zones.toLowerCase(), `date word "${month}"`).not.toContain(month);
-			}
-			// No map pins.
 			await expect(page.locator('#zonas img, #zonas iframe, #zonas svg')).toHaveCount(0);
 		});
 
-		test('no longer names an area dropped from the approved set', async ({ page }) => {
+		test('"Seguir" carries the chosen zone in the fragment, and only then', async ({ page }) => {
 			await page.goto(locale.path);
 
-			/*
-			  textContent, NOT innerText. A collapsed <details> is hidden, so
-			  innerText silently omits every FAQ answer — which is exactly where a
-			  stale area list survived this check once already. textContent reads
-			  the DOM regardless of visibility.
-			*/
-			const body = await page.evaluate(() => document.body.textContent ?? '');
-			for (const removed of REMOVED_AREAS) {
-				expect(body, `removed area "${removed}" still on the page`).not.toContain(removed);
+			for (const scope of ['#top', '#zonas']) {
+				const input = page.locator(`${scope} [data-zone-input]`);
+				const link = page.locator(`${scope} [data-zone-continue]`);
+				await expect(input).toBeVisible();
+
+				// No zone chosen: no candidate_zone.
+				expect(await link.getAttribute('href')).toBe(locale.surveyHref);
+
+				const zone = CANDIDATE_ZONES[3];
+				await input.fill('Barrancas');
+				await page.locator(`${scope} [data-zone-option][data-slug="${zone.slug}"]`).click();
+				const chosen = new URL((await link.getAttribute('href')) ?? '');
+				const params = new URLSearchParams(chosen.hash.slice(1));
+				expect(params.get('candidate_zone'), `${scope} candidate_zone`).toBe(zone.slug);
+				expect(`${chosen.origin}${chosen.pathname}`).toBe(locale.surveyUrl);
+				expect(chosen.search, 'nothing in the query string').toBe('');
+				// Exactly the prebuilt href: the rest of the attribution is unchanged.
+				expect(chosen.toString()).toBe(buildResearchHref(locale.key, zone.slug));
+
+				// Editing the choice removes the parameter; arbitrary text stays local.
+				await input.fill('my-private-address@example.com');
+				expect(await link.getAttribute('href')).toBe(locale.surveyHref);
 			}
 		});
 
-		test('names no priority ordering among the areas, including inside the FAQ', async ({
-			page,
-		}) => {
+		test('filters by substring without case or accents, and shows all on empty input', async ({ page }) => {
 			await page.goto(locale.path);
-			const body = await page.evaluate(() => document.body.textContent ?? '');
-
-			const ranking: Record<string, string[]> = {
-				es: ['zonas prioritarias', 'barrios prioritarios'],
-				en: ['priority areas', 'priority neighbourhoods'],
-				ru: ['приоритетные районы'],
-			};
-			for (const phrase of ranking[locale.key]) {
-				expect(body.toLowerCase(), `ranking phrase "${phrase}"`).not.toContain(
-					phrase.toLowerCase(),
-				);
-			}
+			const input = page.locator('#zonas [data-zone-input]');
+			const visible = page.locator('#zonas [data-zone-option]:visible');
+			await input.fill('holly');
+			await expect(visible).toHaveCount(1);
+			await expect(visible.first()).toHaveText('Palermo — Hollywood');
+			await input.fill('nunez');
+			await expect(visible).toHaveCount(1);
+			await expect(visible.first()).toHaveText('Núñez');
+			await input.fill('');
+			await expect(visible).toHaveCount(CANDIDATE_ZONES.length);
 		});
 	});
 
@@ -168,7 +186,9 @@ for (const locale of LOCALES) {
 	   --------------------------------------------------------------------- */
 
 	test.describe(`[${locale.key}] planned service`, () => {
-		test('identifies cameras, logging and access as planned, not operating', async ({ page }) => {
+		test('identifies access logging and identification as planned, not operating', async ({
+			page,
+		}) => {
 			await page.goto(locale.path);
 
 			const notes = page.locator('[data-planned-note]');
@@ -187,11 +207,41 @@ for (const locale of LOCALES) {
 			}
 		});
 
-		test('adds no new 24/7, insurance or guaranteed-security claim', async ({ page }) => {
+		test('names no camera or surveillance, and no "minutes from home"', async ({ page }) => {
+			await page.goto(locale.path);
+
+			// Handoff v1.1 B5 and §6.1, across visible copy, metadata and alt text.
+			const corpus = await page.evaluate(() => {
+				const clone = document.body.cloneNode(true) as HTMLElement;
+				clone.querySelectorAll('script, style').forEach((el) => el.remove());
+				const meta = Array.from(document.querySelectorAll('meta'))
+					.map((m) => m.getAttribute('content') ?? '')
+					.join(' ');
+				const alts = Array.from(document.querySelectorAll('[alt]'))
+					.map((el) => el.getAttribute('alt') ?? '')
+					.join(' ');
+				return `${document.title} ${meta} ${alts} ${clone.textContent ?? ''}`.toLowerCase();
+			});
+
+			for (const banned of [
+				'vigilancia',
+				'surveillance',
+				'cámara',
+				'camera',
+				'камер',
+				'видеонаблюд',
+				'a minutos',
+				'minutes from home',
+				'минутах от дома',
+			]) {
+				expect(corpus, `"${banned}"`).not.toContain(banned);
+			}
+		});
+
+		test('adds no insurance or guaranteed-security claim', async ({ page }) => {
 			await page.goto(locale.path);
 			const body = await page.evaluate(() => document.body.innerText);
 
-			expect(body).not.toContain('24/7');
 			for (const banned of [
 				'garantía contra robo',
 				'theft guarantee',
@@ -199,9 +249,25 @@ for (const locale of LOCALES) {
 				'póliza',
 				'insurance policy',
 				'страховой полис',
+				'garantiz',
+				'guaranteed',
+				'гарантир',
 			]) {
 				expect(body.toLowerCase(), `banned claim "${banned}"`).not.toContain(banned.toLowerCase());
 			}
+		});
+
+		test('uses mixed removable and integrated-battery handling', async ({ page }) => {
+			await page.goto(locale.path);
+			const expected: Record<string, string> = {
+				es: 'E-bikes y monopatines eléctricos: si la batería es removible, te la llevás con vos; si está integrada, la bici se guarda en una zona separada. No se cargan baterías dentro del hub.',
+				en: 'E-bikes and e-scooters: if the battery is removable, you take it with you; if it is built in, the bike is stored in a separate area. Batteries are not charged inside the hub.',
+				ru: 'E-bike и электросамокаты: съёмную батарею забираешь с собой, а велосипед со встроенной батареей хранится в отдельной зоне. Батареи внутри хаба не заряжаются.',
+			};
+			await expect(page.locator('[data-battery-note]')).toHaveText(expected[locale.key]);
+			const body = await page.evaluate(() => document.body.textContent ?? '');
+			// The answer to the e-bike FAQ repeats it.
+			expect(body.split(expected[locale.key]).length - 1).toBe(2);
 		});
 	});
 }

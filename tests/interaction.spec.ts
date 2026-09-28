@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
+import { getPilotDestination } from '../src/config/typeform';
 
 /** Anchors, CTA boundaries, FAQ keyboard operation and visible focus. */
 const ANCHORS = ['problema', 'solucion', 'works', 'vehiculos', 'seguridad', 'comparacion', 'hub', 'casos', 'zonas', 'fundadores', 'faq', 'encuesta'];
@@ -30,31 +31,26 @@ for (const locale of LOCALES) {
 		});
 
 		/*
-		  The beta has TWO Typeform flows: the short pilot-interest form
-		  (primary, its URLs still pending) and the long research survey
-		  (secondary, live). Neither is ever a disabled control — a pending
-		  destination renders plain text instead.
+		  The beta has TWO Typeform flows: the short "Avisame" pilot form and
+		  the research survey. A pending pilot destination renders nothing at all
+		  (owner handoff v1.1 B4); neither flow is ever a disabled control.
 
-		  This supersedes the original assertion that both controls stayed inert
-		  while unconfigured, which held only while every URL was unknown.
 		  Routing, the EN language disclosure and the absence of the deferred
 		  founding-price path live in survey.spec.ts; the pilot flow lives in
 		  pilot.spec.ts.
 		*/
-		test('exposes the two beta flows, with no dead or disabled CTA', async ({ page }) => {
+		test('exposes the beta flows, with no dead or disabled CTA', async ({ page }) => {
 			await page.goto(locale.path);
+			const pilotLive = getPilotDestination(locale.key) !== null;
 			const boundaries = page.locator('[data-typeform-boundary]');
-			await expect(boundaries).toHaveCount(2);
+			await expect(boundaries).toHaveCount(pilotLive ? 3 : 2);
 
-			// Exactly two flows: pilot interest (primary) and research (secondary).
-			await expect(page.locator('[data-typeform-flow="pilot"]')).toHaveCount(1);
-			await expect(page.locator('[data-typeform-flow="research"]')).toHaveCount(1);
+			await expect(page.locator('[data-typeform-flow="pilot"]')).toHaveCount(pilotLive ? 1 : 0);
+			await expect(page.locator('[data-typeform-flow="research"]')).toHaveCount(2);
 
-			// The research link is live. The pilot boundary is either a live link
-			// or plain text — never a disabled stub, and never a link to nowhere.
-			await expect(page.locator('[data-typeform-flow="research"] a[href^="https://"]')).toHaveCount(
-				1,
-			);
+			// Every rendered boundary is a live link — never a disabled stub, and
+			// never a link to nowhere.
+			await expect(boundaries.locator('a[href^="https://"]')).toHaveCount(pilotLive ? 3 : 2);
 			await expect(boundaries.locator('button')).toHaveCount(0);
 
 			// No disabled control anywhere on the page.

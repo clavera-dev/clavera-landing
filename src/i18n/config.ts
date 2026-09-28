@@ -81,3 +81,15 @@ export function localeHome(locale: Locale): string {
 export function localeHref(locale: Locale, hash = ''): string {
 	return `${localeHome(locale)}${hash}`;
 }
+
+/**
+ * Root-relative path for a route within a locale, e.g. `localePath('en',
+ * 'privacidad')` → `/en/privacidad`, `localePath('es', 'privacidad')` →
+ * `/privacidad`. Used for routes that exist in every locale under its own
+ * segment, such as the legal pages.
+ */
+export function localePath(locale: Locale, route: string): string {
+	const { segment } = LOCALE_DEFINITIONS[locale];
+	const clean = route.replace(/^\/+/, '');
+	return segment === '' ? `/${clean}` : `/${segment}/${clean}`;
+}

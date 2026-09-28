@@ -3,7 +3,7 @@ import { LOCALES } from './locales';
 import {
 	TIER1,
 	TIER1_COMPARISON_ROOTS,
-	TIER2_NOTE_EXCEPTION,
+	S7_DISCLAIMER_EXCEPTIONS,
 	FORBIDDEN_PROMISES,
 	FORBIDDEN_BRANDS,
 	stripAllowlisted,
@@ -11,13 +11,14 @@ import {
 	countOccurrences,
 	findHeaderPlacementViolations,
 	findNoteExceptionViolations,
+	find247PlacementViolations,
 } from './terminology';
 
-/** The one Tier-2 header phrase each locale actually ships. */
+/** The one Tier-2 header phrase each locale actually ships (handoff v1.1 B3). */
 const HEADER_PHRASE: Record<string, string> = {
-	es: 'Cochera de auto',
-	en: 'Car garage',
-	ru: 'Автомобильная кочера',
+	es: 'Cochera de auto (alternativa)',
+	en: 'Car garage (alternative)',
+	ru: 'Автомобильная кочера (альтернатива)',
 };
 
 /**
@@ -185,65 +186,53 @@ for (const locale of LOCALES) {
 			).not.toEqual([]);
 		});
 
-		test('pins the canonical Spanish note exception to its exact element', async ({ page }) => {
+		test('pins this locale’s S7 disclaimer exception to its exact element', async ({ page }) => {
 			await page.goto(locale.path);
 			const corpus = await collect(page);
+			const sentence = S7_DISCLAIMER_EXCEPTIONS[locale.key];
 
 			// The carve-out is legal, not stylistic, so it is pinned rather than
-			// tolerated: exactly once on Spanish, as the complete text of the note
-			// element, and never on English or Russian.
+			// tolerated: exactly once, as the complete text of the note element,
+			// and never another locale's sentence.
 			expect(
 				findNoteExceptionViolations({
 					fullText: corpus.fullText,
 					noteText: corpus.noteText,
-					expectPresent: locale.carriesNoteException,
+					locale: locale.key,
 				}),
-				'canonical note exception placement',
+				'S7 disclaimer exception placement',
 			).toEqual([]);
 
-			if (locale.carriesNoteException) {
-				expect(corpus.noteText, 'note is the canonical sentence verbatim').toBe(
-					TIER2_NOTE_EXCEPTION,
-				);
-				expect(
-					countOccurrences(corpus.fullText, TIER2_NOTE_EXCEPTION),
-					'canonical note occurs exactly once',
-				).toBe(1);
-			} else {
-				expect(
-					countOccurrences(corpus.fullText, TIER2_NOTE_EXCEPTION),
-					'canonical note absent from this locale',
-				).toBe(0);
-			}
+			expect(corpus.noteText, 'note is the B3 sentence verbatim').toBe(sentence);
+			expect(corpus.noteText, 'locale table agrees').toBe(locale.s7Disclaimer);
+			expect(countOccurrences(corpus.fullText, sentence), 'occurs exactly once').toBe(1);
 		});
 
-		test('rejects tampering with the canonical Spanish note exception', async ({ page }) => {
+		test('rejects tampering with the S7 disclaimer exception', async ({ page }) => {
 			const violations = async () => {
 				const corpus = await collect(page);
 				return findNoteExceptionViolations({
 					fullText: corpus.fullText,
 					noteText: corpus.noteText,
-					expectPresent: locale.carriesNoteException,
+					locale: locale.key,
 				});
 			};
+			const sentence = S7_DISCLAIMER_EXCEPTIONS[locale.key];
+			const foreign = S7_DISCLAIMER_EXCEPTIONS[locale.key === 'es' ? 'en' : 'es'];
 
 			await page.goto(locale.path);
 			expect(await violations(), 'baseline').toEqual([]);
 
-			if (!locale.carriesNoteException) {
-				// No carve-out here: introducing the Spanish sentence at all fails.
-				await page.evaluate((sentence) => {
-					const note = document.querySelector('#comparacion .comparison__note');
-					if (!note) throw new Error('S7 note not found');
-					note.textContent = `${note.textContent} ${sentence}`;
-				}, TIER2_NOTE_EXCEPTION);
-				expect(await violations(), 'Spanish sentence injected into a non-Spanish locale').not.toEqual(
-					[],
-				);
-				return;
-			}
+			// Another locale's carve-out does not travel: injecting it fails.
+			await page.evaluate((injected) => {
+				const note = document.querySelector('#comparacion .comparison__note');
+				if (!note) throw new Error('S7 note not found');
+				note.textContent = `${note.textContent} ${injected}`;
+			}, foreign);
+			expect(await violations(), 'foreign sentence injected').not.toEqual([]);
 
 			// (a) Deleting the note must fail.
+			await page.goto(locale.path);
 			await page.evaluate(() => {
 				document.querySelector('#comparacion .comparison__note')?.remove();
 			});
@@ -257,7 +246,7 @@ for (const locale of LOCALES) {
 				if (!note || !heading) throw new Error('S7 note or heading not found');
 				note.textContent = '';
 				heading.textContent = `${heading.textContent} ${sentence}`;
-			}, TIER2_NOTE_EXCEPTION);
+			}, sentence);
 			expect(await violations(), 'sentence moved into the S7 heading').not.toEqual([]);
 
 			// (c) Moving the sentence into a table cell must fail.
@@ -268,7 +257,7 @@ for (const locale of LOCALES) {
 				if (!note || !cell) throw new Error('S7 note or cell not found');
 				note.textContent = '';
 				cell.textContent = `${cell.textContent} ${sentence}`;
-			}, TIER2_NOTE_EXCEPTION);
+			}, sentence);
 			expect(await violations(), 'sentence moved into an S7 table cell').not.toEqual([]);
 
 			// (d) Duplicating it outside the note must fail, even with the note intact.
@@ -279,16 +268,16 @@ for (const locale of LOCALES) {
 				const echo = document.createElement('p');
 				echo.textContent = sentence;
 				footer.append(echo);
-			}, TIER2_NOTE_EXCEPTION);
+			}, sentence);
 			expect(await violations(), 'sentence duplicated outside the note').not.toEqual([]);
 
 			// (e) Rewording the note must fail.
 			await page.goto(locale.path);
-			await page.evaluate(() => {
+			await page.evaluate((original) => {
 				const note = document.querySelector('#comparacion .comparison__note');
 				if (!note) throw new Error('S7 note not found');
-				note.textContent = 'Valores de mercado para cocheras en CABA, agosto 2026.';
-			});
+				note.textContent = original.replace('CLAVERA', 'CLAVERA hoy');
+			}, sentence);
 			expect(await violations(), 'note reworded').not.toEqual([]);
 		});
 
@@ -310,6 +299,40 @@ for (const locale of LOCALES) {
 			await page.goto(locale.path);
 			const corpus = await collect(page);
 			expect(findViolations(corpus.fullText, FORBIDDEN_PROMISES), 'forbidden promises').toEqual([]);
+		});
+
+		test('states 24/7 only in pillar 02 and the access FAQ, never in meta or hero', async ({
+			page,
+		}) => {
+			await page.goto(locale.path);
+
+			// textContent, not innerText: FAQ answers sit in collapsed <details>.
+			const input = await page.evaluate(() => {
+				const meta = Array.from(document.querySelectorAll('meta'))
+					.map((m) => m.getAttribute('content') ?? '')
+					.concat(document.title)
+					.join(' \n ');
+				const pillar02 = document.querySelectorAll('#solucion .index__row')[1];
+				// The access FAQ is the second item (handoff v1.1 §3.1).
+				const accessFaq = document.querySelectorAll('.faq__item')[1];
+				return {
+					metadata: meta,
+					hero: document.querySelector('#top')?.textContent ?? '',
+					body: document.body.textContent ?? '',
+					permitted: `${pillar02?.textContent ?? ''}\n${accessFaq?.textContent ?? ''}`,
+				};
+			});
+
+			expect(find247PlacementViolations(input), '24/7 placement').toEqual([]);
+
+			// And it really is stated where the handoff puts it, so the check above
+			// cannot pass vacuously.
+			const expectedPillar: Record<string, string> = {
+				es: 'Acceso digital personal, 24/7',
+				en: 'Personal digital access, 24/7',
+				ru: 'Персональный цифровой доступ 24/7',
+			};
+			expect(input.permitted).toContain(expectedPillar[locale.key]);
 		});
 
 		test('never exposes the prohibited supplier brand names', async ({ page }) => {

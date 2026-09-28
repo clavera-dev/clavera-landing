@@ -1,26 +1,36 @@
 ---
 import { logo } from '../../data/media';
-import { getCopy } from '../../i18n';
+import { getCopy, resolveLocale, localePath, type Locale } from '../../i18n';
 import { whatsappHref } from '../../config/contact';
+import {
+	CONTROLLER_NOTICE_ES,
+	CONTROLLER_CONTACT_ES,
+	LANGUAGE_CLAUSE_ES,
+} from '../../config/legal';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
+interface Props {
+	/** See LanguageSwitcher.astro — overrides the switcher's targets on non-home pages. */
+	alternatePaths?: Record<Locale, string>;
+}
+
+const { alternatePaths } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
 
 /*
   INTERIM TREATMENT — footer routes that do not exist yet.
 
-  `/privacidad`, `/terminos`, `/cookies`, `/espacios` and `/desarrolladores`
-  are not built. Linking to them would put a clickable 404 in front of every
-  visitor and every reviewer, so an entry whose route is absent renders as
-  plain text with a "pending" note instead of as an anchor.
+  `/espacios` and `/desarrolladores` are not built. Linking to them would put
+  a clickable 404 in front of every visitor and every reviewer, so an entry
+  whose route is absent renders as plain text with a "pending" note instead
+  of as an anchor. Reversal is one line — add the route to AVAILABLE_ROUTES
+  when it ships, and the entry becomes a link again.
 
-  This is presentation only. It does NOT discharge the obligation: the three
-  legal routes remain MANDATORY blockers for real public deployment
-  (PROJECT_DECISIONS.md, "Legal and publishing gates"), and no legal copy is
-  invented here. Reversal is one line — add the path to AVAILABLE_ROUTES when
-  the route actually ships, and the entry becomes a link again.
+  `/privacidad`, `/terminos` and `/cookies` are now built (this pass) and are
+  listed as available below, at their own locale's path via `localePath`.
 */
-const AVAILABLE_ROUTES = new Set<string>();
+const AVAILABLE_ROUTES = new Set<string>(['privacidad', 'terminos', 'cookies']);
 
 /*
   WhatsApp Business. The number has not been supplied, so `whatsappHref()`
@@ -31,22 +41,23 @@ const AVAILABLE_ROUTES = new Set<string>();
 const whatsapp = whatsappHref();
 
 interface FooterEntry {
-	href: string;
+	/** Route segment, without a locale prefix — resolved via `localePath`. */
+	route: string;
 	label: string;
 }
 
 const ownerEntries: FooterEntry[] = [
-	{ href: '/espacios', label: copy.footer.proposeSpace },
-	{ href: '/desarrolladores', label: copy.footer.forDevelopers },
+	{ route: 'espacios', label: copy.footer.proposeSpace },
+	{ route: 'desarrolladores', label: copy.footer.forDevelopers },
 ];
 
 const legalEntries: FooterEntry[] = [
-	{ href: '/privacidad', label: copy.footer.privacy },
-	{ href: '/terminos', label: copy.footer.terms },
-	{ href: '/cookies', label: copy.footer.cookies },
+	{ route: 'privacidad', label: copy.footer.privacy },
+	{ route: 'terminos', label: copy.footer.terms },
+	{ route: 'cookies', label: copy.footer.cookies },
 ];
 
-const isAvailable = (entry: FooterEntry) => AVAILABLE_ROUTES.has(entry.href);
+const isAvailable = (entry: FooterEntry) => AVAILABLE_ROUTES.has(entry.route);
 const hasAnyLink = (entries: FooterEntry[]) => entries.some(isAvailable);
 const hasAnyPending = (entries: FooterEntry[]) => entries.some((entry) => !isAvailable(entry));
 
@@ -74,6 +85,7 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 						<li><a href="mailto:hola@clavera.ar">hola@clavera.ar</a></li>
 						<li><a href="https://instagram.com/clavera.ar" rel="me">Instagram</a></li>
 						<li><a href="https://facebook.com/clavera.ar" rel="me">Facebook</a></li>
+						<li><a href="https://www.tiktok.com/@clavera.ar" rel="me">TikTok</a></li>
 						<li>
 							{
 								whatsapp === null ? (
@@ -98,7 +110,7 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 							ownerEntries.map((entry) => (
 								<li>
 									{isAvailable(entry) ? (
-										<a href={entry.href}>{entry.label}</a>
+										<a href={localePath(locale, entry.route)}>{entry.label}</a>
 									) : (
 										<span class="site-footer__pending-item">{entry.label}</span>
 									)}
@@ -123,7 +135,7 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 							legalEntries.map((entry) => (
 								<li>
 									{isAvailable(entry) ? (
-										<a href={entry.href}>{entry.label}</a>
+										<a href={localePath(locale, entry.route)}>{entry.label}</a>
 									) : (
 										<span class="site-footer__pending-item">{entry.label}</span>
 									)}
@@ -143,7 +155,7 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 					{/* Second switcher location required by brief Part V. Wrapper is
 					    owned by this component so the scoped rule matches. */}
 					<div class="site-footer__lang">
-						<LanguageSwitcher />
+						<LanguageSwitcher paths={alternatePaths} />
 					</div>
 				</div>
 			</div>
@@ -154,13 +166,18 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 			<p class="caption">{copy.footer.location}</p>
 		</div>
 
-		{
-			copy.footer.translationNotice && (
-				<p class="caption site-footer__notice" lang="es-AR">
-					{copy.footer.translationNotice}
-				</p>
-			)
-		}
+		{/*
+		  Controller formula and language clause, verbatim from the owner handoff
+		  v1.1 B2, in Spanish on every locale. The full legal pages are now built
+		  (src/components/legal/LegalPage.astro) — this footer notice stays as its
+		  own always-visible summary, per B2, independent of whether a visitor
+		  follows the links above.
+		*/}
+		<div class="site-footer__notice" lang="es-AR" data-controller-notice>
+			<p class="caption">{CONTROLLER_NOTICE_ES}</p>
+			<p class="caption">{CONTROLLER_CONTACT_ES}</p>
+			<p class="caption" data-language-clause>{LANGUAGE_CLAUSE_ES}</p>
+		</div>
 	</div>
 </footer>
 
@@ -253,9 +270,12 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 		margin-top: var(--space-3);
 	}
 
-	/* Spanish-primacy notice, shown only on the non-canonical locales. */
+	/* Controller formula and Spanish-primacy clause, on every locale. */
 	.site-footer__notice {
-		max-width: 60ch;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		max-width: 72ch;
 	}
 
 	.site-footer__lang {
