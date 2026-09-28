@@ -4,7 +4,7 @@ Status date: 2026-09-28
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
-Current next milestone: `M4 — Reference research and composition specification` (blocked until M3.5 is reviewed and accepted)
+Current next milestone: `M4 — Reference research and composition specification` (blocked until M3.5 is reviewed and accepted; Taste audit, baseline and M4.1 evidence pack done, public reference research still pending)
 Current milestone in review: `M3.5.1 — Beta-conversion preparation and correction` — implementation complete, pending Codex remote-commit review and Kirill visual review (builds on M3.5). Review state unchanged by M3.5.2.
 Proposed milestone in progress: `M3.5.2 — Owner handoff v1.1 beta corrections` — uncommitted, on branch `codex/clavera-beta-handoff-v1-1`; pending Codex review. See the M3.5.2 section below.
 Owner response v1.2 update (2026-09-28): exact ES/EN/RU e-bike and evaluated-amenity copy, confirmed working zones, and a visible searchable combobox have been added to that same uncommitted candidate. Spanish legal pages have been exported together as a local lawyer-review PDF. No review gate has been lifted, and no deployment has occurred.
@@ -83,7 +83,7 @@ Constraint: it must follow the repository authority order and may not redefine t
 
 Source: `https://github.com/Leonxlnx/taste-skill`
 Role: isolated art-direction and anti-generic audit after the first visual concept exists.
-Status: installed project-locally, not yet run.
+Status: installed project-locally; audit run once, findings recorded in `M4_TASTE_AUDIT.md`.
 Installed variant: `redesign-existing-projects`, at `.claude/skills/redesign-existing-projects/SKILL.md`.
 Provenance: recorded in `skills-lock.json` — source `Leonxlnx/taste-skill` (github), skill path `skills/redesign-skill/SKILL.md`, computed hash `b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726`. The vendored `SKILL.md` is third-party content and is committed unmodified.
 Timing: audit runs inside M4, which remains pending. Installation alone starts nothing.
@@ -360,7 +360,7 @@ Required checks: `git diff --check`, `yarn astro check`, `yarn build`, the Playw
 
 ### M4 — Reference research and composition specification
 
-Status: pending.
+Status: **in progress.** Taste Skill audit complete (`M4_TASTE_AUDIT.md`), a local visual baseline is frozen (tag `baseline/clavera-before-m4-2026-09-29` → `e67dc21`, code identical to `4aa30b7`), and the M4.1 measured-evidence pack is complete (`docs/project/M4_EVIDENCE.md`). The M4.2 composition specification (`M4_REFERENCE_COMPOSITION_SPEC.md`) remains a **draft, code-derived only**: no public reference research has been performed and it is not yet reference-backed. Not approved, not implemented, not visual acceptance, not legal approval.
 
 - connect Refero MCP if account access is available;
 - research real premium architectural, infrastructure, urban-mobility, and render-led landing pages;
