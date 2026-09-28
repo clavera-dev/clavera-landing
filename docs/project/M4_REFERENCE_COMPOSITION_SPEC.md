@@ -1,16 +1,18 @@
-# M4 — Reference composition specification (draft v0.1)
+# M4 — Reference composition specification (draft v0.2)
 
-Date: 2026-09-28
-Branch / base: `agent/clavera/fed16f73faf0` at `643556e` (clean tree at start; this file is the only change)
-Status: **draft for review. Not approved, not implemented, and not reference-backed yet.** This is the M4.2 deliverable named in `M4_TASTE_AUDIT.md` §7, written before M4.1 evidence exists and without web research (see §1). It is not visual acceptance, not legal approval, and not a release step. Owner handoff v1.2 and Legal Spec v3.0 are treated as working content while lawyer approval is pending.
+Date: 2026-09-28 (updated 2026-09-29 on `agent/clavera/fbeea257bb6f` to fold in M4.1 evidence and a first verified public-reference pass)
+History: v0.1 was drafted on `agent/clavera/fed16f73faf0` at `643556e`; v0.2 incorporates M4.1 evidence and the first public-reference pass on the current isolated M4 branch.
+Status: **draft for review. Not approved, not implemented, and only partially reference-backed.** This is the M4.2 deliverable named in `M4_TASTE_AUDIT.md` §7. The original v0.1 was written before M4.1 evidence existed and without web research (see §1). It is not visual acceptance, not legal approval, and not a release step. Owner handoff v1.2 and Legal Spec v3.0 are treated as working content while lawyer approval is pending.
 
 ## 1. Research gap and evidence basis — read this first
 
-**Web research did not happen.** The required real-site research was attempted once: the first `WebSearch` call was denied because this session has no way to approve tool permissions. Per that denial, the call was not retried and `WebFetch` was not attempted. Consequently:
+**Update, 2026-09-29 (M4.2 continuation):** two things have changed since v0.1. First, `M4_EVIDENCE.md` (M4.1) now exists: it records measured CTA-vs-fold numbers in ES/EN/RU at 375×667, 1280×720 and 1440×800 (§6, §9 H-2 below), and confirms that full-page screenshots exist for all nine baseline views in an archive kept outside the repository, though those captures have not yet had a section-by-section visual audit for S4–S11 (`M4_EVIDENCE.md` §1–§2). The line below that used to say "no screenshots, no built output" was stale and is corrected here. Second, a first verified public-reference pass now exists (`M4_PUBLIC_REFERENCES_2026-09-29.md`, accessed 2026-09-29), covering four live pages. What follows is the original v0.1 research-gap statement, corrected in place rather than rewritten, with the new material folded into §3.
 
-- **No real reference site was visited.** This document contains **no reference URL, no claim about any real site's layout, and no "as seen on…" statement.** Nothing is quoted or recalled from memory as if verified.
-- §3's reference matrix is therefore a **research plan with empty source cells**, each row labelled `OPEN — not researched`. It defines, per purpose, what to look for and what would make a reference acceptable, so a later session with web tools can fill it in without re-deriving the questions.
-- Refero is not connected and nothing was bought or installed. This spec also does not depend on it.
+**Web research did not happen when this document was first drafted.** The required real-site research was attempted once: the first `WebSearch` call was denied because that session had no way to approve tool permissions. Per that denial, the call was not retried and `WebFetch` was not attempted. A later session (2026-09-29) was authorized to read four public pages directly; see below.
+
+- **Four real reference sites have now been read** (Vitsœ, Spokesafe, Rapha, Cyclehoop — full list in §3). This document now contains reference URLs and access dates for those four, each tied to one composition purpose. **No visual, screenshot-based or pixel-level claim is made about any of them** — the pass verified page text and information order only, not layout at any viewport. Nothing else is quoted or recalled from memory as if verified.
+- §3's reference matrix therefore has **four rows filled from a verified content/information-order reading** (P3, P4, P9, P10) and **seven rows still `OPEN — not researched`** (P1, P2, P5–P8, P11). The open rows define, per purpose, what to look for and what would make a reference acceptable, so a later session can fill them in without re-deriving the questions. The filled rows still need a *visual* reference example before they can support any layout, spacing, scale or imagery decision — see the remaining-evidence list at the end of this section.
+- Refero is not connected and nothing was bought or installed. This spec does not depend on it.
 
 **What the rest of the document is built on** (labels used throughout):
 
@@ -19,11 +21,20 @@ Status: **draft for review. Not approved, not implemented, and not reference-bac
 | `[doc]` | A fact about the repository's own documents (authority files, tokens, brief). |
 | `[code]` | Read from source (CSS/markup/copy). Not seen in a browser. |
 | `[calc]` | Arithmetic from CSS values or the render dimensions in `src/data/media.ts`. Not measured. |
+| `[ref]` | A content/information-order pattern confirmed by direct reading of a live public page, cited with URL and access date (`M4_PUBLIC_REFERENCES_2026-09-29.md`). Not a visual or layout measurement. |
 | `[proposal]` | A recommendation of this spec. Nothing is approved until Kirill records it. |
 
-There are still **no screenshots, no built output and no `node_modules` in this worktree**, so nothing here is visually verified. §13 step M5.0 lists the measurements and by-eye checks that must precede any implementation. The only measured facts in the repository remain Codex's (RU hero CTA bottom 644.25 px at 375×667; recorded in `CLAVERA_WORKLOG.md`).
+**Evidence status, corrected:** `M4_EVIDENCE.md` (M4.1) supplies measured CTA-vs-fold numbers in all three locales at 375×667, 1280×720 and 1440×800, plus H1-height measurements (§6 T4, §9 H-2, §11 below cite these). Full-page screenshots exist for all nine baseline views but have not yet been visually audited section-by-section for S4–S11 — that audit, not a recapture, is what remains (see the remaining-evidence list below). §13 step M5.0 lists the measurements and by-eye checks that must still precede implementation. Line-count and type-scale judgements below §11 remain invalid until RU font-coverage (O-13) is verified, independent of the screenshots that now exist.
 
-**Files read for this spec:** `M4_TASTE_AUDIT.md`; `CLAVERA_EXECUTION_PLAN.md` (authority order, tool registry, M4/M5); `PROJECT_DECISIONS.md`; `docs/design-system/README.md`, `renders-README.md`, `tokens/{typography,spacing,colors,motion}.css`; brief v1.5 §1, S1–S10 and §9.2/§9.3; `src/styles/global.css` (layout scale, surfaces, primitives); `LandingPage.astro`, `Section.astro`, `RenderFigure.astro`, `media.ts`; `Hero`, `ProblemSection`, `PillarsSection`, `VehiclesSection`, `SecuritySection`, `ComparisonSection`, `HubShowcaseSection` (full or targeted), plus the layout rules of `HowItWorks`, `ForWhom`, `Zones`, `Founders`, `Faq`, `SurveyTeaser`; `tests/locales.ts`; ES/EN/RU headings in `src/i18n`.
+**Remaining evidence before this spec can be called reference-driven or visually verified** (nothing below requires code, copy or legal changes to gather):
+
+1. A *visual* reference example (screenshot or direct viewport view) for P1, P2, P5, P6, P7, P8 and P11 — none exists yet, verified or otherwise.
+2. A *visual* check, at target viewports, of whether the four already-verified content/order references (P3, P4, P9, P10) also hold up as layout inspiration, or only as content-order inspiration — the current pass supports content/order only.
+3. Section-by-section inspection of the existing archived full-page captures for S4–S11 (audit O-05 through O-10; `M4_EVIDENCE.md` §2 §3.2), using the captures already taken — no recapture needed.
+4. RU font-coverage verification (O-13) — a computed-style or `document.fonts.check()` read, or owner confirmation, still outstanding per `M4_EVIDENCE.md` §6.
+5. Short-phone hero band (O-01) and desktop hero density (O-02) visual judgements, using the measured numbers already in `M4_EVIDENCE.md` §1–§2 — a design call, not a new measurement.
+
+**Files read for this spec:** `M4_TASTE_AUDIT.md`; `CLAVERA_EXECUTION_PLAN.md` (authority order, tool registry, M4/M5); `PROJECT_DECISIONS.md`; `docs/design-system/README.md`, `renders-README.md`, `tokens/{typography,spacing,colors,motion}.css`; brief v1.5 §1, S1–S10 and §9.2/§9.3; `src/styles/global.css` (layout scale, surfaces, primitives); `LandingPage.astro`, `Section.astro`, `RenderFigure.astro`, `media.ts`; `Hero`, `ProblemSection`, `PillarsSection`, `VehiclesSection`, `SecuritySection`, `ComparisonSection`, `HubShowcaseSection` (full or targeted), plus the layout rules of `HowItWorks`, `ForWhom`, `Zones`, `Founders`, `Faq`, `SurveyTeaser`; `tests/locales.ts`; ES/EN/RU headings in `src/i18n`; and, for this continuation, `M4_EVIDENCE.md` §1–§2, §4, §6 and `M4_PUBLIC_REFERENCES_2026-09-29.md` in full.
 
 ## 2. Authority and the constraints that bound any composition
 
@@ -54,15 +65,24 @@ Each row is a composition **purpose** CLAVERA actually needs. The reference colu
 |---|---|---|---|---|---|
 | P1 | Establishing render-led hero (desktop) | R1 full-bleed, type bottom-left over lateral+bottom scrim, disclosure at content edge | Type sits on the quietest region of the image; image keeps a lit, uncovered zone | `OPEN — not researched` | Shows text-over-image where the image still carries information; scrim strength visible |
 | P2 | First screen on a short phone (375×667) | 112–160 px band under a fixed 64 px header, CTA above the fold | Image treated as backdrop behind the text block instead of a separate strip | `OPEN — not researched` | A real mobile capture at ≤700 px height where image and CTA share the first screen |
-| P3 | Type-only statement between two images | S2 display statement + narrow argument + two-line loop | A quiet typographic interval keeps its own scale below the hero's | `OPEN — not researched` | Scale relation between hero headline and statement is stated |
-| P4 | Numbered specification list ("drawing-sheet" index) | Mono index rail ≥1200; hairline rows; 2-column index ≥860 | Index numerals aligned to a fixed rail read as documentation, not decoration | `OPEN — not researched` | Shows numerals/rules on a consistent left rail across sections |
+| P3 | Type-only statement between two images | S2 display statement + narrow argument + two-line loop | A quiet typographic interval keeps its own scale below the hero's | [Rapha — "What is the RCC?"](https://content.rapha.cc/us/en/a/story/what-is-the-rcc), accessed 2026-09-29 `[ref]` | Scale relation between hero headline and statement is stated |
+| P4 | Numbered specification list ("drawing-sheet" index) | Mono index rail ≥1200; hairline rows; 2-column index ≥860 | Index numerals aligned to a fixed rail read as documentation, not decoration | [Spokesafe — How to make a booking](https://help.spokesafe.com/en/articles/9265186-how-to-make-a-booking-using-the-spokesafe-app), accessed 2026-09-29 `[ref]` | Shows numerals/rules on a consistent left rail across sections |
 | P5 | Full-bleed image band with caption on the content edge | R5 band 2.35:1 desktop, 16:10 mobile; caption on `--edge` | Band crop keeps the subject; caption re-enters the grid | `OPEN — not researched` | Crop ratio and caption alignment both visible |
 | P6 | Portrait image beside text with controlled overlap | Entrance render pulled up across the S5/S6 boundary ≥900 | Overlap only reads when the surfaces differ enough | `OPEN — not researched` | Surface luminance step around the overlap is described |
 | P7 | Comparison presented as a document (paper register) | S7 on `--bg-paper`, CLAVERA column tinted | Paper interval as a "specification sheet" inside a dark page | `OPEN — not researched` | Dark→light→dark entry/exit handled without gradients |
 | P8 | Plan/diagram presentation | R6 on an inset paper sheet, legend to the right | Drawing mounted on its own ground; legend uses index numerals | `OPEN — not researched` | Legend/drawing relation and the seam with neighbours |
-| P9 | Conversion tail with a single control | S10 selector, S11 "Sumate al piloto", S13 survey | One control per block, no competing chrome | `OPEN — not researched` | Tail structure and how emphasis is created without new colour |
-| P10 | Section transitions | Surface change, hairline, one 2 px amber rule, hero image dissolving to graphite | Separation by register, rule and space rather than motion | `OPEN — not researched` | Transition device is static (no scroll-linked effect) |
+| P9 | Conversion tail with a single control | S10 selector, S11 "Sumate al piloto", S13 survey | One control per block, no competing chrome | [Vitsœ — How to start](https://www.vitsoe.com/us/606/inquiry?imgref=15); [Cyclehoop — Home](https://cyclehoop.com/), both accessed 2026-09-29 `[ref]` | Tail structure and how emphasis is created without new colour |
+| P10 | Section transitions | Surface change, hairline, one 2 px amber rule, hero image dissolving to graphite | Separation by register, rule and space rather than motion | [Rapha — "What is the RCC?"](https://content.rapha.cc/us/en/a/story/what-is-the-rcc), accessed 2026-09-29 `[ref]` | Transition device is static (no scroll-linked effect) |
 | P11 | Mobile table | Horizontal scroll region, CLAVERA column third | Stacked rows keeping every cell verbatim | `OPEN — not researched` | Shows a comparison surviving at ≈375 px without dropping cells |
+
+**P3/P4/P9/P10 verdicts (content/information-order only — no visual example yet, per `M4_PUBLIC_REFERENCES_2026-09-29.md`):**
+
+- **P3 supports** the anchor: Rapha separates its membership story into distinct benefit, ride, local-community and join sections rather than one long claim, matching the "quiet interval with its own scale" hypothesis at the level of *information separation*. Does not transfer: Rapha's membership/community claims, imagery or branding — CLAVERA implies no club, members, locations or social proof.
+- **P4 refines** the anchor: Spokesafe's booking help article separates location, facility/vehicle type, duration, rack, payment and access into discrete steps. This supports *step separation* only; it provides no evidence that CLAVERA's fixed numeral rail is visually effective. Does not transfer: Spokesafe's booking, payment or live-facility steps — CLAVERA has no confirmed location, booking or live facility and cannot present those as current capability.
+- **P9 refines** the anchor from two angles: Vitsœ places a four-step explanation before an inquiry form and says an inquiry does not commit the visitor to a purchase; Cyclehoop's home page identifies its product as a distinct concept. This supports explaining the concept before the survey, but does not verify "one control per block" visually. Does not transfer: either provider's wording, pricing or service claims.
+- **P10 refines** the anchor: Rapha separates benefit, ride, community and join content into distinct sections. This supports content grouping only; the page text does not establish a particular visual transition or whether motion is used. Does not transfer: Rapha's brand voice or claims.
+
+None of these four rows has a *visual* example yet — no screenshot, no viewport observation, no scale/crop/spacing comparison. Treat the verdicts above as support for *what order of ideas to present*, not for *how the composition looks*. Visual reference-gathering for these four and the remaining seven rows is listed in §1's remaining-evidence list.
 
 **Reference categories to draw from** (as required by the task; choose a small set, roughly 8–12 pages in total): premium architecture practices' project pages; infrastructure/transport-operator and station-design sites; urban-mobility operators and cargo/e-bike brands; and render-led property or product launches. Selection rule: a page qualifies only if it demonstrates one of P1–P11 in a way that can be described from its own layout.
 
@@ -74,7 +94,7 @@ Each row is a composition **purpose** CLAVERA actually needs. The reference colu
 4. Verdict per row in §3: *supports*, *refines* (state the change) or *contradicts* the anchor.
 5. Where research contradicts a token or legal constraint, the constraint stands and the row records the rejection.
 
-Until that is done, **every composition rule below is justified only by the repository, and is marked `[proposal]`**. That is a weaker basis than the plan's M4 asks for; approving this spec as "reference-driven" would be premature (§15, D1).
+Four rows (P3, P4, P9, P10) now have a verified content/information-order reference behind their pattern hypothesis, cited above. The remaining seven rows (P1, P2, P5–P8, P11), and the *visual* dimension of all eleven rows, are still justified only by the repository. Every composition rule in §4 onward remains marked `[proposal]` until a visual reference or an explicit owner/designer decision backs it — content-order support alone does not settle grid, scale, crop or spacing choices. This is a weaker basis than the plan's M4 asks for; approving this spec as fully "reference-driven" would still be premature (§15, D1), though it is no longer accurate to say no research occurred.
 
 ## 4. Grid
 
@@ -213,7 +233,7 @@ Tiers per G2. The table describes the current build `[code]`; changes are only t
 
 | Section | Desktop (≥900; rail ≥1200) | Tablet (700–899) | Mobile (<700; 375 wide) |
 |---|---|---|---|
-| S1 Hero | Full-viewport R1; eyebrow, H1 (15ch), lede, selector, ghost CTA, facts stacked bottom-left; scrim; disclosure bottom-right. **Fold at 1440×800 / 1280×720 unmeasured** | Stacked: 40svh band, text below | Band → text; buttons and facts stack full width. ≤700 tall: 112–160 px band (see H-1) |
+| S1 Hero | Full-viewport R1; eyebrow, H1 (15ch), lede, selector, ghost CTA, facts stacked bottom-left; scrim; disclosure bottom-right. **CTA-vs-fold measured (H-2): clears in all locales at 1280×720 and 1440×800, tightest at RU 1280×720 (5 px spare)** | Stacked: 40svh band, text below | Band → text; buttons and facts stack full width. ≤700 tall: 112–160 px band (see H-1) |
 | S2 Problema | Statement over 2-col (argument / daily loop); accent-ruled close | Single column | Single column; statement at token clamp |
 | S3 Solución | Text left + R2 bleeding right; 2-col hairline index (≥860) | Single-column index | Single-column index |
 | S4 Cómo funciona | 3-step rail (≥800), amber ticks | Stacked (<800) | Stacked |
@@ -234,7 +254,7 @@ Tiers per G2. The table describes the current build `[code]`; changes are only t
 
 If neither passes by eye, the decision goes to Kirill because the fold rule is a hard brief requirement; the alternative "relax the fold" is not proposed here.
 
-**H-2 — Hero at desktop `[proposal]`.** Measure the selector button's bottom in each locale at 1440×800 and 1280×720. If it falls below the fold, trim `padding-block` (top `header + 64`, bottom `96`) before touching copy or type. Judge the triple scrim (audit O-03) by eye; if it reads muddy, reduce the lateral scrim toward the left column only, keeping the bottom scrim and the wordmark separation.
+**H-2 — Hero at desktop `[proposal]`.** Measured (`M4_EVIDENCE.md` §1–§2, O-02): the first survey CTA bottom is ES/EN/RU 572/572/715 px at 1280×720 (viewport 720 px tall) and 577/577/724 px at 1440×800 (viewport 800 px tall) — it clears the sampled fold in all six cases, with the tightest margin at RU 1280×720 (5 px spare). This is a DOM measurement, not a usability judgement; whether 5 px spare reads as comfortable is still a visual/design call (remaining-evidence list, §1). If a future re-check finds it falls below the fold, trim `padding-block` (top `header + 64`, bottom `96`) before touching copy or type. Judge the triple scrim (audit O-03) by eye; if it reads muddy, reduce the lateral scrim toward the left column only, keeping the bottom scrim and the wordmark separation.
 
 **C-1 — Comparison on mobile `[proposal, gated]`.** Keep the scroll region by default (approval for S7 is outstanding). A stacked per-row layout is the candidate if approved: every cell and the uncollapsed line under the table stay verbatim, source column order is kept, column-header text is reused (no new copy), table semantics preserved. This is layout-only, but because S7 is legally sensitive it should not start until Kirill confirms.
 
@@ -358,7 +378,7 @@ Verdicts are for this specification only. Section refs point here; IDs point to 
 
 | # | Decision | Needed before | Default if unrecorded |
 |---|---|---|---|
-| D1 | Approve reference research to run with web tools in an interactive session (this session could not grant them). No purchase is involved; Refero is optional and unbought | Calling this spec "reference-driven"; M5 approval | Spec stays `[proposal]`, code-derived only |
+| D1 | Approve continued reference research with web tools (content/order research for P3, P4, P9, P10 is now done, 2026-09-29; visual reference examples for all 11 rows, and for P1, P2, P5–P8, P11 entirely, are still needed). No purchase is involved; Refero is optional and unbought | Calling this spec fully "reference-driven"; M5 approval | Spec stays `[proposal]` for layout/visual decisions; four rows have content-order support only |
 | D2 | S2 scale: 72 (default), 56 (hierarchy option) or an 84 exception | M5.1 | 72 |
 | D3 | Designer acknowledgement of T2 (mono uppercase scope) | M5.1 | Leave as built |
 | D4 | Short-phone hero: A (backdrop), B (band), or Kirill's ruling after the prototype | M5.2 | Prototype both; no default choice |
@@ -371,4 +391,4 @@ Verdicts are for this specification only. Section refs point here; IDs point to 
 
 ## 16. Bookkeeping left undone on purpose
 
-`CLAVERA_EXECUTION_PLAN.md` (M4 status, Taste "not yet run") and `CLAVERA_WORKLOG.md` were **not** edited by this task. Update both after this spec and the audit are reviewed (plan protocol 8). Nothing was committed, pushed, installed, published or bought.
+The original v0.1 of this spec left `CLAVERA_EXECUTION_PLAN.md` and `CLAVERA_WORKLOG.md` unedited. The 2026-09-29 M4.2 continuation updated the current M4 status line in both to reflect M4.1's evidence and this first verified public-reference pass; see their latest entries. Full milestone acceptance still requires Kirill's review (plan protocol 8). Nothing was committed, pushed, installed, published or bought by this continuation.
