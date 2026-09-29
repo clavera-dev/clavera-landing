@@ -74,12 +74,12 @@ test.describe('M5.2 zone selector', () => {
 			const shown = await link.boundingBox();
 
 			// Put the field back into its pre-script state and re-measure.
-			await field.evaluate((el) => {
+			await field.evaluate((el: HTMLElement) => {
 				el.hidden = true;
 			});
 			await expect(field, `${scope} pre-script field is not visible`).toBeHidden();
 			const reserved = await link.boundingBox();
-			await field.evaluate((el) => {
+			await field.evaluate((el: HTMLElement) => {
 				el.hidden = false;
 			});
 
@@ -256,7 +256,7 @@ test.describe('zone selector list stays inside the viewport with the list open',
 });
 
 test.describe('M5.2 reduced motion', () => {
-	test.use({ viewport: PHONE, reducedMotion: 'reduce' });
+	test.use({ viewport: PHONE, contextOptions: { reducedMotion: 'reduce' } });
 
 	test('no smooth scroll and no animation while the selector is used', async ({ page }) => {
 		await page.goto(LOCALES[0].path);
