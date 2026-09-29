@@ -8,7 +8,12 @@ import {
 	getPilotDestination,
 	destinationLanguageDiffers,
 } from '../src/config/typeform';
-import { WHATSAPP_NUMBER, whatsappHref } from '../src/config/contact';
+import {
+	WHATSAPP_NUMBER,
+	WHATSAPP_LINK,
+	whatsappHref,
+	isValidWhatsappLink,
+} from '../src/config/contact';
 
 /**
  * The pilot-interest ("Avisame") flow.
@@ -304,35 +309,71 @@ for (const locale of LOCALES) {
 }
 
 /* -------------------------------------------------------------------------
-   WhatsApp placeholder
+   WhatsApp
    ------------------------------------------------------------------------- */
 
-test.describe('whatsapp placeholder', () => {
-	test('is centralized and yields no href while unset', () => {
-		if (WHATSAPP_NUMBER === null) {
-			expect(whatsappHref()).toBeNull();
-		} else {
+test.describe('whatsapp configuration', () => {
+	test('yields exactly the configured short link, or falls back to a number, or null', () => {
+		if (WHATSAPP_LINK !== null) {
+			expect(isValidWhatsappLink(WHATSAPP_LINK)).toBe(true);
+			expect(whatsappHref()).toBe(WHATSAPP_LINK);
+		} else if (WHATSAPP_NUMBER !== null) {
 			expect(whatsappHref()).toBe(`https://wa.me/${WHATSAPP_NUMBER}`);
+		} else {
+			expect(whatsappHref()).toBeNull();
 		}
 	});
 
+	test('never fabricates WHATSAPP_NUMBER from a short link', () => {
+		if (WHATSAPP_LINK !== null) {
+			expect(WHATSAPP_NUMBER).toBeNull();
+		}
+	});
+
+	test('rejects malformed or placeholder short links', () => {
+		for (const bad of [
+			'https://wa.me/message/', // empty code
+			'http://wa.me/message/VWLBN6XDY6ZHP1', // not https
+			'https://wa.me/VWLBN6XDY6ZHP1', // missing /message/
+			'https://example.com/message/VWLBN6XDY6ZHP1', // wrong host
+			'https://wa.me/message/VWLBN6XDY6ZHP1 ', // trailing whitespace
+			'https://wa.me/message/<script>', // injected markup
+		]) {
+			expect(isValidWhatsappLink(bad), bad).toBe(false);
+		}
+		expect(isValidWhatsappLink('https://wa.me/message/VWLBN6XDY6ZHP1')).toBe(true);
+	});
+
 	for (const locale of LOCALES) {
-		test(`[${locale.key}] renders no clickable WhatsApp while the number is pending`, async ({
+		test(`[${locale.key}] renders the exact configured WhatsApp link as an anchor, or nothing at all`, async ({
 			page,
 		}) => {
-			test.skip(WHATSAPP_NUMBER !== null, 'a real number is configured');
 			await page.goto(locale.path);
+			const href = whatsappHref();
 
-			// No wa.me link, no dummy number, no disabled control.
-			await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
-			await expect(page.locator('a[href^="whatsapp:"]')).toHaveCount(0);
+			if (href === null) {
+				// No wa.me link, no dummy number, no disabled control.
+				await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
+				await expect(page.locator('a[href^="whatsapp:"]')).toHaveCount(0);
 
-			const expected: Record<string, string> = {
-				es: 'WhatsApp Business — próximamente.',
-				en: 'WhatsApp Business — coming soon.',
-				ru: 'WhatsApp Business — скоро.',
-			};
-			await expect(page.locator('footer', { hasText: expected[locale.key] })).toHaveCount(1);
+				const expected: Record<string, string> = {
+					es: 'WhatsApp Business — próximamente.',
+					en: 'WhatsApp Business — coming soon.',
+					ru: 'WhatsApp Business — скоро.',
+				};
+				await expect(page.locator('footer', { hasText: expected[locale.key] })).toHaveCount(1);
+				return;
+			}
+
+			// Exactly one anchor, carrying exactly the configured link — never a
+			// placeholder, a truncated value or `href="#"`.
+			const link = page.locator(`footer a[href="${href}"]`);
+			await expect(link).toHaveCount(1);
+			await expect(page.locator('footer a[href="#"]')).toHaveCount(0);
+			const pendingWhatsapp = page
+				.locator('footer')
+				.locator('[class*="pending-item"]', { hasText: 'WhatsApp' });
+			await expect(pendingWhatsapp).toHaveCount(0);
 		});
 	}
 });

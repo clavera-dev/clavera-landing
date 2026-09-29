@@ -33,10 +33,10 @@ const copy = getCopy(Astro.currentLocale);
 const AVAILABLE_ROUTES = new Set<string>(['privacidad', 'terminos', 'cookies']);
 
 /*
-  WhatsApp Business. The number has not been supplied, so `whatsappHref()`
-  returns null and the entry renders as plain text — never a `wa.me` link, a
-  dummy number, `href="#"` or a disabled control. Supplying the number in
-  src/config/contact.ts is the only change needed to make it a real link.
+  WhatsApp Business. `whatsappHref()` returns the owner-supplied
+  `wa.me/message` short link from src/config/contact.ts when it is present
+  and well-formed, or null otherwise — in which case the entry renders as
+  plain text, never a dummy `wa.me` link, `href="#"` or a disabled control.
 */
 const whatsapp = whatsappHref();
 

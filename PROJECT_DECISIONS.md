@@ -1,12 +1,14 @@
 # CLAVERA Landing — Current Project Decisions
 
-Last updated: 2026-09-28
+Last updated: 2026-09-29
 
 **Owner response v1.2 (2026-09-27), received 2026-09-28:** `CLAVERA_Dev_Respuesta_v1_2.md` supersedes conflicting v1.1 details for e-bike batteries, evaluated amenities, zone search and zone-list status. The confirmed controller identity and omission of an unissued RNBD number remain as implemented. The S7 negative sentence is an explicit scoped exception to the terminology stop-list; 24/7 remains a planned property in the two already scoped locations. The former 40-place, −20%, 24-month founding offer is retired, including from future-release plans, until a separate approved assignment. Lawyer approval, RNBD launch status, Avisame URL and WhatsApp number remain release gates. No publication is authorized by this response.
 
 This document contains the current approved decisions for the first production landing page.
 
 **2026-09-28:** the owner handoff `CLAVERA_Dev_Handoff_Beta_v1_1.md` (v1.1, dated 2026-09-23) supersedes specifically conflicting older decisions for the proposed beta work. See "Owner handoff v1.1 reconciliation (2026-09-28)" at the end of this document. Older text is preserved and marked superseded where it occurs.
+
+**WhatsApp Business short link supplied (2026-09-29):** the owner supplied the exact wa.me/message short link `https://wa.me/message/VWLBN6XDY6ZHP1`, now configured as `WHATSAPP_LINK` in `src/config/contact.ts` and rendered as a footer anchor on every locale. It has **not been verified by clicking it**. This is a WhatsApp Business short link, not a phone number: `WHATSAPP_NUMBER` stays `null` and is never fabricated from the link. The RNBD registration number is reportedly being obtained by the owner but has not been supplied, and is not invented or displayed anywhere. This local, isolated change does not lift the lawyer-approval, RNBD, Avisame-URL, or publication-approval gates recorded elsewhere in this document.
 
 ## Authority order
 

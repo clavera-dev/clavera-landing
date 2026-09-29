@@ -239,7 +239,7 @@ export interface Copy {
 		 */
 		pendingNote: string;
 		/**
-		 * Shown while `WHATSAPP_NUMBER` is null in src/config/contact.ts. Plain
+		 * Shown while `whatsappHref()` returns null (src/config/contact.ts). Plain
 		 * text — never a `wa.me` link, a dummy number or a disabled control.
 		 */
 		whatsappPending: string;
