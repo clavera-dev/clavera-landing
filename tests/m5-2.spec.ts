@@ -171,8 +171,27 @@ test.describe('M5.2 zone selector', () => {
 	test('keyboard focus in S10 is not hidden under the fixed header at 375×667', async ({ page }) => {
 		await page.setViewportSize(PHONE);
 		await page.goto(locale.path);
+		await page.evaluate(() => document.fonts.ready);
+		expect(page.viewportSize()).toEqual(PHONE);
 		const input = page.locator('#zonas [data-zone-input]');
 		await input.focus();
+		await expect(input).toBeFocused();
+		// html has `scroll-behavior: smooth`, so focusing scrolls with an animation.
+		// Measure where focus comes to rest, not the page before it moves.
+		await page.evaluate(
+			() =>
+				new Promise<void>((resolve) => {
+					let last = window.scrollY;
+					let still = 0;
+					const tick = () => {
+						if (window.scrollY === last) still += 1;
+						else [last, still] = [window.scrollY, 0];
+						if (still >= 10) resolve();
+						else requestAnimationFrame(tick);
+					};
+					requestAnimationFrame(tick);
+				}),
+		);
 		const header = (await page.locator('.site-header').boundingBox())!;
 		const box = (await input.boundingBox())!;
 		expect(box.y).toBeGreaterThanOrEqual(header.y + header.height);

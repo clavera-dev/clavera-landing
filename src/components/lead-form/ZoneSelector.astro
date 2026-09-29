@@ -184,7 +184,14 @@ const showLanguageNotice =
 			filter();
 		});
 		input.addEventListener('keydown', (event) => {
-			if (event.key === 'Escape') { close(); return; }
+			if (event.key === 'Escape') {
+				// A type="search" field clears itself on Escape and fires `input`,
+				// which would refilter and reopen the list and drop the choice.
+				// Escape only dismisses; the field's clear button still clears.
+				event.preventDefault();
+				close();
+				return;
+			}
 			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 				event.preventDefault();
 				if (list.hidden) filter();
