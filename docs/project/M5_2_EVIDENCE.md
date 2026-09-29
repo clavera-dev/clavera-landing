@@ -44,3 +44,15 @@ Neither is decided by this evidence pack. Both require a designer/owner call, an
 - No CLS measurement (owed per `M5_2_RESULT.md` §5 item 1) was produced.
 - H-2 (desktop hero judgement at 1280×720/1440×800) was not reviewed.
 - D7 (empty-state selector copy) remains unresolved and out of scope.
+
+## 5. Re-run after da3929d
+
+This session had no shell either. §5 is a static review of the `da3929d` fix, not a re-run of the failing test.
+
+**Reviewed:** every `transition`, `animation`, `@keyframes`, `scroll-behavior` and `.animate()`/`requestAnimationFrame` use in `src/`, including scoped `<style>` blocks in `.astro` components (`FaqSection.astro:75,109`, `TypeformBoundary.astro:138`, `LanguageSwitcher.astro:83`, `Footer.astro:272`, plus `global.css:331,512,584`). No `@keyframes` or script-driven `.animate()`/`requestAnimationFrame` exist anywhere in `src/`, so all running animations the Firefox test could see are CSS transitions. `global.css:140-151`'s `prefers-reduced-motion: reduce` block matches `*, *::before, *::after` and sets `transition-duration`/`transition-delay`/`animation-duration`/`animation-delay` to `0s !important`. None of the component-level `transition:` declarations use `!important`, and Astro's scoped-style specificity boost (`data-astro-cid-*`) cannot outrank an `!important` declaration, so every transition found is covered regardless of selector scope.
+
+**Changed:** nothing. The static review found no gap in `da3929d`'s coverage — the fix is complete as written.
+
+**Commands actually run by this session:** none (no shell available).
+
+**Still owed:** the three commands from `M5_2_FIREFOX_MOTION_FIX.md` §"Not verified here" — `yarn astro check`, `yarn build`, `yarn playwright test tests/m5-2.spec.ts` (all three browsers) — plus the manual reduced-motion visual check. The orchestrator runs these after this task; their pass/skip/fail counts are not yet recorded anywhere and must not be assumed to match §1.
