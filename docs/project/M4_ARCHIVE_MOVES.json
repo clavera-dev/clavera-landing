@@ -1,0 +1,24 @@
+{
+  "moves": [
+    {
+      "source": "docs/project/M4_BASELINE_SNAPSHOT.md",
+      "reason": "First-session baseline record (tag, DNS check, screenshot inventory). All of its facts are restated in M4_CURRENT_HANDOFF.md §1, and the same facts are also carried forward with measurements in M4_EVIDENCE.md, which remains active and still cites this file only for the DNS check line (reference updated to the Old/ path).",
+      "replacement": "docs/project/M4_CURRENT_HANDOFF.md"
+    },
+    {
+      "source": "docs/project/M4_BASELINE_VISUAL_AUDIT.md",
+      "reason": "Code-only re-derivation of S4-S11 (no screenshot access in that session) plus one inconclusive RU-font network check. M4_FULLPAGE_AUDIT.md later visually confirmed S1-S13 directly from fresh full-page captures, superseding the code-only re-check; the RU-font attempt's inconclusive result and the two previously undocumented code facts it found (S7 scroll hint, S9 sticky heading) are preserved in M4_CURRENT_HANDOFF.md §2-3.",
+      "replacement": "docs/project/M4_CURRENT_HANDOFF.md"
+    },
+    {
+      "source": "docs/project/M4_FULLPAGE_REVIEW.md",
+      "reason": "First visual pass over exactly 2 of 9 archived captures (es-desktop, ru-short-phone). Superseded by M4_FULLPAGE_AUDIT.md, which visually reviewed 4 fresh full-page captures covering all three locales and all 13 sections in one continuous read. Its findings are folded into M4_CURRENT_HANDOFF.md §2.",
+      "replacement": "docs/project/M4_CURRENT_HANDOFF.md"
+    },
+    {
+      "source": "docs/project/M4_NEXT_VISUAL_REVIEW.md",
+      "reason": "Raised the N1 hero light/dark discrepancy (resolved by M4_FULLPAGE_AUDIT.md §4) and ran further P1/P2/P5-P8/P11 reference-research attempts that closed with the same tool-limited verdict already on record for P6/P11 (confirmed structurally unresearchable by text-only tools). Both outcomes are restated in M4_CURRENT_HANDOFF.md §2-3.",
+      "replacement": "docs/project/M4_CURRENT_HANDOFF.md"
+    }
+  ]
+}

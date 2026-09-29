@@ -35,4 +35,4 @@ Both rows now have content-order evidence but no visual confirmation. Next revie
 - Heydar Aliyev Centre project page at a standard desktop width, to check scrim, caption position, and whether the image keeps an uncovered/lit zone (P1).
 - Rad Power Bikes and Tern homepages at 375×667, to check header height, whether the CTA sits above the fold, and whether the image behaves as a backdrop or a separate strip (P2).
 
-Record findings using the same protocol as `M4_FULLPAGE_REVIEW.md` (measured, viewport-specific, no assumed values). Owner's visual choice for the short-phone hero remains open and is not decided by this note.
+Record findings using the same protocol as `Old/docs/project/M4_FULLPAGE_REVIEW.md` (measured, viewport-specific, no assumed values). Owner's visual choice for the short-phone hero remains open and is not decided by this note.
