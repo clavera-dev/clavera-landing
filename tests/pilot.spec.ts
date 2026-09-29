@@ -13,6 +13,9 @@ import {
 	WHATSAPP_LINK,
 	whatsappHref,
 	isValidWhatsappLink,
+	PHONE_NUMBER,
+	telHref,
+	isValidPhoneNumber,
 } from '../src/config/contact';
 
 /**
@@ -374,6 +377,82 @@ test.describe('whatsapp configuration', () => {
 				.locator('footer')
 				.locator('[class*="pending-item"]', { hasText: 'WhatsApp' });
 			await expect(pendingWhatsapp).toHaveCount(0);
+		});
+	}
+});
+
+/* -------------------------------------------------------------------------
+   Click-to-call phone
+   ------------------------------------------------------------------------- */
+
+test.describe('phone configuration', () => {
+	test('telHref() yields exactly tel: + the configured number, or null', () => {
+		if (PHONE_NUMBER !== null) {
+			expect(isValidPhoneNumber(PHONE_NUMBER)).toBe(true);
+			expect(telHref()).toBe(`tel:${PHONE_NUMBER}`);
+		} else {
+			expect(telHref()).toBeNull();
+		}
+	});
+
+	test('is a distinct destination from the WhatsApp chat link', () => {
+		// The phone entry must never be derived from, or replace, the
+		// owner-supplied wa.me short link.
+		if (PHONE_NUMBER !== null && WHATSAPP_LINK !== null) {
+			expect(telHref()).not.toBe(whatsappHref());
+			expect(WHATSAPP_LINK).not.toContain(PHONE_NUMBER.replace('+', ''));
+		}
+	});
+
+	test('rejects malformed phone numbers', () => {
+		for (const bad of [
+			'5491128329931', // missing +
+			'+0491128329931', // leading zero after +
+			'+549112832993a', // non-digit
+			'+54 9 11 2832 9931', // spaces
+			'+1', // too short
+		]) {
+			expect(isValidPhoneNumber(bad), bad).toBe(false);
+		}
+		expect(isValidPhoneNumber('+5491128329931')).toBe(true);
+	});
+
+	for (const locale of LOCALES) {
+		test(`[${locale.key}] renders the exact configured tel: link as an anchor, or nothing at all`, async ({
+			page,
+		}) => {
+			await page.goto(locale.path);
+			const href = telHref();
+
+			if (href === null) {
+				await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
+
+				const expected: Record<string, string> = {
+					es: 'Teléfono — próximamente.',
+					en: 'Phone — coming soon.',
+					ru: 'Телефон — скоро.',
+				};
+				await expect(page.locator('footer', { hasText: expected[locale.key] })).toHaveCount(1);
+				return;
+			}
+
+			// Exactly one anchor, carrying exactly the configured tel: href —
+			// never a placeholder, a truncated value or href="#".
+			const link = page.locator(`footer a[href="${href}"]`);
+			await expect(link).toHaveCount(1);
+
+			// Separate control from the WhatsApp chat anchor — no merged or
+			// duplicate destination.
+			const whatsapp = whatsappHref();
+			if (whatsapp !== null) {
+				await expect(page.locator(`footer a[href="${whatsapp}"]`)).toHaveCount(1);
+				expect(href).not.toBe(whatsapp);
+			}
+
+			const pendingPhone = page
+				.locator('footer')
+				.locator('[class*="pending-item"]', { hasText: /Tel|Phone|Телефон/ });
+			await expect(pendingPhone).toHaveCount(0);
 		});
 	}
 });

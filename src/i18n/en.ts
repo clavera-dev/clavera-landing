@@ -262,6 +262,7 @@ export const en: Copy = {
 		languageTitle: 'Language',
 		pendingNote: 'In preparation.',
 		whatsappPending: 'WhatsApp Business — coming soon.',
+		phonePending: 'Phone — coming soon.',
 	},
 	legalPage: {
 		backToHome: 'Back to home',

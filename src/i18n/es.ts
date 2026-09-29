@@ -271,6 +271,7 @@ export const es: Copy = {
 		languageTitle: 'Idioma',
 		pendingNote: 'En preparación.',
 		whatsappPending: 'WhatsApp Business — próximamente.',
+		phonePending: 'Teléfono — próximamente.',
 	},
 	legalPage: {
 		backToHome: 'Volver al inicio',

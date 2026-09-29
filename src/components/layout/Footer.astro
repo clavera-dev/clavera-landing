@@ -1,7 +1,7 @@
 ---
 import { logo } from '../../data/media';
 import { getCopy, resolveLocale, localePath, type Locale } from '../../i18n';
-import { whatsappHref } from '../../config/contact';
+import { whatsappHref, telHref, PHONE_DISPLAY } from '../../config/contact';
 import {
 	CONTROLLER_NOTICE_ES,
 	CONTROLLER_CONTACT_ES,
@@ -39,6 +39,15 @@ const AVAILABLE_ROUTES = new Set<string>(['privacidad', 'terminos', 'cookies']);
   plain text, never a dummy `wa.me` link, `href="#"` or a disabled control.
 */
 const whatsapp = whatsappHref();
+
+/*
+  Click-to-call. `telHref()` returns a `tel:` link built from the
+  owner-supplied `PHONE_NUMBER` in src/config/contact.ts, or null otherwise —
+  in which case the entry renders as plain text, same treatment as WhatsApp
+  above. This is a distinct destination from the WhatsApp entry: it must
+  never replace or merge with the `wa.me` chat link.
+*/
+const phone = telHref();
 
 interface FooterEntry {
 	/** Route segment, without a locale prefix — resolved via `localePath`. */
@@ -94,6 +103,15 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 									<a href={whatsapp} rel="me">
 										WhatsApp Business
 									</a>
+								)
+							}
+						</li>
+						<li>
+							{
+								phone === null ? (
+									<span class="site-footer__pending-item">{copy.footer.phonePending}</span>
+								) : (
+									<a href={phone}>{PHONE_DISPLAY}</a>
 								)
 							}
 						</li>

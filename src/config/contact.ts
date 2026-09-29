@@ -1,7 +1,7 @@
 /**
  * Centralized contact configuration.
  *
- * >>> THIS IS THE ONLY PLACE WHATSAPP CONTACT DETAILS ARE ENTERED. <<<
+ * >>> THIS IS THE ONLY PLACE WHATSAPP AND PHONE CONTACT DETAILS ARE ENTERED. <<<
  *
  * The owner supplied a WhatsApp Business *short link* (`wa.me/message/…`),
  * not a phone number (PROJECT_DECISIONS.md, 2026-09-29). A `wa.me/message`
@@ -51,4 +51,34 @@ export function whatsappHref(): string | null {
 	}
 	if (WHATSAPP_NUMBER !== null) return `https://wa.me/${WHATSAPP_NUMBER}`;
 	return null;
+}
+
+/**
+ * Owner-supplied click-to-call number (PROJECT_DECISIONS.md, 2026-09-29), in
+ * E.164 international format. This is a distinct destination from
+ * `WHATSAPP_LINK`/`WHATSAPP_NUMBER` above: it renders as its own `tel:` link,
+ * never as a `wa.me` URL, and never replaces the WhatsApp chat link. Set to
+ * `null` to remove the click-to-call entry from the footer.
+ */
+export const PHONE_NUMBER: string | null = '+5491128329931';
+
+/** Human-readable rendering of `PHONE_NUMBER`, shown as the link text. */
+export const PHONE_DISPLAY: string | null = '+54 9 11 2832-9931';
+
+/** E.164: a leading `+`, no spaces or punctuation, 8–15 digits total. */
+const PHONE_NUMBER_PATTERN = /^\+[1-9]\d{7,14}$/;
+
+/** True only for a well-formed E.164 number. */
+export function isValidPhoneNumber(number: string): boolean {
+	return PHONE_NUMBER_PATTERN.test(number);
+}
+
+/**
+ * The `tel:` href to render, or `null` while no phone number is configured.
+ * Never returns a placeholder or a malformed URL — callers must branch on
+ * `null` and render nothing (or plain text), same as `whatsappHref()`.
+ */
+export function telHref(): string | null {
+	if (PHONE_NUMBER === null) return null;
+	return isValidPhoneNumber(PHONE_NUMBER) ? `tel:${PHONE_NUMBER}` : null;
 }

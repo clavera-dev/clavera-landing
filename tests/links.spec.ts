@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
-import { whatsappHref } from '../src/config/contact';
+import { whatsappHref, telHref } from '../src/config/contact';
 
 /**
  * Internal-link integrity (M3.5; legal pages added in the handoff v1.1
@@ -96,9 +96,10 @@ for (const locale of LOCALES) {
 
 			// /privacidad, /terminos and /cookies are now real links (see
 			// EXISTING_ROUTES above). /espacios and /desarrolladores stay
-			// pending text always; the WhatsApp entry does too, but only while
-			// whatsappHref() is null.
-			const expectedPending = whatsappHref() === null ? 3 : 2;
+			// pending text always; the WhatsApp and phone entries do too, but
+			// only while whatsappHref()/telHref() is null.
+			const expectedPending =
+				2 + (whatsappHref() === null ? 1 : 0) + (telHref() === null ? 1 : 0);
 			const footer = page.locator('footer');
 			await expect(footer.locator('[class*="pending-item"]'), 'pending entries').toHaveCount(
 				expectedPending,

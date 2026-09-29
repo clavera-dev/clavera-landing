@@ -249,6 +249,11 @@ export interface Copy {
 		 * text — never a `wa.me` link, a dummy number or a disabled control.
 		 */
 		whatsappPending: string;
+		/**
+		 * Shown while `telHref()` returns null (src/config/contact.ts). Plain
+		 * text — never a `tel:` link, a dummy number or a disabled control.
+		 */
+		phonePending: string;
 		/*
 		  The controller formula and the Spanish-primacy clause are the same
 		  Spanish text on every locale, so they live in src/config/legal.ts

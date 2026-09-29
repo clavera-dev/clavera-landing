@@ -262,6 +262,7 @@ export const ru: Copy = {
 		languageTitle: 'Язык',
 		pendingNote: 'Готовится.',
 		whatsappPending: 'WhatsApp Business — скоро.',
+		phonePending: 'Телефон — скоро.',
 	},
 	legalPage: {
 		backToHome: 'Вернуться на главную',
