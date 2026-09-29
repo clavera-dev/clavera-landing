@@ -71,6 +71,12 @@ export interface Copy {
 		caption: string;
 		placeholder: string;
 		cta: string;
+		/**
+		 * Shown when the search matches no zone. Owner-authored copy (M4 spec
+		 * decision D7); deliberately absent until supplied, and the selector
+		 * renders no empty-state element without it.
+		 */
+		empty?: string;
 	};
 	problem: {
 		index: string;

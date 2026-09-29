@@ -88,6 +88,18 @@ const showLanguageNotice =
 					))
 				}
 			</ul>
+			{/*
+			  Empty-result slot (SEL-1). It opens where the list would, so showing it
+			  never moves the page. Rendered only once the owner supplies the words
+			  (D7); until then an unmatched search simply closes the list.
+			*/}
+			{
+				c.empty && (
+					<p class="caption zone-selector__empty" role="status" hidden data-zone-empty>
+						{c.empty}
+					</p>
+				)
+			}
 		</div>
 
 		<a
@@ -121,6 +133,7 @@ const showLanguageNotice =
 		const list = root.querySelector<HTMLElement>('[data-zone-list]');
 		const options = Array.from(root.querySelectorAll<HTMLElement>('[data-zone-option]'));
 		const link = root.querySelector<HTMLAnchorElement>('[data-zone-continue]');
+		const empty = root.querySelector<HTMLElement>('[data-zone-empty]');
 		if (!field || !input || !list || !link) return;
 		const baseHref = link.href;
 		let active = -1;
@@ -128,6 +141,7 @@ const showLanguageNotice =
 		const visible = () => options.filter((option) => !option.hidden);
 		const close = () => {
 			list.hidden = true;
+			if (empty) empty.hidden = true;
 			input.setAttribute('aria-expanded', 'false');
 			input.removeAttribute('aria-activedescendant');
 			active = -1;
@@ -146,8 +160,12 @@ const showLanguageNotice =
 		const filter = () => {
 			const query = normalize(input.value.trim());
 			for (const option of options) option.hidden = !normalize(option.textContent ?? '').includes(query);
-			list.hidden = false;
-			input.setAttribute('aria-expanded', 'true');
+			// An empty listbox would open as a bare bordered sliver; keep it closed
+			// and show the empty-result slot instead, when there is one.
+			const matched = options.some((option) => !option.hidden);
+			list.hidden = !matched;
+			if (empty) empty.hidden = matched;
+			input.setAttribute('aria-expanded', String(matched));
 			input.removeAttribute('aria-activedescendant');
 			active = -1;
 		};
@@ -247,6 +265,38 @@ const showLanguageNotice =
 		display: none;
 	}
 
+	/* With scripting on, the script below is about to reveal the field. Keeping
+	   its box (invisible and unfocusable) stops "Seguir" jumping sideways, or
+	   down where the row wraps, when it appears (M4 spec SEL-1). Without
+	   scripting the field never appears, so it takes no space. */
+	@media (scripting: enabled) {
+		.zone-selector__field[hidden] {
+			display: block;
+			visibility: hidden;
+		}
+	}
+
+	/* A drawn chevron marks the field as a list, the same way the FAQ draws its
+	   mark rather than using a glyph. Decorative: the combobox role already
+	   says it to assistive technology. It flips while the list is open, with
+	   no transition. */
+	.zone-selector__field::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		right: var(--space-4);
+		width: 8px;
+		height: 8px;
+		border-right: 2px solid var(--text-secondary);
+		border-bottom: 2px solid var(--text-secondary);
+		transform: translateY(-75%) rotate(45deg);
+		pointer-events: none;
+	}
+
+	.zone-selector__field:has([aria-expanded='true'])::after {
+		transform: translateY(-25%) rotate(225deg);
+	}
+
 	.zone-selector__input {
 		width: 100%;
 		min-height: 100%;
@@ -277,8 +327,24 @@ const showLanguageNotice =
 		box-shadow: var(--zone-selector-shadow-popover);
 	}
 
+	.zone-selector__empty {
+		position: absolute;
+		z-index: 20;
+		top: 100%;
+		left: 0;
+		right: 0;
+		margin: var(--space-1) 0 0;
+		padding: var(--space-2) var(--space-4);
+		color: var(--text-secondary);
+		background: var(--bg-base);
+		border: 1px solid var(--border-hairline-strong);
+		border-radius: var(--radius-sm);
+		box-shadow: var(--zone-selector-shadow-popover);
+	}
+
 	.zone-selector__list[hidden],
-	.zone-selector__list [hidden] { display: none; }
+	.zone-selector__list [hidden],
+	.zone-selector__empty[hidden] { display: none; }
 
 	.zone-selector__list [role='option'] {
 		padding: var(--space-2) var(--space-3);

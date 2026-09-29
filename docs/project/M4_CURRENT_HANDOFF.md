@@ -47,6 +47,8 @@ Full text lives in `CLAVERA_Legal_Spec_v3_0_received.md` and the reconciliation 
 
 M5.1 (type conformance) landed: S2's statement now uses `--fluid-display` (max 72 px, the spec's default D2) instead of the old `clamp(56px, 5.2vw+1rem, 84px)` override, removing the +9 px step at exactly 900 px; `ZoneSelector`'s raw `box-shadow` value was moved to a scoped token with an identical value. T2 (mono uppercase scope) was deferred, not implemented. Full detail, including the exact before/after CSS and the still-outstanding visual comparison, is in `M5_1_RESULT.md` (kept active; not archived).
 
+M5.2 (2026-09-29): SEL-1 structural fix implemented and H-1 A/B prepared as an unbuilt, test-injected prototype; nothing run or measured by the worker, D4 still open. See `M5_2_RESULT.md`.
+
 ## 6. Exact M5 next step
 
 **M5.2 — Hero**, per `M4_REFERENCE_COMPOSITION_SPEC.md` §13: prototype H-1 options A and B at 375×667 in ES/EN/RU and choose one (or escalate to Kirill for **D4**, which has no default); re-check H-2's fold clearance and the triple scrim by eye at 1280×720 and 1440×800; apply SEL-1's structural layout-stability fix to `ZoneSelector.astro` (no new copy). Evidence to attach: RU/EN/ES CTA-bottom-vs-fold screenshots at 375×667, 1280×720, 1440×800; contrast numbers for the disclosure and H1 against whichever scrim variant is chosen; a CLS reading for the selector fix. Stop condition: the fold test fails in any locale, or disclosure contrast drops below 4.5:1. This step needs a session with a real browser/screenshot tool (or Kirill/Codex running the build locally) — no prior M4 session in this harness has had one.
