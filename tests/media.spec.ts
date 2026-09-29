@@ -56,6 +56,43 @@ for (const locale of LOCALES) {
 			}
 		});
 
+		test('shows the correct localized caption on every captioned render, and nowhere else', async ({
+			page,
+		}) => {
+			await page.goto(locale.path);
+
+			// The four RenderFigure instances rendered with the `caption` prop
+			// (Pillars/r2, Security/entrance, HubShowcase/r4, Vehicles/r5) — every
+			// other figure on the page (hero R1, HubShowcase's own R6) must not
+			// grow a caption span just because it has a disclosure.
+			const expected: Record<string, string[]> = {
+				es: [
+					'Soportes verticales individuales',
+					'Ingreso controlado',
+					'Lockers y espacio para silla de bebé',
+					'Zona cargo y e-bikes',
+				],
+				en: [
+					'Individual vertical racks',
+					'Controlled entrance',
+					'Lockers and room for a child bike seat',
+					'Cargo and e-bike area',
+				],
+				ru: [
+					'Индивидуальные вертикальные крепления',
+					'Контролируемый вход',
+					'Локеры и место для детского велокресла',
+					'Зона карго и e-bike',
+				],
+			};
+
+			const captions = await page
+				.locator('.render-figure__caption')
+				.evaluateAll((els) => els.map((e) => (e.textContent ?? '').replace(/\s+/g, ' ').trim()));
+
+			expect(captions.sort()).toEqual([...expected[locale.key]].sort());
+		});
+
 		test('includes the hero render in the disclosure guarantee', async ({ page }) => {
 			await page.goto(locale.path);
 			const heroAlt = await page.locator('.hero__media img').getAttribute('alt');

@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { LOCALES } from './locales';
+import { LOCALES, SCREENSHOT_VIEWPORTS } from './locales';
 import { CANDIDATE_ZONES } from '../src/config/zones';
 
 /**
@@ -227,6 +227,32 @@ test.describe('M5.2 zone selector', () => {
 		// The S10 instance is independent.
 		expect(await selected('#zonas')).toEqual([]);
 	});
+});
+
+/**
+ * structure.spec.ts checks page-level horizontal overflow at every required
+ * viewport, but never opens the zone-selector list while measuring — and the
+ * list is absolutely positioned, so a regression there would only show up
+ * with it open. This closes that gap at the three required breakpoints,
+ * across all three locales, for both selector instances.
+ */
+test.describe('zone selector list stays inside the viewport with the list open', () => {
+	for (const locale of LOCALES) {
+		for (const viewport of SCREENSHOT_VIEWPORTS) {
+			test(`[${locale.key}] @ ${viewport.name}px`, async ({ page }) => {
+				await page.setViewportSize({ width: viewport.width, height: viewport.height });
+				await page.goto(locale.path);
+				await page.evaluate(() => document.fonts.ready);
+
+				for (const scope of ['#top', '#zonas']) {
+					await page.locator(`${scope} [data-zone-input]`).focus();
+					await expect(page.locator(`${scope} [data-zone-list]`)).toBeVisible();
+					expect(await horizontalOffenders(page), `${scope} list open`).toEqual([]);
+					await page.keyboard.press('Escape');
+				}
+			});
+		}
+	}
 });
 
 test.describe('M5.2 reduced motion', () => {
