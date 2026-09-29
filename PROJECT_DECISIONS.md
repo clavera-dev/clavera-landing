@@ -110,6 +110,10 @@ The design-system README may describe some choices as hypotheses or unfinished p
 
 Do not redesign the brand or replace its tokens without explicit approval.
 
+### Limited typography delegation (2026-09-29, M5.1)
+
+The owner delegated small, reversible typography and letter-case decisions inside the approved token scale, so they can be made without interrupting him. The delegation does not cover new token sizes, brand or token replacement, images, legal text, claims, form destination, zone data or payment behaviour. Each delegated change must be recorded with before/after values and checked visually against the tagged baseline `baseline/clavera-before-m5-2026-09-29`. First use: M5.1 T1, where the S2 statement uses `--fluid-display` with a maximum of 72 px (the spec's default). T2 (mono uppercase scope) is deferred and stays as built.
+
 ## Media
 
 Use only approved production-ready assets.
