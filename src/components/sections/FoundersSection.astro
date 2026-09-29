@@ -25,6 +25,10 @@ const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== nu
  *
  * Still the page's one full-weight amber moment: the amber rule along the top
  * edge and its largest call to action.
+ *
+ * Sits on the base surface so the tail alternates (Zonas raised → this base →
+ * FAQ raised → Encuesta base) instead of two raised sections back to back
+ * (composition spec R-6 (a), audit O-05).
  */
 ---
 
@@ -32,7 +36,6 @@ const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== nu
 	id="fundadores"
 	index={c.index}
 	railLabel={c.rail}
-	surface="raised"
 	labelledby="fundadores-heading"
 	rhythm="loose"
 	accent

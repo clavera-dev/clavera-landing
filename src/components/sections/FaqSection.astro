@@ -13,6 +13,9 @@ const c = getCopy(Astro.currentLocale).faq;
  * "horario amplio", an operating-hours claim PROJECT_DECISIONS.md says is
  * unconfirmed. FAQ-05's insurance wording is untouched — it is the brief's
  * specifically permitted formulation and is not part of this correction.
+ *
+ * Raised, so the tail alternates surfaces around the base "Sumate al piloto"
+ * block (composition spec R-6 (a)).
  */
 ---
 
@@ -20,6 +23,7 @@ const c = getCopy(Astro.currentLocale).faq;
 	id="faq"
 	index={c.index}
 	railLabel={c.rail}
+	surface="raised"
 	divider
 	eyebrow={c.eyebrow}
 	heading={c.heading}
