@@ -288,10 +288,24 @@ test.describe('M5.2 reduced motion', () => {
 		await page.keyboard.press('ArrowDown');
 		await page.keyboard.press('Escape');
 
+		// Described, not just counted, so a failure says what is still moving.
 		const running = await page.evaluate(() =>
-			document.getAnimations().filter((animation) => animation.playState === 'running').length,
+			document
+				.getAnimations()
+				.filter((animation) => animation.playState === 'running')
+				.map((animation) => {
+					const target = (animation.effect as KeyframeEffect | null)?.target;
+					const name =
+						'transitionProperty' in animation
+							? `transition:${(animation as CSSTransition).transitionProperty}`
+							: 'animationName' in animation
+								? `animation:${(animation as CSSAnimation).animationName}`
+								: 'script';
+					const duration = animation.effect?.getComputedTiming().duration;
+					return `${name} ${duration}ms on ${target?.tagName.toLowerCase()}.${target?.className}`;
+				}),
 		);
-		expect(running).toBe(0);
+		expect(running).toEqual([]);
 	});
 });
 

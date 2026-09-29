@@ -134,13 +134,18 @@ body {
 	}
 }
 
+/* True zeros, not the common 0.001ms: a zero combined duration means no
+   CSSTransition is created at all, while 0.001ms ones stay "running" until the
+   next frame in Firefox. Nothing here listens for transitionend/animationend. */
 @media (prefers-reduced-motion: reduce) {
 	*,
 	*::before,
 	*::after {
-		animation-duration: 0.001ms !important;
+		animation-duration: 0s !important;
+		animation-delay: 0s !important;
 		animation-iteration-count: 1 !important;
-		transition-duration: 0.001ms !important;
+		transition-duration: 0s !important;
+		transition-delay: 0s !important;
 		scroll-behavior: auto !important;
 	}
 }
