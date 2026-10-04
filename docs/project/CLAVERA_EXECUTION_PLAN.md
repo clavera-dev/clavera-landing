@@ -23,6 +23,12 @@ This file is the canonical execution plan for the CLAVERA landing page. Chat his
 
 The approved CLAVERA colors, typography, brand assets, terminology, and product claims must not be replaced by a skill, component library, reference site, or generated design system.
 
+### Figma design-system handoff (owner meeting, 2026-10-04)
+
+The owner supplied `Clavera DS.fig` and meeting notes describing the same design system in Figma: linked primitive/semantic colors for dark and light modes, tokenized type/spacing/radii/elevation/motion, Tabler-based SVG icons, component state matrices, and per-component Usage rules. `docs/project/FIGMA_DS_HANDOFF_2026-10-04.md` is the intake and exact-value reconciliation checklist. The file's canvas has not yet been read in Figma; the meeting summary is not evidence that individual values match the approved CSS tokens, that every Usage rule is complete, or that accessibility has been verified.
+
+Insert a **read-only Figma-to-code inventory** into M4 before further M5 composition changes: capture file revision, variables, styles, components, Usage, responsive frames and measured contrast; compare them to the accepted design system and triage differences. Feed approved composition findings into M5.2 and motion findings into M6. This does not lift existing owner, designer, protected-file, legal or publication gates. Figma MCP is a conditional read route after authenticated file access, not a required paid dependency; no plan or seat purchase is approved. Internal agent prompts and evidence stay in English; the owner-facing decision summary stays in Russian.
+
 ## Working protocol
 
 1. Claude implements one bounded milestone in Claude Desktop Code.
@@ -363,6 +369,7 @@ Required checks: `git diff --check`, `yarn astro check`, `yarn build`, the Playw
 Status: **evidence-gathering done; reference research partial; composition spec partially backed and owner decisions open.** Taste Skill audit complete (`M4_TASTE_AUDIT.md`), a local visual baseline is frozen (tag `baseline/clavera-before-m4-2026-09-29` → `e67dc21`, code identical to `4aa30b7`), the M4.1 measured-evidence pack is complete (`docs/project/M4_EVIDENCE.md`), and a full-page visual audit of all 13 sections across all three locales is complete (`docs/project/M4_FULLPAGE_AUDIT.md`) — no broken, missing, overlapping or cut-off section found in any locale; two items (S7 scroll-hint prominence, S9 sticky heading) are confirmed-in-code but still need a real-browser visual check. A first verified public-reference pass (`docs/project/M4_PUBLIC_REFERENCES_2026-09-29.md`, accessed 2026-09-29) has read four live pages and confirmed content/information-order patterns for reference-matrix rows P3, P4, P9 and P10 only. The M4.2 composition specification (`M4_REFERENCE_COMPOSITION_SPEC.md`) is **partially reference-backed for those four rows on content/order grounds only**; it has no *visual* reference example at any target viewport for any of the 11 rows, and rows P1, P2, P5–P8, P11 remain unresearched entirely — P6 and P11 are flagged as structurally unresearchable by text-only tools and need a real browser/screenshot session, same as the two visual-confirmation items above. Not approved, not implemented, not visual acceptance, not legal approval. **`docs/project/M4_CURRENT_HANDOFF.md` (2026-09-29) consolidates the whole M4 session chain — baseline, verified facts, unresolved design choices and the exact M5 next step — read it first instead of the individual session files; four superseded appendices it replaces were moved to `Old/docs/project/` (`M4_ARCHIVE_MOVES.json`).** `M5.1` has already landed against this partial evidence base (see M5 below); that does not retroactively complete M4's outstanding reference research or owner decisions.
 
 - connect Refero MCP if account access is available;
+- inventory the owner-supplied Figma design system against the accepted CSS tokens, components, responsive layouts, Usage rules and measured contrast, following `FIGMA_DS_HANDOFF_2026-10-04.md`; authenticated file access is still pending;
 - research real premium architectural, infrastructure, urban-mobility, and render-led landing pages;
 - document references by pattern and purpose, not by superficial style;
 - define grid, type scale usage, image scale, section rhythm, full-bleed behavior, transition logic, and mobile composition;
@@ -379,6 +386,8 @@ Status: **M5.1 landed; M5.2 and the rest of the composition pass pending.**
 `M5.2 — Hero`, per `M4_REFERENCE_COMPOSITION_SPEC.md` §13, is the next concrete step and has not started: prototype the short-phone hero options (decision D4/H-1), re-check desktop fold clearance and the triple scrim by eye (H-2), and apply the zone-selector layout-stability fix (SEL-1). It needs a session with a real browser/screenshot tool, which no session to date has had.
 
 The remainder of the reference-driven composition pass — implementing the still-partially-researched M4 specification section by section, then Impeccable critique — stays pending behind M4's outstanding reference research (P1, P2, P5–P8, P11) and the unresolved owner/design calls listed in `M4_CURRENT_HANDOFF.md` §3.
+
+Before changing M5.2 Hero or shared UI tokens on the strength of the new Figma handoff, finish the read-only M4 inventory and record exact matches/differences. Only explicitly accepted differences become implementation tasks. Existing M5.1 work and other gates remain as stated above.
 
 - implement the approved composition specification with Frontend Design;
 - critique and audit with Impeccable;
@@ -450,6 +459,12 @@ Approved by Kirill: yes/no
 ```
 
 ## Decision log
+
+### 2026-10-04 — Figma design-system handoff added as M4 evidence gate
+
+Reason: Kirill supplied `Clavera DS.fig` and meeting notes for the already approved design system and requested integration with the execution plan. The local archive does not expose authoritative variables or component descriptions without Figma import/access. A read-only inventory and exact-value reconciliation now precede further M5 composition changes; it does not replace the current tokens or authorize a paid Figma seat. The meeting's one-connector claim remains unverified against official MCP documentation.
+Affected milestones: M4 evidence inventory; M5.2 and later composition use of accepted findings; M6 motion mapping. No current visual, legal, protected-file, publication, or owner review gate changes.
+Approved by Kirill: yes for planning and reconciliation; individual token/component changes and any purchase are pending evidence and separate decision.
 
 ### 2026-08-20 — Canonical execution plan created
 
