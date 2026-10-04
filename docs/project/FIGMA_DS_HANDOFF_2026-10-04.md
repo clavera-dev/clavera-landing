@@ -1,12 +1,24 @@
 # CLAVERA Figma design-system handoff
 
-Status: **meeting notes received; Figma canvas not yet inspected.** This document records the owner's 2026-10-04 meeting handoff and a bounded integration path. It is not approval to change the established brand or to publish the site.
+Status: **meeting notes received; first read-only Figma inventory completed, detailed component/effect review pending.** This document records the owner's 2026-10-04 meeting handoff and a bounded integration path. It is not approval to change the established brand or to publish the site.
 
 ## Source and authority
 
-- Owner-provided meeting notes in the 2026-10-04 Agent Control conversation; local artifact `/Users/k/Downloads/Clavera DS.fig` (export metadata dated 2026-10-01). The `.fig` archive has a proprietary canvas and a small thumbnail, not an extractable token/component table. No Figma URL or authenticated MCP connection was available in this pass.
+- Owner-provided meeting notes in the 2026-10-04 Agent Control conversation; local artifact `/Users/k/Downloads/Clavera DS.fig` (export metadata dated 2026-10-01). The `.fig` archive has a proprietary canvas and a small thumbnail, not an extractable token/component table. On 2026-10-04 the file was imported without payment into the existing `Clavera` folder of the owner's authenticated Free-plan Figma account: [Clavera DS](https://www.figma.com/design/EgsFk8V4OWGv0i6oitDVgM/Clavera-DS). No MCP connection was made.
 - Existing authority remains `PROJECT_DECISIONS.md` → brief → `docs/design-system/` → execution plan. The Figma file is presented as the same system in a structured design tool, so it is a source to reconcile, not a license to replace approved tokens or copy.
 - Meeting claims about WCAG conformance and component Usage constraints require inspection and evidence. A Usage block can guide agents but cannot by itself guarantee that generated UI is correct.
+
+## First read-only inventory from the imported file (2026-10-04)
+
+The Figma Variables panel exposes collections `Primitives` (108), `Semantic` (87; Dark and Light modes), `Radius` (7), `Spacing` (23), and `Motion` (7). Pages inspected: Colors, Spacing & Radius, Elevation & Motion, Components library, and Button. The following are **sampled mappings**, not a complete token audit:
+
+- Figma `graphite/950 #0C0B09`, `amber/500 #E68C2C`, `concrete/50 #F4F3F2`, and `moss/500 #578859` correspond closely to their existing CSS OKLCH primitives. Figma Semantic `bg/page` aliases graphite/950 in Dark and concrete/50 in Light; `bg/accent` aliases amber/500. The existing CSS is dark-first with paper aliases, so the complete Light-mode mapping remains open.
+- Figma radii `xs/sm/md/lg/xl/pill` = `4/8/12/16/24/999px`, matching the current CSS. Figma additionally has `radius/dialog=32px`; do not add or use it in code until the dialog component and existing implementation are compared.
+- Figma spacing values in the current CSS (`4…128px` at steps 1,2,3,4,5,6,8,10,12,16,20,24,32) match the sampled variables. Figma also has `space/7=28px`, icon sizes `12/16/20/24px`, control sizes `32/40/48px`, and strokes `1/2px`; these need explicit mapping rather than blanket adoption.
+- Figma motion `fast/base/slow/slower = 120/200/320/480ms` and ease `standard/out/in` values match the existing motion CSS. Effect-style names align with the elevation/glow/focus groups, but numeric shadow recipes have **not** been verified from the UI.
+- Figma's Components library contains Brand, Icons, Button, IconButton, Inputs, Selection controls, Card, Badge & Tag, Tabs, Dialog, and Feedback. A Usage section and text layer are visible on Button and IconButton pages; the detailed wording was not reliably extracted from the current UI, so no Do/Don't rule is claimed as verified yet.
+
+No Figma design change, sharing change, paid plan, connector installation, CSS edit, or accepted-head update resulted from this inventory.
 
 ## Reported structure to inventory in Figma
 
@@ -33,7 +45,7 @@ The existing design-system repository already has a 4 px spacing scale, radii `4
 
 ## Work sequence and gates
 
-1. Import the owner's `.fig` into an authorized Figma account's Drafts, or receive an authenticated Figma file URL and access. Record file URL/key, revision/date, and account/seat without storing credentials. No purchase is authorized by these notes.
+1. **Done:** the owner's `.fig` was imported to their existing Free-plan Clavera folder and is accessible at the URL above. Record its revision/date before each implementation pass; do not store credentials. No purchase is authorized by these notes.
 2. Read the main guide and variables/styles/components, then produce a versioned inventory and exact-value diff against the accepted head. Capture representative desktop/mobile and light/dark frames. Verify the claimed contrast with measurements and the relevant WCAG criterion, rather than repeating the claim.
 3. Triage differences with the designer/owner: exact match, editorial clarification, visual refinement, or conflict with `PROJECT_DECISIONS.md`/brief. Keep the current system until conflicts are explicitly resolved.
 4. Incorporate accepted findings into M4 composition evidence and M5.2 Hero/component implementation one bounded section at a time. Route motion findings to M6. Keep protected-file and legal/publication gates intact. Run the established Astro/TypeScript, build, browser, locale, accessibility, and visual checks appropriate to each change.
