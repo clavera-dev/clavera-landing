@@ -36,10 +36,10 @@ Reconciles each acceptance item of `docs/brief/CLAVERA_Site_TZ_v1_5.md` with lat
 | LCP ≤ 2.0 s mobile 4G | **not done (field measurement)** — local report only: `tests/perf-budget.spec.ts` gives 0.26–0.34 s LCP, CLS ≤ 0.035 on the local build; 4G/Buenos Aires needs the deployed site (C12 manual Lighthouse) |
 | Content visible without JS | **done** — `tests/survey.spec.ts` / `tests/m5-2.spec.ts` no-JS cases; application link defaults without JS (`tests/solicitud.spec.ts`) |
 | hreflang × 3 + x-default, self canonicals | **done** — `tests/locale-head.spec.ts`; canonicals are built from `Astro.site`, so absolute URLs wait on the domain (B4) |
-| JSON-LD Organization/WebSite/Service/FAQPage | **not done (work, C9 / M9)** — no structured data yet; needs owner approval of M9 |
-| No LocalBusiness/Offer/AggregateRating | **done** by absence (no JSON-LD at all) |
-| `/llms.txt` | **not done (work, C9)** |
-| `robots.txt` not blocking AI crawlers | **not done (work, C9)** — `public/` has no `robots.txt` |
+| JSON-LD Organization/WebSite/Service/FAQPage | **done, provisional (C9, branch `agent/clavera-m9-local-20261006`)** — built only from on-page text (`StructuredData.astro`, `tests/seo.spec.ts`); M9 still needs owner approval before it counts |
+| No LocalBusiness/Offer/AggregateRating | **done** — `tests/seo.spec.ts` |
+| `/llms.txt` | **owner value** — the brief §8.3 template names cameras and "zonas prioritarias", both removed by later decisions (B5, v1.2); new wording is owner copy |
+| `robots.txt` not blocking AI crawlers | **done, provisional** — `public/robots.txt` allows all; no Sitemap line until the domain is confirmed (`tests/seo.spec.ts`) |
 | `sitemap.xml` with all languages | **owner value** — needs the domain for absolute URLs (plan C9: no file while the domain is `null`) |
 | Cookie banner with separate consent | **superseded** — no analytics or tracking at all (v1.1 §1, v1.4 §1.7); `/cookies` declares only the language cookie; `tests/solicitud.spec.ts` asserts no storage |
 | SPF / DKIM / DMARC | **owner value** — mail domain setup |
@@ -74,6 +74,6 @@ Reconciles each acceptance item of `docs/brief/CLAVERA_Site_TZ_v1_5.md` with lat
 
 ## What engineering can still do without the owner
 
-1. C9 locally, behind owner approval of M9: `robots.txt`, `/llms.txt`, JSON-LD from approved strings only; no sitemap or absolute URLs until the domain exists.
+1. ~~C9 locally~~ done provisionally (JSON-LD, robots.txt); `/llms.txt` waits on owner wording; no sitemap until the domain exists.
 2. An editorial pass on "FAQ answers start with the answer".
-3. C10 font facts table (counts above) as input to the font decision.
+3. ~~C10 font facts~~ done: `FONTS_DECISION_FACTS.md` (RU headings fall back to Helvetica/Arial: Plus Jakarta Sans has no basic Cyrillic).

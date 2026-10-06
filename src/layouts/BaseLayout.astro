@@ -1,6 +1,7 @@
 ---
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import StructuredData from '../components/seo/StructuredData.astro';
 import {
 	getCopy,
 	resolveLocale,
@@ -85,6 +86,9 @@ const xDefault = new URL(pathFor(DEFAULT_LOCALE), Astro.site).href;
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title ?? copy.meta.ogTitle} />
 		<meta name="twitter:description" content={pageDescription} />
+
+		{/* JSON-LD (brief §8.2) on the landing document only. */}
+		{path === undefined && <StructuredData />}
 	</head>
 	<body>
 		<a class="skip-link" href="#contenido">{copy.a11y.skipLink}</a>

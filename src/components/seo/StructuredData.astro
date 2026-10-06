@@ -1,0 +1,71 @@
+---
+/**
+ * JSON-LD for the landing page (brief §8.2, plan C9) — provisional, local,
+ * 2026-10-06. Built only from strings the page already shows: the entity
+ * definition is the first sentence of FAQ-01, and FAQPage repeats the FAQ
+ * exactly as rendered. No LocalBusiness, ParkingFacility, Offer or
+ * AggregateRating (forbidden by §8.2: no address, no price, no reviews).
+ *
+ * URLs come from `site` in astro.config.mjs, the same source as the
+ * canonical links, so they change together if the domain decision does.
+ */
+import { getCopy, resolveLocale, LOCALE_DEFINITIONS, localeHome } from '../../i18n';
+
+const locale = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+const site = Astro.site!;
+const home = new URL('/', site).href;
+const pageUrl = new URL(localeHome(locale), site).href;
+const inLanguage = LOCALE_DEFINITIONS[locale].lang;
+
+// "CLAVERA es una guardería segura de bicicletas … en Buenos Aires."
+const definition = copy.faq.items[0].a.split(/(?<=\.)\s/)[0];
+
+const organization = {
+	'@type': 'Organization',
+	'@id': `${home}#organization`,
+	name: 'CLAVERA',
+	url: home,
+	logo: new URL('/brand/logo.svg', site).href,
+	email: 'hola@clavera.ar',
+	areaServed: { '@type': 'City', name: 'Buenos Aires' },
+	description: definition,
+};
+
+const data = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		organization,
+		{
+			'@type': 'WebSite',
+			'@id': `${home}#website`,
+			name: 'CLAVERA',
+			url: home,
+			inLanguage: ['es-AR', 'en', 'ru'],
+			publisher: { '@id': organization['@id'] },
+		},
+		{
+			'@type': 'Service',
+			'@id': `${pageUrl}#service`,
+			// Brief §8.2's own wording; Spanish on every locale, like the brand.
+			serviceType: 'Guarda de bicicletas por membresía',
+			provider: { '@id': organization['@id'] },
+			areaServed: { '@type': 'City', name: 'Buenos Aires' },
+			description: definition,
+			inLanguage,
+		},
+		{
+			'@type': 'FAQPage',
+			'@id': `${pageUrl}#faq`,
+			inLanguage,
+			mainEntity: copy.faq.items.map((item) => ({
+				'@type': 'Question',
+				name: item.q,
+				acceptedAnswer: { '@type': 'Answer', text: item.a },
+			})),
+		},
+	],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(data)} />

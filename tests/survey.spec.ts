@@ -178,7 +178,8 @@ for (const locale of LOCALES) {
 			  this to regress.
 			*/
 			const scripts = await page.evaluate(() =>
-				Array.from(document.querySelectorAll('script')).map((s) => ({
+				// JSON-LD (brief §8.2) is data, not code: it is not counted here.
+				Array.from(document.querySelectorAll('script:not([type="application/ld+json"])')).map((s) => ({
 					src: s.getAttribute('src'),
 					type: s.getAttribute('type'),
 					text: s.textContent ?? '',

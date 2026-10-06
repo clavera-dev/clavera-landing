@@ -2,6 +2,10 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-10-06 — C9 local SEO (provisional) and C10 font facts (branch)
+
+Branch `agent/clavera-m9-local-20261006`, stacked on `863ac53`. JSON-LD (Organization, WebSite, Service, FAQPage) on the three landing pages only, built from on-page strings, with URLs from `site` like the canonicals; `public/robots.txt` allows all crawlers, no Sitemap line until the domain is confirmed; no `llms.txt` (brief template contradicts later decisions; owner wording needed). `FONTS_DECISION_FACTS.md`: 7–10 Google font files vs. the §9.2 limit of 2, and Russian headings fall back to Helvetica/Arial because Plus Jakarta Sans has no basic Cyrillic. Chromium suite 504 passed / 0 failed (the Mac was overloaded by other agents; a three-engine run hit its time limit with Firefox timeouts and was rerun per engine). M9 still needs owner approval; nothing pushed or published.
+
 ## 2026-10-06 — M5.2 closed, M7 motion (provisional), M8 budget report, readiness check (branch)
 
 Branch `agent/clavera-m5-m7-20261006`, stacked on the v1.4 branch. C3: D4 closed with the current band (owner, image brief §4.1); deleted `tests/prototypes/hero-h1.css` and `tests/m5-2-hero-prototypes.spec.ts` (its six desktop clip cases had been failing on `fce39c6`). C4/C5: the two CSS-only motions from `M6_MOTION_MAP.md` §6, provisional, after the owner said to implement animations. C7: `tests/perf-budget.spec.ts` reports the §9.2 numbers without enforcing them; locally LCP is 0.26–0.34 s, CLS ≤ 0.035, and there are 7–10 font files from the Google CDN. C8: `PREPUBLICATION_READINESS.md`. Full Playwright run, three engines: 1437 passed, 131 skipped, 1 failed. The failure, `structure.spec.ts:139` es@768 anchor clearance, then passed 90/90 on repeat, so it is a load-timing flake. A WebKit click flake caused by the zone list's lift was found and removed. Not pushed, not published.
