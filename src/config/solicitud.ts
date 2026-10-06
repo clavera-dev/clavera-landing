@@ -49,7 +49,10 @@ export function isUsableFormUrl(url: string): boolean {
 		return false;
 	}
 	if (parsed.protocol !== 'https:') return false;
-	return !/example\.(com|org|net)|localhost|placeholder|todo|tbd|changeme/i.test(url);
+	// Host-based, so a real form id that happens to contain "todo" or "tbd"
+	// cannot silently switch the block off.
+	if (/^(localhost|127\.|0\.0\.0\.0)|(^|\.)example\.(com|org|net)$/i.test(parsed.hostname)) return false;
+	return !/placeholder|changeme/i.test(parsed.pathname);
 }
 
 /** True when the block, `/solicitud` and the selector highlight are live. */

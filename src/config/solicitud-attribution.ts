@@ -43,7 +43,7 @@ export interface SolicitudLinkConfig {
 /** A page-address value after the §3.4 rule 1 check, or `null`. */
 export function safeValue(raw: string | null | undefined): string | null {
 	if (typeof raw !== 'string') return null;
-	const value = raw.trim().toLowerCase();
+	const value = raw.toLowerCase();
 	return SAFE_VALUE.test(value) ? value : null;
 }
 

@@ -21,7 +21,8 @@ for (const locale of LOCALES) {
 			expect(text, forbidden).not.toContain(`"${forbidden}"`);
 		}
 
-		// FAQPage repeats the rendered FAQ exactly.
+		// FAQPage repeats the rendered FAQ exactly, minus the access-hours item
+		// (24/7 never in metadata, CLAUDE.md).
 		const faq = graph[3]['mainEntity'] as Array<{ name: string; acceptedAnswer: { text: string } }>;
 		const rendered = await page.locator('.faq__item').evaluateAll((items) =>
 			items.map((item) => ({
@@ -29,7 +30,10 @@ for (const locale of LOCALES) {
 				a: item.querySelector('.faq__a')!.textContent!.trim(),
 			})),
 		);
-		expect(faq.map((entry) => ({ q: entry.name, a: entry.acceptedAnswer.text }))).toEqual(rendered);
+		expect(faq.map((entry) => ({ q: entry.name, a: entry.acceptedAnswer.text }))).toEqual(
+			rendered.filter((item) => !/24|круглосуточ/i.test(item.a)),
+		);
+		expect(text).not.toMatch(/24\/7|24 h|круглосуточ/i);
 
 		// The entity definition is FAQ-01's first sentence, word for word.
 		expect(rendered[0].a.startsWith(graph[0]['description'] as string)).toBe(true);

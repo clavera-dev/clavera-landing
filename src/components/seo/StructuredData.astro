@@ -11,6 +11,7 @@
  */
 import { getCopy, resolveLocale, LOCALE_DEFINITIONS, localeHome } from '../../i18n';
 
+const ACCESS_HOURS = /24|круглосуточ/i;
 const locale = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
 const site = Astro.site!;
@@ -58,7 +59,9 @@ const data = {
 			'@type': 'FAQPage',
 			'@id': `${pageUrl}#faq`,
 			inLanguage,
-			mainEntity: copy.faq.items.map((item) => ({
+			// The access-hours answer stays out of <head>: 24/7 may appear only in
+			// the pillar and in the visible FAQ, never in metadata (CLAUDE.md).
+			mainEntity: copy.faq.items.filter((item) => !ACCESS_HOURS.test(item.a)).map((item) => ({
 				'@type': 'Question',
 				name: item.q,
 				acceptedAnswer: { '@type': 'Answer', text: item.a },
@@ -68,4 +71,4 @@ const data = {
 };
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(data)} />
+<script type="application/ld+json" set:html={JSON.stringify(data).replace(/</g, '\\u003c')} />

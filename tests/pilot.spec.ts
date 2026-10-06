@@ -38,8 +38,8 @@ import {
 
 test.describe('application form configuration', () => {
 	test('a live form has a real https URL', () => {
+		test.skip(!isSolicitudLive(), 'application form switched off');
 		const data = SOLICITUD_DATA.solicitud;
-		if (!isSolicitudLive()) return;
 		expect(data.form_url).toMatch(/^https:\/\//);
 	});
 

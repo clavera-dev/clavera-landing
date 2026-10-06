@@ -153,6 +153,12 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 	*/
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
+			/* The section is the timeline subject: a 2px pseudo-element as its
+			   own subject would finish the draw within about 2px of scrolling. */
+			.section--accent {
+				view-timeline-name: --section-accent;
+			}
+
 			.section--accent::after {
 				transform-origin: left center;
 				animation: section-accent-draw linear both;
@@ -164,8 +170,8 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 			  browsers reject as a whole, silently dropping the animation.
 			*/
 			.section.section--accent::after {
-				animation-timeline: view();
-				animation-range: entry 10% entry 90%;
+				animation-timeline: --section-accent;
+				animation-range: entry 0% entry 60%;
 			}
 		}
 	}

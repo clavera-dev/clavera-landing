@@ -22,14 +22,20 @@ for (const locale of LOCALES) {
 		test.skip(browserName !== 'chromium', 'paint timing is measured in Chromium');
 		await page.setViewportSize({ width: 375, height: 667 });
 
-		const sizes: Array<{ url: string; type: string; bytes: number }> = [];
-		page.on('response', async (response) => {
-			const body = await response.body().catch(() => null);
-			sizes.push({
-				url: response.url(),
-				type: response.request().resourceType(),
-				bytes: body?.length ?? 0,
-			});
+		// Decoded body bytes (an upper bound on transfer size), collected as
+		// promises and awaited before summing so no late response is lost.
+		const pending: Array<Promise<{ url: string; type: string; bytes: number }>> = [];
+		page.on('response', (response) => {
+			pending.push(
+				response
+					.body()
+					.catch(() => null)
+					.then((body) => ({
+						url: response.url(),
+						type: response.request().resourceType(),
+						bytes: body?.length ?? 0,
+					})),
+			);
 		});
 
 		await page.addInitScript(() => {
@@ -63,6 +69,7 @@ for (const locale of LOCALES) {
 			return { lcp: w.__lcp, cls: w.__cls };
 		});
 
+		const sizes = await Promise.all(pending);
 		const total = sizes.reduce((sum, r) => sum + r.bytes, 0);
 		const js = sizes.filter((r) => r.type === 'script').reduce((sum, r) => sum + r.bytes, 0);
 		const fontFiles = sizes.filter((r) => r.type === 'font');

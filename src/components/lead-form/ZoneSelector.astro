@@ -4,9 +4,10 @@
  *
  * Searchable single-select combobox, alphabetical, with zone names in their
  * original Spanish on every locale. No zone is ranked. While the application
- * form is live (src/config/solicitud.ts), the one candidate zone carries a
- * label and an amber marker (owner response v1.4 §1.4, TZ §2.4); it keeps its
- * alphabetical place and works like every other option.
+ * form is live (src/config/solicitud.ts), the S10 instance (`highlight`) gives
+ * the one candidate zone a label and an amber marker (owner response v1.4 §1.4,
+ * TZ §2.4); it keeps its alphabetical place and works like every other option.
+ * The hero instance never highlights (TZ §2.3).
  * The working list is in src/config/candidate-zones.ts (owner response v1.2).
  *
  * "Seguir" opens the research survey. Every allowed zone has a build-time
@@ -29,9 +30,15 @@ import { getCopy, resolveLocale, LOCALE_DEFINITIONS } from '../../i18n';
 interface Props {
 	/** Keeps ids unique between the hero and S10 instances. */
 	name: string;
+	/**
+	 * Show the candidate-zone label while the application form is live.
+	 * Section 09 only (owner response v1.4 §1.4, TZ §2.4); the hero does not
+	 * change (TZ §2.3).
+	 */
+	highlight?: boolean;
 }
 
-const { name } = Astro.props;
+const { name, highlight = false } = Astro.props;
 
 const locale = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
@@ -39,7 +46,7 @@ const c = copy.zoneSelector;
 
 const destination = getResearchDestination(locale);
 const baseHref = buildResearchHref(locale);
-const highlightSlug = selectorHighlightSlug();
+const highlightSlug = highlight ? selectorHighlightSlug() : null;
 const zones = CANDIDATE_ZONES.map((zone) => ({
 	...zone,
 	href: buildResearchHref(locale, zone.slug),

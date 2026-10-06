@@ -7,7 +7,7 @@ import { LOCALES } from './locales';
  *
  * 1. "Sumate al piloto" amber rule draws in, scroll-driven, where the engine
  *    supports view timelines; otherwise the static rule ships as before.
- * 2. Zone-selector suggestions fade and lift in over 120ms on open.
+ * 2. Zone-selector suggestions fade in over 120ms on open (opacity only).
  *
  * Under reduced motion neither may run, and nothing may shift layout.
  */
@@ -30,15 +30,25 @@ test.describe('motion', () => {
 		expect(draw).toHaveLength(supported ? 1 : 0);
 		if (supported) expect(draw[0].scroll).toBe(true);
 
-		// Scrolled fully into view, the rule is at full scale in every engine.
-		await page.locator('#fundadores').scrollIntoViewIfNeeded();
-		await page.evaluate(() => window.scrollBy(0, 400));
-		await page.waitForTimeout(100);
-		const scale = await page.evaluate(() => {
-			const m = new DOMMatrix(getComputedStyle(document.querySelector('#fundadores')!, '::after').transform);
-			return m.a;
-		});
-		expect(scale).toBeCloseTo(1, 1);
+		// Scale of the rule with the section's top `offset` px above the
+		// viewport bottom. Instant scrolling: the page scrolls smoothly.
+		const scaleAt = (offset: number) =>
+			page.evaluate(async (off) => {
+				const section = document.querySelector('#fundadores')!;
+				const top = section.getBoundingClientRect().top + window.scrollY;
+				window.scrollTo({ top: top - window.innerHeight + off, behavior: 'instant' });
+				await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+				return new DOMMatrix(getComputedStyle(section, '::after').transform).a;
+			}, offset);
+
+		// The draw spans a visible stretch of scrolling, not a couple of pixels.
+		if (supported) {
+			const midway = await scaleAt(250);
+			expect(midway).toBeGreaterThan(0.2);
+			expect(midway).toBeLessThan(0.9);
+		}
+		// Scrolled well into view, the rule is at full scale in every engine.
+		expect(await scaleAt(800)).toBeCloseTo(1, 1);
 	});
 
 	test('the zone list has an entry transition, and closing stays instant', async ({ page }) => {

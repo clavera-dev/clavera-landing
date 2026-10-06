@@ -60,9 +60,10 @@ test.describe('solicitud config', () => {
 		expect(isSolicitudLive({ ...data, enabled: true, form_url: SAMPLE_FORM_URL })).toBe(true);
 		expect(isSolicitudLive({ ...data, enabled: false, form_url: SAMPLE_FORM_URL })).toBe(false);
 		expect(isSolicitudLive({ ...data, enabled: true, form_url: '' })).toBe(false);
-		for (const bad of ['http://claveraar.typeform.com/to/x', '#', 'https://example.com/form', 'not a url']) {
+		for (const bad of ['http://claveraar.typeform.com/to/x', '#', 'https://example.com/form', 'https://localhost/f', 'not a url']) {
 			expect(isUsableFormUrl(bad), bad).toBe(false);
 		}
+		expect(isUsableFormUrl('https://claveraar.typeform.com/to/TodoTbd1')).toBe(true);
 	});
 
 	test('highlights the selector zone only while live, mapped to the selector slug', () => {
@@ -125,6 +126,8 @@ test.describe('solicitud link', () => {
 		expect(safeValue('mail@x.com')).toBeNull();
 		expect(safeValue('')).toBeNull();
 		expect(safeValue(null)).toBeNull();
+		// Lower-case first, then the regex — nothing else (TZ §3.4 rule 1).
+		expect(safeValue(' instagram')).toBeNull();
 	});
 });
 
@@ -227,9 +230,10 @@ for (const locale of LOCALES) {
 			await page.goto(locale.path);
 			await expect(page.locator('[data-solicitud]')).toHaveCount(live ? 1 : 0);
 			await expect(page.locator('#solicitud')).toHaveCount(live ? 1 : 0);
-			// Two selectors (hero and S10), one candidate zone each when live.
-			await expect(page.locator('[data-zone-candidate]')).toHaveCount(live ? 2 : 0);
-			await expect(page.locator('[data-zone-badge]')).toHaveCount(live ? 2 : 0);
+			// Section 09 only; the hero selector never highlights (TZ §2.3, §2.4).
+			await expect(page.locator('#zonas [data-zone-candidate]')).toHaveCount(live ? 1 : 0);
+			await expect(page.locator('[data-zone-badge]')).toHaveCount(live ? 1 : 0);
+			await expect(page.locator('#top [data-zone-candidate]')).toHaveCount(0);
 
 			const response = await page.goto(`${locale.path}solicitud`);
 			expect(response?.status()).toBe(live ? 200 : 404);
@@ -270,6 +274,33 @@ for (const locale of LOCALES) {
 					'href',
 					SOLICITUD_DATA.solicitud.whatsapp_url,
 				);
+			});
+
+			test('the disclaimer has at least 4.5:1 contrast against its surface', async ({ page }) => {
+				await page.goto(locale.path);
+				const ratio = await page.locator('[data-solicitud-disclaimer]').evaluate((el) => {
+					const rgb = (value: string) => {
+						const probe = document.createElement('canvas').getContext('2d')!;
+						probe.fillStyle = value;
+						probe.fillRect(0, 0, 1, 1);
+						return Array.from(probe.getImageData(0, 0, 1, 1).data.slice(0, 3));
+					};
+					const lum = ([r, g, b]: number[]) =>
+						[r, g, b]
+							.map((c) => c / 255)
+							.map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+							.reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+					let node: Element | null = el;
+					let background = 'rgba(0, 0, 0, 0)';
+					while (node && /rgba\(.*, 0\)|transparent/.test(background)) {
+						background = getComputedStyle(node).backgroundColor;
+						node = node.parentElement;
+					}
+					const fg = lum(rgb(getComputedStyle(el).color));
+					const bg = lum(rgb(background));
+					return (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
+				});
+				expect(ratio).toBeGreaterThanOrEqual(4.5);
 			});
 
 			test('the disclaimer is visible, at least 12px, and not collapsed', async ({ page }) => {
@@ -360,7 +391,7 @@ for (const locale of LOCALES) {
 					return { found, inMeta: meta.some((m) => pattern.test(m)) };
 				}, source);
 				expect(places.inMeta).toBe(false);
-				expect(places.found.sort()).toEqual(['badge', 'badge', 'solicitud-heading']);
+				expect(places.found.sort()).toEqual(['badge', 'solicitud-heading']);
 			});
 		});
 	});

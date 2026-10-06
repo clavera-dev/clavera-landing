@@ -2,6 +2,31 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-10-06 — Independent review (C6) and fixes (branch)
+
+A separate Claude model reviewed `fce39c6..3f01c38` read-only. Verdict NEEDS_FIX: 0 blockers, 1 major, 12 minor, 7 nits. Report: `outputs/clavera-branch-review-20261006.md` in the intake workspace.
+
+Fixed:
+- **Major.** The Villa Crespo label and marker were also on the hero selector. They now show only in S10 (`ZoneSelector` `highlight` prop; TZ §2.3, §2.4).
+- **Accent draw.** It now runs on a named view timeline of the section. The 2px pseudo-element as its own subject drew within about 2px of scrolling; the draw now spans about 450px. The test checks the midway scale.
+- **JSON-LD.** The access-hours answer is left out of `<head>` (24/7 never in metadata), and `<` is escaped.
+- **Form URL check.** `isUsableFormUrl` is host-based, so a real id containing "todo" is accepted.
+- **UTM values.** `safeValue` no longer trims, following TZ §3.4 rule 1 exactly.
+- **Tests.**
+  - The silent return is now a skip.
+  - A disclaimer contrast test is added.
+  - The perf report awaits every response body.
+- **Records.**
+  - A `PROJECT_DECISIONS.md` entry for the provisional D1–D3/D5–D7 changes.
+  - CLAUDE.md wording updated.
+
+Left for the owner: the button colour (TZ §3.6), the FAQ location answer, and indexing of `/solicitud`.
+
+Tests:
+- Block off: Chromium 503 passed, 0 failed.
+- Block live, local synthetic form URL, three engines: 1531 passed, 0 failed.
+- Motion spec, three engines: 9 passed.
+
 ## 2026-10-06 — C9 local SEO (provisional) and C10 font facts (branch)
 
 Branch `agent/clavera-m9-local-20261006`, stacked on `863ac53`. JSON-LD (Organization, WebSite, Service, FAQPage) on the three landing pages only, built from on-page strings, with URLs from `site` like the canonicals; `public/robots.txt` allows all crawlers, no Sitemap line until the domain is confirmed; no `llms.txt` (brief template contradicts later decisions; owner wording needed). `FONTS_DECISION_FACTS.md`: 7–10 Google font files vs. the §9.2 limit of 2, and Russian headings fall back to Helvetica/Arial because Plus Jakarta Sans has no basic Cyrillic. Chromium suite 504 passed / 0 failed (the Mac was overloaded by other agents; a three-engine run hit its time limit with Firefox timeouts and was rerun per engine). M9 still needs owner approval; nothing pushed or published.
