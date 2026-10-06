@@ -1,6 +1,6 @@
 # CLAVERA Landing — Execution Plan
 
-Status date: 2026-09-29
+Status date: 2026-09-29 (header below); **2026-10-06 update:** work moved forward on four stacked local branches, `agent/clavera-ds-integration-20261006` → `agent/clavera-solicitud-v1-4-20261006` → `agent/clavera-m5-m7-20261006` → `agent/clavera-m9-local-20261006`. They hold the Figma tokens, owner response v1.4 with the application block switched off, M5.2 closed (D4 = current band), the provisional M7 motion, the M8 budget report and readiness check, the provisional local M9 SEO, and an independent review with fixes. None is accepted, pushed or published. Current state: `CLAVERA_WORKLOG.md`. Open owner questions: `OWNER_DECISIONS_OPEN.md`. The header lines below are historical.
 Plan owner: Kirill
 Working repository: `clavera-dev/clavera-landing`
 Active delivery branch: `landing-design`
@@ -459,6 +459,19 @@ Approved by Kirill: yes/no
 ```
 
 ## Decision log
+
+### 2026-10-06 — Owner direction: CLAVERA works continuously; plan C3–C10 executed on branches
+
+Reason: on 2026-10-06 the owner made CLAVERA one of two continuous projects («внедряем анимации, внедряем дизайн, улучшаем качество, двигаемся по новому ТЗ»), relayed by the project coordinator with the instruction to take the recommended defaults and mark them provisional. Done:
+- C3: D4 closed with the current band, an owner decision taken in the designer image brief.
+- C4/C5: M6 map slices 1–2 implemented, CSS only. The Emil Kowalski skills are not a precondition, as the M6+ plan suggested (F8); they were not installed.
+- C7: the §9.2 budget is a report, not a gate.
+- C8: `PREPUBLICATION_READINESS.md`.
+- C9: JSON-LD and robots.txt locally. No sitemap until the domain is confirmed, and no llms.txt without owner wording.
+- C10: `FONTS_DECISION_FACTS.md`.
+- C6 in part: an independent review by a second model, with fixes.
+Affected milestones: M5.2 closed; M6/M7 provisional; M8 automated part partial (C12 manual part and the full Lighthouse run outstanding); M9 local part provisional.
+Approved by Kirill: pending — acceptance of the branches and the decisions in `OWNER_DECISIONS_OPEN.md` §1.
 
 ### 2026-10-04 — Figma design-system handoff added as M4 evidence gate
 
