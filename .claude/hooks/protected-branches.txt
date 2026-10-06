@@ -1,0 +1,5 @@
+# One exact branch name per line; agents may never push these (extends the built-in list in guard-bash.py).
+main
+master
+agent/clavera-m9-local-20261006
+agent/clavera-figma-final-20261006

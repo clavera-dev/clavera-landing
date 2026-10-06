@@ -1,5 +1,5 @@
 {
-  "_comment": "CLAVERA repo settings for cloud threads (user settings are not read in the cloud). Same owner deny list as on the Mac; hooks are repo-relative. Owner reserved: deletion, push, deploy/publish, secrets, money.",
+  "_comment": "CLAVERA repo settings for cloud threads (user settings are not read in the cloud). Same owner deny list as on the Mac; hooks are repo-relative. Owner reserved: deletion, deploy/publish, secrets, money; pushes are limited by hooks/guard-bash.py to agent/* and claude/* branches (no force, no main or protected branches).",
   "permissions": {
     "defaultMode": "acceptEdits",
     "deny": [
@@ -7,7 +7,6 @@
       "Bash(rmdir:*)",
       "Bash(trash:*)",
       "Bash(shred:*)",
-      "Bash(git push:*)",
       "Bash(git remote:*)",
       "Bash(gh pr merge:*)",
       "Bash(gh release:*)",
