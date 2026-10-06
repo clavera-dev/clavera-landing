@@ -2,6 +2,12 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-10-07 — Russian display type in Onest (branch `agent/clavera-figma-final-20261006`)
+
+The designer chose Onest for Cyrillic (relayed by the owner). Russian pages now set every display and heading style in Onest instead of the Helvetica/Arial fallback: `:root:lang(ru)` overrides `--font-display` in `docs/design-system/tokens/typography.css`, and Onest 800 is added to the Google Fonts import for display-2xl. ES and EN are unchanged. RU pages no longer download Plus Jakarta Sans. `tests/fonts.spec.ts` checks the declared heading family per locale.
+
+Recorded in `PROJECT_DECISIONS.md` and `CLAUDE.md`: Figma-first is final. The designer will send an updated DS, and the monospace face (IBM Plex Mono) is pending from her. Self-host versus CDN is still the owner's call.
+
 ## 2026-10-06 — Independent review (C6) and fixes (branch)
 
 A separate Claude model reviewed `fce39c6..3f01c38` read-only. Verdict NEEDS_FIX: 0 blockers, 1 major, 12 minor, 7 nits. Report: `outputs/clavera-branch-review-20261006.md` in the intake workspace.

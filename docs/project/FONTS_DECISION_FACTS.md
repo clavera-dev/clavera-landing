@@ -1,5 +1,7 @@
 # Fonts — facts for the owner's decision (plan C10, 2026-10-06)
 
+**Update 2026-10-07:** the designer chose Onest for Cyrillic. Russian pages now set display type in Onest (`:root:lang(ru)` in `docs/design-system/tokens/typography.css`; Onest 800 added to the import for display-2xl). The monospace question is pending from the designer, who will send an updated Figma DS. Self-host versus CDN is still open.
+
 Brief §9.2 asks for **at most 2 font files, self-hosted, `font-display: swap`**. The approved design system (and the Figma file, which matches it) uses three Google Fonts families from the CDN: Plus Jakarta Sans (display, headings), Onest (body, UI) and IBM Plex Mono (codes, labels). `docs/design-system/tokens/fonts.css` loads them with one `@import` from `fonts.googleapis.com`; `display=swap` is set.
 
 ## Measured on the local build
