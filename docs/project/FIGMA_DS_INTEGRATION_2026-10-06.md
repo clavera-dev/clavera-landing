@@ -35,7 +35,7 @@ So the Figma file is the same system as the accepted CSS, extended. Nothing in t
 
 ## Open decisions (owner / designer)
 
-Each item is a visible change to an existing component, not a layout change. Recommendation in bold; none is applied on this branch.
+Each item is a visible change to an existing component, not a layout change. Recommendation in bold. **Applied 2026-10-06 (second commit on this branch):** D1, D2, D3, D5, D6, D7 as recommended, at the coordinator's request while the owner was away ("take your recommendation"); D4, D8, D9 kept as they were. Reversible by reverting that one commit.
 
 | # | Figma says | Site does now | Effect if adopted | Recommendation |
 | --- | --- | --- | --- | --- |
@@ -54,3 +54,9 @@ Not compared yet: the Inputs, Selection controls, Card, Badge & Tag, Tabs, Dialo
 ## Agent prompt template (English)
 
 When implementing a component from this system: name the Figma page and component, the tokens it uses from `tokens/figma.css` or the base token files, the theme register (dark default or `.surface-paper` = Figma Light), and the viewport/locale set to check. Use only tokens that exist in these files; report any missing value instead of inventing one. Quote the relevant Usage rule if the component has one. Do not change layout, image slots or copy under a design-system task.
+
+## Applied decisions — verification (2026-10-06)
+
+- `git diff --check`, `yarn astro check` 0/0/0, `yarn build` pass.
+- Buttons measured in ES/EN/RU at 320, 375, 768 and 1440 px before/after: every button 6–11 px narrower, no button clipped, no new page overflow, one ES survey button at 320 px now fits one line instead of two. RU at 320 px already had page-level horizontal overflow before this change (below the 375 px minimum the brief requires); unchanged.
+- Full Playwright suite (3 engines): 1333 passed, 92 skipped, 15 failed. The 15 failures (`survey.spec.ts:88` expects more than 4 fragment links; `m5-2-hero-prototypes.spec.ts:135` desktop clip) fail identically on accepted head `fce39c6` and are not caused by these changes.

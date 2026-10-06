@@ -66,25 +66,25 @@
 --text-secondary:var(--concrete-300);
 --text-tertiary:var(--concrete-500);
 --text-on-paper:var(--graphite-950);
---text-on-paper-secondary:var(--concrete-700);
---text-on-paper-tertiary:var(--concrete-500);
+--text-on-paper-secondary:var(--graphite-600);
+--text-on-paper-tertiary:var(--concrete-700);
 --text-inverse:var(--graphite-950);
 
 /* Accent (amber / LED) */
 --accent:var(--amber-500);
 --accent-hover:var(--amber-600);
 --accent-press:var(--amber-700);
---accent-subtle:oklch(72% 0.15 62 / 0.14);
+--accent-subtle:oklch(72% 0.15 62 / 0.16);
 --accent-subtle-strong:oklch(72% 0.15 62 / 0.28);
 --accent-on:var(--graphite-950);
 
 /* Status */
 --status-success:var(--moss-500);
---status-success-subtle:oklch(58% 0.09 145 / 0.14);
+--status-success-subtle:oklch(58% 0.09 145 / 0.16);
 --status-danger:var(--rust-500);
---status-danger-subtle:oklch(56% 0.15 32 / 0.14);
+--status-danger-subtle:oklch(56% 0.15 32 / 0.16);
 --status-info:var(--steel-500);
---status-info-subtle:oklch(58% 0.025 240 / 0.14);
+--status-info-subtle:oklch(58% 0.025 240 / 0.16);
 --status-warning:var(--amber-500);
 --status-warning-subtle:var(--accent-subtle);
 

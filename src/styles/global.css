@@ -190,15 +190,13 @@ video {
 	--text-primary: var(--text-on-paper);
 	--text-secondary: var(--text-on-paper-secondary);
 	/*
-	  Tertiary text steps up to the secondary token on paper.
-	  `--text-on-paper-tertiary` (concrete-500) measures 3.55:1 against
-	  concrete-50 — below WCAG AA, and below the >=4.5:1 the brief requires for
-	  the generated-render disclosure, which appears on this surface under the
-	  R6 plan sheet. concrete-700 measures 6.44:1. On paper the tertiary level
-	  is therefore distinguished by size, weight and casing rather than by a
-	  colour that cannot carry text contrast.
+	  Paper text follows the Figma Light mode (decision D1/D2, 2026-10-06):
+	  secondary graphite-600 (7.6:1 on concrete-50), tertiary concrete-700
+	  (6.4:1). The old tertiary step, concrete-500, measured 3.55:1 — below
+	  WCAG AA and below the >=4.5:1 the brief requires for the generated-render
+	  disclosure on this surface — so it is no longer used for paper text.
 	*/
-	--text-tertiary: var(--text-on-paper-secondary);
+	--text-tertiary: var(--text-on-paper-tertiary);
 	--border-hairline: var(--border-on-paper);
 	--border-hairline-strong: var(--border-on-paper-strong);
 	/* amber-700 on concrete-50 measures 5.2:1 — the only amber step that
@@ -563,13 +561,14 @@ strong {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: var(--space-3);
+	gap: var(--space-2);
 	font-family: var(--font-sans);
-	font-size: var(--text-label-lg-size);
-	line-height: var(--text-label-lg-line);
-	letter-spacing: var(--text-label-lg-tracking);
-	font-weight: 600;
-	padding: var(--space-3) var(--space-6);
+	font-size: var(--text-button-size);
+	line-height: var(--text-button-line);
+	letter-spacing: var(--text-button-tracking);
+	font-weight: var(--text-button-weight);
+	/* Figma Button md: 12×20, icon gap 8 (decisions D5/D7, 2026-10-06). */
+	padding: var(--space-3) var(--space-5);
 	border-radius: var(--radius-sm);
 	border: 1px solid transparent;
 	cursor: pointer;
@@ -592,9 +591,8 @@ strong {
 }
 
 .button--lg {
-	padding: var(--space-4) var(--space-8);
-	font-size: var(--text-h5-size);
-	line-height: var(--text-h5-line);
+	/* Figma Button lg: 16×28. */
+	padding: var(--space-4) var(--space-7);
 }
 
 .button--primary {
@@ -605,7 +603,8 @@ strong {
 .button--primary:hover {
 	background: var(--accent-hover);
 	color: var(--accent-on);
-	box-shadow: var(--shadow-glow-accent-lg);
+	/* The 3px amber ring, as in Figma and the design-system README (D6). */
+	box-shadow: var(--shadow-glow-accent);
 }
 
 .button--primary:active {
