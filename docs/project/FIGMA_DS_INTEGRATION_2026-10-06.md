@@ -60,3 +60,20 @@ When implementing a component from this system: name the Figma page and componen
 - `git diff --check`, `yarn astro check` 0/0/0, `yarn build` pass.
 - Buttons measured in ES/EN/RU at 320, 375, 768 and 1440 px before/after: every button 6–11 px narrower, no button clipped, no new page overflow, one ES survey button at 320 px now fits one line instead of two. RU at 320 px already had page-level horizontal overflow before this change (below the 375 px minimum the brief requires); unchanged.
 - Full Playwright suite (3 engines): 1333 passed, 92 skipped, 15 failed. The 15 failures (`survey.spec.ts:88` expects more than 4 fragment links; `m5-2-hero-prototypes.spec.ts:135` desktop clip) fail identically on accepted head `fce39c6` and are not caused by these changes.
+
+## Final integration (2026-10-06, owner: Figma is the final source)
+
+Branch `agent/clavera-figma-final-20261006`. The owner ruled that the Figma file is final; the remaining open items were resolved in its favour:
+
+| Item | Change |
+| --- | --- |
+| D4 paper borders | `--border-on-paper` 8 %, `-strong` 16 % (Figma `border/paper-subtle`, `paper-neutral`); `--shadow-paper-e1` ring kept at black 10 % as in Figma `elevation/paper-e1`, now independent of the border token |
+| D8 secondary button | No change needed: the site's `.button--ghost` (hairline-strong border, amber text and border on hover) is exactly Figma's **Outline** variant ("на hover бордер и текст становятся amber"). The question came from misreading the Tokens table. Figma Secondary/Ghost variants are not used on the site |
+| D9 amber-700 | `#9F5100`, the Figma hex |
+| Button size | Figma heights md 48 / lg 56 hold: Figma draws the 1px stroke inside, so CSS padding is reduced by 1px per side. Measured: md 48, lg 56 |
+| Button focus | Figma `focus/ring` (3px accent ring) added on `:focus-visible`. The global 2px outline is kept, because the 28 % ring alone measures below 3:1 on the dark surface (brief §9.3) |
+| Input (zone selector) | Figma Input/Select md: fill `bg/elevated`, `border/neutral`, radius 8, padding 12×16 + 24px chevron space, focus = accent border + ring. The field keeps stretching to the height of the "Seguir" lg button beside it (56px), which is the accepted layout |
+| Button colour in the application block | Figma `bg/accent` = amber-500 `#E68C2C`. `#F58800` in Figma is `brand/orange`, the wordmark only. TZ §3.6's `#F58800` is therefore not used for the button |
+| Candidate label in the selector | Figma Badge is for object status and Tag for categories. The TZ asks for secondary-colour text and an amber left marker, and forbids amber text on grey. The TZ rule is kept |
+
+Not specified in Figma and therefore unchanged: the open suggestion list of the zone selector (Figma has no open-menu state), header control height, page layout.

@@ -336,12 +336,15 @@ const showLanguageNotice =
 	.zone-selector__input {
 		width: 100%;
 		min-height: 100%;
-		padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+		/* Figma Input md (Select): h 48, padding 12×16 plus 24px for the
+		   chevron, fill bg/elevated, border/neutral 1px inside, radius 8.
+		   The CSS border sits outside the padding, hence the -1px. */
+		padding: calc(var(--space-3) - 1px) var(--space-10) calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
 		font-family: var(--font-sans);
 		font-size: var(--text-body-md-size);
 		line-height: var(--text-body-md-line);
 		color: var(--text-primary);
-		background-color: var(--bg-base);
+		background-color: var(--bg-elevated);
 		border: 1px solid var(--border-hairline-strong);
 		border-radius: var(--radius-sm);
 	}
@@ -434,7 +437,10 @@ const showLanguageNotice =
 		border-color: var(--accent);
 	}
 
+	/* Figma Input focus: accent border plus the focus ring. */
 	.zone-selector__input:focus-visible {
+		border-color: var(--accent);
+		box-shadow: var(--shadow-focus);
 		outline: 2px solid var(--focus-ring);
 		outline-offset: 2px;
 	}
