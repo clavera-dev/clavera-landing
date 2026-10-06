@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
 import {
-	PILOT_INTEREST_DESTINATIONS,
 	RESEARCH_SURVEY_DESTINATIONS,
 	ATTRIBUTION_PARAM_ALLOWLIST,
 	buildDestinationHref,
-	getPilotDestination,
 	destinationLanguageDiffers,
 } from '../src/config/typeform';
+import { SOLICITUD_DATA, isSolicitudLive } from '../src/config/solicitud';
+import { SOLICITUD_FRAGMENT_KEYS } from '../src/config/solicitud-attribution';
 import {
 	WHATSAPP_NUMBER,
 	WHATSAPP_LINK,
@@ -19,46 +19,36 @@ import {
 } from '../src/config/contact';
 
 /**
- * The pilot-interest ("Avisame") flow.
+ * "Sumate al piloto" and its conversion.
  *
- * The pilot Typeform is being created externally. Until its URLs arrive the
- * configuration holds `null` for every locale and, per the owner handoff v1.1
- * B4, the page shows NOTHING for it — no anchor, no button, no disabled
- * control, no `href="#"`, no placeholder, and no "en preparación" text — while
- * the research survey becomes the primary action of "Sumate al piloto".
+ * Owner response v1.4 §1.1 retired the short "Avisame" form: its place is
+ * taken by the application form (TZ Bloque Solicitud v1.1), switched on only
+ * in src/config/solicitud.ts. While it is off the page shows NOTHING for it —
+ * no anchor, no button, no disabled control, no `href="#"`, no placeholder —
+ * and the research survey is the primary action of "Sumate al piloto".
  *
- * These tests are written so they keep working once the URLs land: the DOM
- * assertions branch on the configured state rather than hard-coding "pending".
+ * These tests keep working once the form is switched on: the DOM assertions
+ * branch on the configured state rather than hard-coding "off".
+ * solicitud.spec.ts covers the application block itself.
  */
 
 /* -------------------------------------------------------------------------
    Configuration contract — pure, no browser needed
    ------------------------------------------------------------------------- */
 
-test.describe('pilot configuration', () => {
-	test('is total over every locale, with no fallback', () => {
-		expect(Object.keys(PILOT_INTEREST_DESTINATIONS).sort()).toEqual(['en', 'es', 'ru']);
-
-		// A locale must never silently inherit another locale's form. Any two
-		// configured locales sharing a URL would have to be a deliberate,
-		// separately recorded decision — as the research EN/ES pair is.
-		const configured = Object.entries(PILOT_INTEREST_DESTINATIONS).filter(
-			([, value]) => value !== null,
-		);
-		for (const [locale, value] of configured) {
-			expect(value!.url, `${locale} pilot url`).toMatch(/^https:\/\//);
-		}
+test.describe('application form configuration', () => {
+	test('a live form has a real https URL', () => {
+		const data = SOLICITUD_DATA.solicitud;
+		if (!isSolicitudLive()) return;
+		expect(data.form_url).toMatch(/^https:\/\//);
 	});
 
 	test('holds no placeholder, fake or example URL', () => {
-		for (const [locale, value] of Object.entries(PILOT_INTEREST_DESTINATIONS)) {
-			if (value === null) continue;
-			const url = value.url.toLowerCase();
-			for (const bad of ['example.com', 'example.org', 'localhost', 'todo', 'tbd', 'changeme']) {
-				expect(url, `${locale} pilot url contains ${bad}`).not.toContain(bad);
-			}
-			expect(url, `${locale} pilot url is a bare hash`).not.toBe('#');
+		const url = SOLICITUD_DATA.solicitud.form_url.toLowerCase();
+		for (const bad of ['example.com', 'example.org', 'localhost', 'todo', 'tbd', 'changeme']) {
+			expect(url, `form url contains ${bad}`).not.toContain(bad);
 		}
+		expect(url, 'form url is a bare hash').not.toBe('#');
 	});
 
 	test('research destinations remain exactly the accepted mapping', () => {
@@ -154,30 +144,29 @@ test.describe('attribution', () => {
 
 for (const locale of LOCALES) {
 	test.describe(`[${locale.key}] pilot interest`, () => {
-		test('renders the pilot boundary only when configured, and only in the pilot block', async ({
+		test('renders the application block only when live, and only in the pilot block', async ({
 			page,
 		}) => {
-			const configured = getPilotDestination(locale.key) !== null;
+			const expected = isSolicitudLive() ? 1 : 0;
 			await page.goto(locale.path);
-			const expected = configured ? 1 : 0;
-			await expect(page.locator('[data-typeform-flow="pilot"]')).toHaveCount(expected);
-			await expect(page.locator('#fundadores [data-typeform-flow="pilot"]')).toHaveCount(expected);
+			await expect(page.locator('[data-solicitud]')).toHaveCount(expected);
+			await expect(page.locator('#fundadores [data-solicitud]')).toHaveCount(expected);
+			await expect(page.locator('[data-typeform-flow="pilot"]')).toHaveCount(0);
 		});
 
-		test('a pending Avisame form shows nothing, and the survey is the primary action', async ({
+		test('a switched-off application form shows nothing, and the survey is the primary action', async ({
 			page,
 		}) => {
-			const configured = getPilotDestination(locale.key) !== null;
-			test.skip(configured, 'this locale now has a real pilot URL');
+			test.skip(isSolicitudLive(), 'the application form is live');
 
 			await page.goto(locale.path);
 			const block = page.locator('#fundadores');
 
-			// No Avisame control, label or pending text of any kind.
+			// No Avisame or application control, label or pending text of any kind.
 			const labels: Record<string, string[]> = {
-				es: ['Avisame', 'en preparación'],
-				en: ['Notify me', 'being prepared'],
-				ru: ['Сообщить мне', 'готовится'],
+				es: ['Avisame', 'en preparación', 'Solicitar un lugar'],
+				en: ['Notify me', 'being prepared', 'Request a spot'],
+				ru: ['Сообщить мне', 'готовится', 'Оставить заявку'],
 			};
 			const text = (await block.textContent()) ?? '';
 			for (const label of labels[locale.key]) {
@@ -186,8 +175,6 @@ for (const locale of LOCALES) {
 			await expect(block.locator('[data-typeform-pending]')).toHaveCount(0);
 			await expect(block.locator('button, [disabled], [aria-disabled="true"]')).toHaveCount(0);
 
-			// The survey takes the primary slot, without the "3 more minutes" prompt
-			// that only makes sense next to Avisame.
 			const primary = block.locator('[data-typeform-flow="research"] a.button--primary');
 			await expect(primary).toHaveCount(1);
 			const surveyCta: Record<string, string> = {
@@ -204,23 +191,21 @@ for (const locale of LOCALES) {
 			expect(text).not.toContain(prompt[locale.key]);
 		});
 
-		test('a configured destination renders an ordinary same-tab link', async ({ page }) => {
-			const destination = getPilotDestination(locale.key);
-			test.skip(destination === null, 'pilot URL still pending for this locale');
+		test('a live application form opens in a new tab with only its own fragment', async ({ page }) => {
+			test.skip(!isSolicitudLive(), 'application form switched off');
 
 			await page.goto(locale.path);
-			const link = page.locator('[data-typeform-flow="pilot"] a');
+			const link = page.locator('#fundadores [data-solicitud-link]');
 			await expect(link).toHaveCount(1);
 
-			const href = await link.getAttribute('href');
-			expect(href).toContain(destination!.url);
-			expect(href).toMatch(/^https:\/\//);
-			// Same tab: no undisclosed new window to announce.
-			await expect(link).not.toHaveAttribute('target', '_blank');
-			// Only allowlisted attribution.
-			const params = [...new URL(href!).searchParams.keys()];
-			for (const key of params) {
-				expect(ATTRIBUTION_PARAM_ALLOWLIST as readonly string[]).toContain(key);
+			const href = (await link.getAttribute('href'))!;
+			expect(href.startsWith(SOLICITUD_DATA.solicitud.form_url)).toBe(true);
+			await expect(link).toHaveAttribute('target', '_blank');
+			await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+			const url = new URL(href);
+			expect(url.search).toBe('');
+			for (const key of new URLSearchParams(url.hash.slice(1)).keys()) {
+				expect(SOLICITUD_FRAGMENT_KEYS as readonly string[]).toContain(key);
 			}
 		});
 
@@ -240,21 +225,25 @@ for (const locale of LOCALES) {
 			expect(offenders, 'anchors with a fake, empty or missing href').toEqual([]);
 		});
 
-		test('states the interest is preliminary and binds nobody', async ({ page }) => {
+		test('states that interest or a request binds nobody', async ({ page }) => {
 			await page.goto(locale.path);
-			const note = await page.locator('#fundadores').innerText();
+			const note = (await page.locator('#fundadores').innerText()).toLowerCase();
 
-			// Wording differs per locale; the commitments must all be denied.
-			const required: Record<string, string[]> = {
-				es: ['preliminar', 'no reserva', 'no genera ningún contrato', 'no se acepta ningún pago'],
-				en: ['preliminary', 'reserves no space', 'creates no contract', 'no payment is accepted'],
-				ru: ['предварительное', 'не резервирует', 'не создаёт договора', 'не предполагает оплаты'],
-			};
+			// Off: the preliminary-interest note. Live: the mandatory disclaimer.
+			const required: Record<string, string[]> = isSolicitudLive()
+				? {
+						es: ['no está confirmada', 'no implica reserva, pago ni compromiso'],
+						en: ['not confirmed', 'does not imply a reservation, payment'],
+						ru: ['не подтверждена', 'не является бронью, оплатой'],
+					}
+				: {
+						es: ['preliminar', 'no reserva', 'no genera ningún contrato', 'no se acepta ningún pago'],
+						en: ['preliminary', 'reserves no space', 'creates no contract', 'no payment is accepted'],
+						ru: ['предварительное', 'не резервирует', 'не создаёт договора', 'не предполагает оплаты'],
+					};
 
 			for (const phrase of required[locale.key]) {
-				expect(note.toLowerCase(), `founders note must state "${phrase}"`).toContain(
-					phrase.toLowerCase(),
-				);
+				expect(note, `pilot block must state "${phrase}"`).toContain(phrase.toLowerCase());
 			}
 		});
 
@@ -288,7 +277,8 @@ for (const locale of LOCALES) {
 			// Handoff v1.1 B4: the chip, the 40 / −20 % / 24 figures, the discount
 			// sentence and the price-calculation/indexation line are all gone.
 			const header = (await page.locator('.site-header').textContent()) ?? '';
-			const block = (await page.locator('#fundadores').textContent()) ?? '';
+			// innerText: rendered copy only, not the block's inline script source.
+			const block = await page.locator('#fundadores').innerText();
 			for (const text of [header, block]) {
 				expect(text).not.toMatch(/\b40\b/);
 				expect(text).not.toMatch(/\b24\b/);

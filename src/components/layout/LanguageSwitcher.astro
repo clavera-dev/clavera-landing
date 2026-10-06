@@ -16,6 +16,11 @@
  * on `/privacidad`, not on the Spanish homepage.
  *
  * Order is fixed by the brief (Part V): ES · EN · RU.
+ *
+ * The page's query string travels with a language switch (TZ Bloque
+ * Solicitud v1.1 §3.4 rule 5), so campaign tags reach the application link in
+ * the new language too. A tiny script adds it at load; without JavaScript the
+ * links are the plain paths. Nothing is stored.
  */
 import { SWITCHER_ORDER, LOCALE_DEFINITIONS, localeHref, resolveLocale, getCopy, type Locale } from '../../i18n';
 
@@ -54,6 +59,19 @@ const copy = getCopy(Astro.currentLocale);
 		}
 	</ul>
 </nav>
+
+<script>
+	// Same-site links only; the search string is copied, never stored.
+	const search = window.location.search;
+	if (search) {
+		for (const link of document.querySelectorAll<HTMLAnchorElement>('.lang__link')) {
+			const target = new URL(link.href, window.location.href);
+			if (target.origin !== window.location.origin) continue;
+			target.search = search;
+			link.href = target.toString();
+		}
+	}
+</script>
 
 <style>
 	.lang__list {

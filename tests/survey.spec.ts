@@ -2,21 +2,21 @@ import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
 import { LOCALES as LOCALE_KEYS } from '../src/i18n/config';
 import {
-	PILOT_INTEREST_DESTINATIONS,
 	RESEARCH_FRAGMENT_ALLOWLIST,
-	getPilotDestination,
 	buildDestinationHref,
 	buildResearchHref,
 	destinationLanguageDiffers,
 	type SurveyDestination,
 } from '../src/config/typeform';
+import { SOLICITUD_DATA, isSolicitudLive, isUsableFormUrl } from '../src/config/solicitud';
 
 /**
  * Locale-aware RESEARCH-survey routing.
  *
- * The beta has two Typeform flows: the short "Avisame" pilot form (covered by
- * pilot.spec.ts; not shown while its URL is pending) and this research
- * survey. This file covers the research flow only, routed per locale:
+ * The beta has two Typeform flows: the application form (owner response v1.4,
+ * which retired the short "Avisame" form; covered by pilot.spec.ts and
+ * solicitud.spec.ts, absent while switched off) and this research survey.
+ * This file covers the research flow only, routed per locale:
  *
  *   es-AR → https://claveraar.typeform.com/ARGCABA
  *   ru    → https://claveraar.typeform.com/latam
@@ -72,7 +72,7 @@ for (const locale of LOCALES) {
 			await page.goto(locale.path);
 
 			// S13 and the "Sumate al piloto" block each carry one research
-			// boundary, whether or not the Avisame form is live.
+			// boundary, whether or not the application form is live.
 			const links = page.locator('[data-typeform-flow="research"] a');
 			await expect(links, 'research boundary links on the page').toHaveCount(2);
 
@@ -88,7 +88,14 @@ for (const locale of LOCALES) {
 		test('the fragment carries only allowlisted, non-personal parameters', async ({ page }) => {
 			await page.goto(locale.path);
 			const hrefs = await page.evaluate(() =>
-				Array.from(document.querySelectorAll('a[href*="typeform.com"], option[data-href]')).map(
+				// The application link is not a research link (solicitud.spec.ts
+				// covers it). Zone options are role="option" list items, not
+				// <option> elements: the old selector matched none of them.
+				Array.from(
+					document.querySelectorAll(
+						'a[href*="typeform.com"]:not([data-solicitud-link]), [role="option"][data-href]',
+					),
+				).map(
 					(el) => el.getAttribute('href') ?? el.getAttribute('data-href') ?? '',
 				),
 			);
@@ -115,7 +122,14 @@ for (const locale of LOCALES) {
 			await page.goto(locale.path);
 
 			const hrefs = await page.evaluate(() =>
-				Array.from(document.querySelectorAll('a[href*="typeform.com"], option[data-href]')).map(
+				// The application link is not a research link (solicitud.spec.ts
+				// covers it). Zone options are role="option" list items, not
+				// <option> elements: the old selector matched none of them.
+				Array.from(
+					document.querySelectorAll(
+						'a[href*="typeform.com"]:not([data-solicitud-link]), [role="option"][data-href]',
+					),
+				).map(
 					(el) => el.getAttribute('href') ?? el.getAttribute('data-href') ?? '',
 				),
 			);
@@ -150,14 +164,16 @@ for (const locale of LOCALES) {
 			});
 		});
 
-		test('ships no third-party or Typeform script — only the zone selector’s own', async ({
+		test('ships no third-party or Typeform script — only the site’s own', async ({
 			page,
 		}) => {
 			await page.goto(locale.path);
 
 			/*
-			  The zone selector is the page's one client script (handoff v1.1
-			  §3.2, §4.1). It is first-party, bundled by Astro, and may be inlined.
+			  First-party scripts only, bundled by Astro and possibly inlined: the
+			  zone selector (handoff v1.1 §3.2, §4.1), the language switcher's
+			  query-string carry-over, and — while the application form is live —
+			  the application link's tag reader (TZ Bloque Solicitud v1.1 §3.4).
 			  A Typeform embed or an analytics tag would be the obvious way for
 			  this to regress.
 			*/
@@ -165,14 +181,16 @@ for (const locale of LOCALES) {
 				Array.from(document.querySelectorAll('script')).map((s) => ({
 					src: s.getAttribute('src'),
 					type: s.getAttribute('type'),
+					text: s.textContent ?? '',
 				})),
 			);
-			expect(scripts.length, 'client scripts').toBeLessThanOrEqual(1);
+			expect(scripts.length, 'client scripts').toBeLessThanOrEqual(isSolicitudLive() ? 3 : 2);
 			for (const script of scripts) {
 				if (script.src !== null) {
 					expect(script.src, 'script is first-party').toMatch(/^\/_astro\//);
 				}
 				expect(script.type).toBe('module');
+				expect(script.text, 'no embed or tracker').not.toMatch(/embed\.typeform|gtag|fbq|googletagmanager|localStorage|sessionStorage|document\.cookie/);
 			}
 		});
 
@@ -358,29 +376,21 @@ test.describe('pilot URL shape', () => {
 		expect(parsed.search).toBe('');
 	});
 
+	test('a /to/ responder URL is a usable application-form URL', () => {
+		expect(isUsableFormUrl(SAMPLE_PILOT_URL)).toBe(true);
+	});
+
 	test('activation requires only the central config: nothing else can supply a destination', () => {
 		/*
-		  The chain the rendered page depends on is config → accessor → DOM.
-		  This pins the first link by identity: the accessor returns the very
-		  object held in PILOT_INTEREST_DESTINATIONS, so there is no second
-		  source, no fallback, and no derived default that could inject a URL
-		  the central map does not contain.
-
-		  The second link — DOM state equals config state for every locale — is
-		  asserted in pilot.spec.ts.
+		  The application form (which replaced the Avisame form, owner response
+		  v1.4 §1.1) is switched on by src/config/solicitud.ts alone: the live
+		  state is a pure function of that data. Whether it is live today is a
+		  fact about today and deliberately not asserted.
 		*/
-		for (const locale of LOCALE_KEYS) {
-			expect(getPilotDestination(locale), `accessor for ${locale}`).toBe(
-				PILOT_INTEREST_DESTINATIONS[locale],
-			);
-		}
-
-		/*
-		  Deliberately NOT asserted here: that the map is currently all-null.
-		  Such an assertion would fail the moment a real URL is supplied, which
-		  would mean activation required editing a test — the exact opposite of
-		  what this test exists to guarantee. Whether a locale is configured yet
-		  is a fact about today, not an invariant.
-		*/
+		const data = SOLICITUD_DATA.solicitud;
+		expect(isSolicitudLive()).toBe(isSolicitudLive(data));
+		expect(isSolicitudLive({ ...data, enabled: true, form_url: SAMPLE_PILOT_URL })).toBe(true);
+		expect(isSolicitudLive({ ...data, enabled: false, form_url: SAMPLE_PILOT_URL })).toBe(false);
+		expect(isSolicitudLive({ ...data, enabled: true, form_url: '' })).toBe(false);
 	});
 });

@@ -1,0 +1,34 @@
+---
+/**
+ * `/solicitud` in each locale (TZ Bloque Solicitud v1.1 §2.2): the
+ * application block alone, with the usual header and footer — an advertising
+ * landing that needs nothing else.
+ *
+ * The routes that use this layout build the page only while
+ * src/config/solicitud.ts is live (see their getStaticPaths), so a switched-off
+ * form leaves no `/solicitud` URL behind.
+ *
+ * The visible heading is the block's own; the page's h1 is the block eyebrow,
+ * which names no zone (TZ §2.3: the zone stays out of title and page heading).
+ */
+import BaseLayout from './BaseLayout.astro';
+import Section from '../components/layout/Section.astro';
+import SolicitudBlock from '../components/lead-form/SolicitudBlock.astro';
+import { getCopy, resolveLocale, localePath } from '../i18n';
+
+const ROUTE = 'solicitud';
+const locale = resolveLocale(Astro.currentLocale);
+const c = getCopy(Astro.currentLocale).solicitud;
+const alternatePaths = {
+	es: localePath('es', ROUTE),
+	en: localePath('en', ROUTE),
+	ru: localePath('ru', ROUTE),
+} as const;
+---
+
+<BaseLayout title={c.pageTitle} path={localePath(locale, ROUTE)} alternatePaths={alternatePaths}>
+	<h1 class="visually-hidden">{c.eyebrow}</h1>
+	<Section id="fundadores" labelledby="solicitud-heading" rhythm="loose" accent>
+		<SolicitudBlock />
+	</Section>
+</BaseLayout>

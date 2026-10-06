@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LOCALES } from './locales';
-import { getPilotDestination } from '../src/config/typeform';
+import { isSolicitudLive } from '../src/config/solicitud';
 
 /** Anchors, CTA boundaries, FAQ keyboard operation and visible focus. */
 const ANCHORS = ['problema', 'solucion', 'works', 'vehiculos', 'seguridad', 'comparacion', 'hub', 'casos', 'zonas', 'fundadores', 'faq', 'encuesta'];
@@ -31,9 +31,10 @@ for (const locale of LOCALES) {
 		});
 
 		/*
-		  The beta has TWO Typeform flows: the short "Avisame" pilot form and
-		  the research survey. A pending pilot destination renders nothing at all
-		  (owner handoff v1.1 B4); neither flow is ever a disabled control.
+		  The beta has TWO Typeform flows: the application form (owner response
+		  v1.4, replacing the "Avisame" form) and the research survey. A
+		  switched-off application form renders nothing at all; neither flow is
+		  ever a disabled control.
 
 		  Routing, the EN language disclosure and the absence of the deferred
 		  founding-price path live in survey.spec.ts; the pilot flow lives in
@@ -41,16 +42,19 @@ for (const locale of LOCALES) {
 		*/
 		test('exposes the beta flows, with no dead or disabled CTA', async ({ page }) => {
 			await page.goto(locale.path);
-			const pilotLive = getPilotDestination(locale.key) !== null;
+			const solicitudLive = isSolicitudLive();
 			const boundaries = page.locator('[data-typeform-boundary]');
-			await expect(boundaries).toHaveCount(pilotLive ? 3 : 2);
-
-			await expect(page.locator('[data-typeform-flow="pilot"]')).toHaveCount(pilotLive ? 1 : 0);
+			await expect(boundaries).toHaveCount(2);
 			await expect(page.locator('[data-typeform-flow="research"]')).toHaveCount(2);
+
+			// The application link exists only while its form is live.
+			await expect(page.locator('a[data-solicitud-link][href^="https://"]')).toHaveCount(
+				solicitudLive ? 1 : 0,
+			);
 
 			// Every rendered boundary is a live link — never a disabled stub, and
 			// never a link to nowhere.
-			await expect(boundaries.locator('a[href^="https://"]')).toHaveCount(pilotLive ? 3 : 2);
+			await expect(boundaries.locator('a[href^="https://"]')).toHaveCount(2);
 			await expect(boundaries.locator('button')).toHaveCount(0);
 
 			// No disabled control anywhere on the page.

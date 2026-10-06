@@ -1,27 +1,29 @@
 ---
 import Section from '../layout/Section.astro';
 import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
-import { getPilotDestination } from '../../config/typeform';
-import { getCopy, resolveLocale } from '../../i18n';
+import SolicitudBlock from '../lead-form/SolicitudBlock.astro';
+import { isSolicitudLive } from '../../config/solicitud';
+import { getCopy } from '../../i18n';
 
 const c = getCopy(Astro.currentLocale).founders;
-const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== null;
+const solicitudLive = isSolicitudLive();
 
 /**
- * "Sumate al piloto" (owner handoff v1.1 B4), which replaces the Socios
+ * "Sumate al piloto" (owner handoff v1.1 B4), which replaced the Socios
  * Fundadores block. The anchor stays `#fundadores` because the header CTA
  * points at it.
  *
- * Every founding-offer number is gone — the 40 / −20 % / 24 figures, the
- * discount sentence and the price-calculation line — and so is the
- * "Formulario de interés en preparación" line.
+ * Two states, switched only by src/config/solicitud.ts (owner response v1.4
+ * §1.1, TZ Bloque Solicitud v1.1):
  *
- * Buttons. The primary action is "Avisame", the short pilot form, but its URL
- * has not been delivered, and until it is the button is not shown at all.
- * Meanwhile the research survey is the primary action. Once the Avisame URL
- * is configured in src/config/typeform.ts, this renders "Avisame" as primary,
- * then "¿Tenés 3 minutos más?" with the survey as the secondary link — with
- * no other change.
+ * - Application form live: the section holds the application block, which
+ *   adds the `#solicitud` anchor. Its own disclaimer replaces the
+ *   preliminary-interest note.
+ * - Otherwise (today): the v1_2 block — the research survey is the primary
+ *   action and the note states that interest binds nobody. There is no
+ *   "Avisame" button any more; its form was replaced by the application form.
+ *
+ * Every founding-offer number stays gone.
  *
  * Still the page's one full-weight amber moment: the amber rule along the top
  * edge and its largest call to action.
@@ -36,43 +38,28 @@ const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== nu
 	id="fundadores"
 	index={c.index}
 	railLabel={c.rail}
-	labelledby="fundadores-heading"
+	labelledby={solicitudLive ? 'solicitud-heading' : 'fundadores-heading'}
 	rhythm="loose"
 	accent
 >
-	<div class="founders__inner">
-		<div class="founders__head">
-			<p class="eyebrow">{c.eyebrow}</p>
-			<h2 id="fundadores-heading" class="founders__heading">{c.heading}</h2>
-			<p class="lede founders__lede">{c.lede}</p>
-		</div>
+	{
+		solicitudLive ? (
+			<SolicitudBlock />
+		) : (
+			<div class="founders__inner">
+				<div class="founders__head">
+					<p class="eyebrow">{c.eyebrow}</p>
+					<h2 id="fundadores-heading" class="founders__heading">{c.heading}</h2>
+					<p class="lede founders__lede">{c.lede}</p>
+				</div>
 
-		<div class="founders__action">
-			{
-				pilotLive ? (
-					<div class="founders__buttons">
-						<TypeformBoundary flow="pilot" name="fundadores" size="lg" />
-						<div class="founders__secondary">
-							<p class="body-md">{c.surveyPrompt}</p>
-							<TypeformBoundary
-								flow="research"
-								name="fundadores"
-								variant="ghost"
-								label={c.surveyCta}
-							/>
-						</div>
-					</div>
-				) : (
-					<>
-						<TypeformBoundary flow="pilot" name="fundadores" size="lg" />
-						<TypeformBoundary flow="research" name="fundadores" size="lg" label={c.surveyCta} />
-					</>
-				)
-			}
-
-			<p class="body-md founders__note" data-founders-note>{c.note}</p>
-		</div>
-	</div>
+				<div class="founders__action">
+					<TypeformBoundary flow="research" name="fundadores" size="lg" label={c.surveyCta} />
+					<p class="body-md founders__note" data-founders-note>{c.note}</p>
+				</div>
+			</div>
+		)
+	}
 </Section>
 
 <style>
@@ -111,20 +98,6 @@ const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== nu
 		flex-direction: column;
 		gap: var(--space-6);
 		max-width: var(--measure);
-	}
-
-	.founders__buttons {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: var(--space-6) var(--space-10);
-	}
-
-	.founders__secondary {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: var(--space-3) var(--space-4);
 	}
 
 	.founders__note {

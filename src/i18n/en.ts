@@ -192,7 +192,6 @@ export const en: Copy = {
 		heading: 'Join the pilot',
 		lede: 'Tell us your area and how to reach you. We will let you know when there is news about the pilot near you.',
 		note: 'This is a preliminary expression of interest: it reserves no space, creates no contract, and no payment is accepted.',
-		surveyPrompt: 'Got 3 more minutes?',
 		surveyCta: 'Take the survey',
 	},
 	faq: {
@@ -211,7 +210,7 @@ export const en: Copy = {
 			},
 			{
 				q: 'How much does it cost?',
-				a: 'We have not published the price yet. It will be published together with the full conditions before any sign-up. No payment is accepted.',
+				a: 'We do not publish prices yet. If you leave a request and confirm that you need to store your vehicle in the area under evaluation, we send you the price and terms.',
 			},
 			{
 				q: 'What if I want to cancel?',
@@ -237,8 +236,25 @@ export const en: Copy = {
 			},
 		],
 	},
-	pilot: {
-		cta: 'Notify me',
+	// TZ Bloque Solicitud v1.1 §3.2–3.3 (owner response v1.4)
+	solicitud: {
+		eyebrow: 'Join the pilot',
+		heading: 'We are evaluating {zone} for the first pilot',
+		hint: 'Reference area: {hint}',
+		lead: 'If you need to store your bike, scooter or other personal mobility vehicle in this area, leave your request.',
+		steps: [
+			'Fill in a short form.',
+			'Confirm that you need to store your vehicle in this area.',
+			'We send you the price and terms through the channel you choose.',
+		],
+		cta: 'Request a spot',
+		microcopy: 'Opens in Typeform. The form is in Spanish. Your data is processed according to the {privacy}.',
+		privacyLink: 'Privacy Policy',
+		disclaimer: 'Location under evaluation: not confirmed and with no opening date. Sending a request does not imply a reservation, payment, or any commitment as to opening, date or availability.',
+		secondary: 'I would rather take the general survey',
+		whatsapp: 'Questions? Message us on WhatsApp',
+		selectorBadge: 'Candidate for the first pilot',
+		pageTitle: 'Join the pilot · CLAVERA',
 	},
 	survey: {
 		eyebrow: 'Help us design CLAVERA',
