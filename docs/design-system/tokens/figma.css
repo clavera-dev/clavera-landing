@@ -1,0 +1,178 @@
+/*
+  Figma "Clavera DS" tokens that the CSS token files did not carry yet.
+  Source: tokens/figma/clavera-ds-2026-10-06.json (read 2026-10-06 from
+  https://www.figma.com/design/EgsFk8V4OWGv0i6oitDVgM/Clavera-DS).
+
+  Additive only. Every Figma value that already exists in colors.css,
+  typography.css, spacing.css, radius.css, shadow.css or motion.css matched
+  exactly and stays defined there. Names that exist in both places with a
+  different value (text on-paper secondary/tertiary) are NOT redefined here;
+  docs/project/FIGMA_DS_INTEGRATION_2026-10-06.md lists them as open decisions.
+
+  Semantic aliases below are Figma's Dark mode, the site's default register.
+  Figma's Light mode is applied on the paper register in src/styles/global.css.
+*/
+:root{
+/* ---- Primitives present in Figma only (exact Figma hex) ---- */
+--amber-800:#7A3D00;
+--amber-100:#FAE5C9;
+--amber-50:#FDF4E8;
+--steel-400:#8797A3;
+--steel-100:#DBE1E5;
+--steel-50:#EFF2F4;
+--moss-400:#6FA071;
+--moss-100:#D6E6D6;
+--moss-50:#EEF5EE;
+--rust-400:#D9705B;
+--rust-100:#F4D3CC;
+--rust-50:#FBEEEB;
+/* Wordmark orange; public/brand/logo.svg already uses this value. */
+--brand-orange:#F58800;
+
+/* ---- Alpha primitives ---- */
+--alpha-white-8:rgb(255 255 255 / 0.08);
+--alpha-white-12:rgb(255 255 255 / 0.12);
+--alpha-white-16:rgb(255 255 255 / 0.16);
+--alpha-white-24:rgb(255 255 255 / 0.24);
+--alpha-black-8:rgb(0 0 0 / 0.08);
+--alpha-black-10:rgb(0 0 0 / 0.10);
+--alpha-black-12:rgb(0 0 0 / 0.12);
+--alpha-black-16:rgb(0 0 0 / 0.16);
+--alpha-black-18:rgb(0 0 0 / 0.18);
+--alpha-black-70:rgb(0 0 0 / 0.70);
+--alpha-amber-8:rgb(230 140 44 / 0.08);
+--alpha-amber-14:rgb(230 140 44 / 0.14);
+--alpha-amber-16:rgb(230 140 44 / 0.16);
+--alpha-amber-24:rgb(230 140 44 / 0.24);
+--alpha-amber-28:rgb(230 140 44 / 0.28);
+--alpha-moss-14:rgb(87 136 89 / 0.14);
+--alpha-moss-16:rgb(87 136 89 / 0.16);
+--alpha-moss-24:rgb(87 136 89 / 0.24);
+--alpha-rust-14:rgb(188 75 55 / 0.14);
+--alpha-rust-16:rgb(188 75 55 / 0.16);
+--alpha-rust-24:rgb(188 75 55 / 0.24);
+--alpha-steel-14:rgb(109 125 136 / 0.14);
+--alpha-steel-16:rgb(109 125 136 / 0.16);
+--alpha-steel-24:rgb(109 125 136 / 0.24);
+
+/* ---- Spacing, sizing, radius ---- */
+--space-7:28px;
+--size-icon-xs:12px;
+--size-icon-sm:16px;
+--size-icon-md:20px;
+--size-icon-lg:24px;
+--size-control-sm:32px;
+--size-control-md:40px;
+--size-control-lg:48px;
+--stroke-hairline:1px;
+--stroke-indicator:2px;
+/* Dialog shell: radius-sm + space-6 (concentric rule in README). */
+--radius-dialog:32px;
+
+/* ---- Font weights ---- */
+--font-weight-regular:400;
+--font-weight-medium:500;
+--font-weight-semibold:600;
+--font-weight-bold:700;
+--font-weight-extrabold:800;
+
+/* ---- Button label styles (Figma label/button-md, label/button-sm) ---- */
+--text-button-size:16px;
+--text-button-line:24px;
+--text-button-tracking:0.01em;
+--text-button-weight:600;
+--text-button-sm-size:12px;
+--text-button-sm-line:16px;
+--text-button-sm-tracking:0.01em;
+--text-button-sm-weight:600;
+
+/* ---- Semantic: background (Figma bg/*, Dark) ---- */
+--bg-page:var(--graphite-950);
+--bg-neutral:var(--graphite-800);
+--bg-subtle:var(--graphite-900);
+--bg-neutral-hover:var(--graphite-700);
+--bg-neutral-pressed:var(--graphite-600);
+--bg-accent:var(--amber-500);
+--bg-accent-hover:var(--amber-600);
+--bg-accent-pressed:var(--amber-700);
+--bg-accent-disabled:var(--wood-400);
+--bg-accent-subtle:var(--alpha-amber-16);
+--bg-accent-subtle-hover:var(--alpha-amber-24);
+--bg-success:var(--moss-500);
+--bg-success-hover:var(--moss-600);
+--bg-success-subtle:var(--alpha-moss-16);
+--bg-success-subtle-hover:var(--alpha-moss-24);
+--bg-critical:var(--rust-500);
+--bg-critical-hover:var(--rust-600);
+--bg-critical-subtle:var(--alpha-rust-16);
+--bg-critical-subtle-hover:var(--alpha-rust-24);
+--bg-info:var(--steel-500);
+--bg-info-subtle:var(--alpha-steel-16);
+--bg-warning-subtle:var(--alpha-amber-16);
+--bg-inverse:var(--concrete-50);
+--bg-disabled:var(--graphite-800);
+--bg-thumb:var(--white);
+
+/* ---- Semantic: overlay ---- */
+--overlay-modal:var(--alpha-black-70);
+--overlay-hover-neutral:var(--alpha-white-8);
+--overlay-pressed-neutral:var(--alpha-white-12);
+--overlay-hover-accent:var(--alpha-amber-16);
+--overlay-pressed-accent:var(--alpha-amber-24);
+
+/* ---- Semantic: border ---- */
+--border-subtle:var(--alpha-white-8);
+--border-neutral:var(--alpha-white-16);
+--border-neutral-hover:var(--concrete-500);
+--border-paper-subtle:var(--alpha-black-8);
+--border-paper-neutral:var(--alpha-black-16);
+--border-focus:var(--alpha-amber-28);
+--border-disabled:var(--alpha-white-8);
+--border-inverse:var(--alpha-black-16);
+--border-accent:var(--amber-500);
+--border-accent-disabled:var(--wood-400);
+--border-success:var(--moss-500);
+--border-critical:var(--rust-500);
+--border-warning:var(--amber-500);
+--border-info:var(--steel-500);
+
+/* ---- Semantic: text ---- */
+--text-on-accent:var(--graphite-950);
+--text-on-color:var(--concrete-50);
+--text-success:var(--moss-400);
+--text-critical:var(--rust-400);
+--text-info:var(--steel-400);
+--text-warning:var(--amber-500);
+--text-disabled:var(--graphite-600);
+--text-accent:var(--amber-500);
+--text-accent-hover:var(--amber-400);
+--text-accent-pressed:var(--amber-200);
+--text-accent-disabled:var(--wood-400);
+
+/* ---- Semantic: brand ---- */
+--brand-logo-amber:var(--brand-orange);
+--brand-logo-white:var(--white);
+--brand-logo-black:var(--graphite-950);
+
+/* ---- Semantic: icon (Figma icon/* aliases text/*) ----
+   Surfaces that redefine text tokens (the paper register) must redeclare
+   these aliases, because a custom property resolves where it is declared. */
+--icon-neutral:var(--text-tertiary);
+--icon-primary:var(--text-primary);
+--icon-secondary:var(--text-secondary);
+--icon-tertiary:var(--text-tertiary);
+--icon-disabled:var(--text-disabled);
+--icon-inverse:var(--text-inverse);
+--icon-on-accent:var(--text-on-accent);
+--icon-on-color:var(--text-on-color);
+--icon-accent:var(--text-accent);
+--icon-accent-hover:var(--text-accent-hover);
+--icon-accent-disabled:var(--text-accent-disabled);
+--icon-success:var(--text-success);
+--icon-critical:var(--text-critical);
+--icon-info:var(--text-info);
+--icon-warning:var(--text-warning);
+--icon-on-paper:var(--text-on-paper);
+--icon-on-paper-secondary:var(--text-on-paper-secondary);
+--icon-on-paper-tertiary:var(--text-on-paper-tertiary);
+}

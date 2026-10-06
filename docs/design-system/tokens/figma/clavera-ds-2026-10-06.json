@@ -1,0 +1,922 @@
+{
+  "_source": {
+    "file": "Clavera DS",
+    "url": "https://www.figma.com/design/EgsFk8V4OWGv0i6oitDVgM/Clavera-DS",
+    "read": "2026-10-06",
+    "method": "Read-only from the Figma web UI in the owner's logged-in browser (Variables table, Styles panel, Edit style dialogs). No Figma MCP, no REST API, no plugin; no design change made.",
+    "note": "Snapshot, not a live sync. Values were copied exactly as Figma displays them (hex, %, px). Re-read before relying on it after the designer edits the file."
+  },
+  "collections": {
+    "Primitives": {
+      "modes": [
+        "Value"
+      ],
+      "color": {
+        "white": "#FFFFFF",
+        "black": "#000000",
+        "graphite/950": "#0C0B09",
+        "graphite/900": "#121210",
+        "graphite/850": "#191816",
+        "graphite/800": "#22221F",
+        "graphite/700": "#373532",
+        "graphite/600": "#4F4D49",
+        "graphite/500": "#6B6964",
+        "concrete/900": "#2F2E2C",
+        "concrete/700": "#595855",
+        "concrete/500": "#82807C",
+        "concrete/400": "#9D9B97",
+        "concrete/300": "#B9B7B4",
+        "concrete/200": "#D2D1CE",
+        "concrete/100": "#E5E4E2",
+        "concrete/50": "#F4F3F2",
+        "amber/800": "#7A3D00",
+        "amber/700": "#9F5100",
+        "amber/600": "#C66B00",
+        "amber/500": "#E68C2C",
+        "amber/400": "#F2AE65",
+        "amber/200": "#F8D8B4",
+        "amber/100": "#FAE5C9",
+        "amber/50": "#FDF4E8",
+        "steel/600": "#4E5A62",
+        "steel/500": "#6D7D88",
+        "steel/400": "#8797A3",
+        "steel/300": "#AFB9C0",
+        "steel/100": "#DBE1E5",
+        "steel/50": "#EFF2F4",
+        "wood/600": "#553C2B",
+        "wood/400": "#7F624C",
+        "moss/600": "#3F6A41",
+        "moss/500": "#578859",
+        "moss/400": "#6FA071",
+        "moss/100": "#D6E6D6",
+        "moss/50": "#EEF5EE",
+        "rust/600": "#933428",
+        "rust/500": "#BC4B37",
+        "rust/400": "#D9705B",
+        "rust/100": "#F4D3CC",
+        "rust/50": "#FBEEEB",
+        "brand/orange": "#F58800"
+      },
+      "alpha": {
+        "white-8": {
+          "color": "#FFFFFF",
+          "opacity_pct": 8
+        },
+        "white-12": {
+          "color": "#FFFFFF",
+          "opacity_pct": 12
+        },
+        "white-16": {
+          "color": "#FFFFFF",
+          "opacity_pct": 16
+        },
+        "white-24": {
+          "color": "#FFFFFF",
+          "opacity_pct": 24
+        },
+        "black-8": {
+          "color": "#000000",
+          "opacity_pct": 8
+        },
+        "black-10": {
+          "color": "#000000",
+          "opacity_pct": 10
+        },
+        "black-12": {
+          "color": "#000000",
+          "opacity_pct": 12
+        },
+        "black-16": {
+          "color": "#000000",
+          "opacity_pct": 16
+        },
+        "black-18": {
+          "color": "#000000",
+          "opacity_pct": 18
+        },
+        "black-70": {
+          "color": "#000000",
+          "opacity_pct": 70
+        },
+        "amber-8": {
+          "color": "#E68C2C",
+          "opacity_pct": 8
+        },
+        "amber-14": {
+          "color": "#E68C2C",
+          "opacity_pct": 14
+        },
+        "amber-16": {
+          "color": "#E68C2C",
+          "opacity_pct": 16
+        },
+        "amber-24": {
+          "color": "#E68C2C",
+          "opacity_pct": 24
+        },
+        "amber-28": {
+          "color": "#E68C2C",
+          "opacity_pct": 28
+        },
+        "moss-14": {
+          "color": "#578859",
+          "opacity_pct": 14
+        },
+        "moss-16": {
+          "color": "#578859",
+          "opacity_pct": 16
+        },
+        "moss-24": {
+          "color": "#578859",
+          "opacity_pct": 24
+        },
+        "rust-14": {
+          "color": "#BC4B37",
+          "opacity_pct": 14
+        },
+        "rust-16": {
+          "color": "#BC4B37",
+          "opacity_pct": 16
+        },
+        "rust-24": {
+          "color": "#BC4B37",
+          "opacity_pct": 24
+        },
+        "steel-14": {
+          "color": "#6D7D88",
+          "opacity_pct": 14
+        },
+        "steel-16": {
+          "color": "#6D7D88",
+          "opacity_pct": 16
+        },
+        "steel-24": {
+          "color": "#6D7D88",
+          "opacity_pct": 24
+        }
+      },
+      "font": {
+        "family": {
+          "display": "Plus Jakarta Sans",
+          "sans": "Onest",
+          "mono": "IBM Plex Mono"
+        },
+        "weight": {
+          "regular": 400,
+          "medium": 500,
+          "semibold": 600,
+          "bold": 700,
+          "extrabold": 800
+        },
+        "size": [
+          12,
+          16,
+          20,
+          24,
+          28,
+          36,
+          44,
+          56,
+          72
+        ],
+        "line-height": [
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          40,
+          48,
+          60,
+          76
+        ],
+        "letter-spacing": {
+          "tight-180": -1.8,
+          "tight-112": -1.12,
+          "tight-66": -0.66,
+          "tight-54": -0.54,
+          "tight-28": -0.28,
+          "tight-12": -0.12,
+          "normal": 0,
+          "wide-8": 0.08,
+          "wide-12": 0.12,
+          "wide-16": 0.16,
+          "wide-32": 0.32,
+          "wide-36": 0.36,
+          "wide-144": 1.44
+        }
+      }
+    },
+    "Semantic": {
+      "modes": [
+        "Dark",
+        "Light"
+      ],
+      "bg": {
+        "page": {
+          "Dark": "graphite/950",
+          "Light": "concrete/50"
+        },
+        "surface": {
+          "Dark": "graphite/900",
+          "Light": "white"
+        },
+        "elevated": {
+          "Dark": "graphite/850",
+          "Light": "white"
+        },
+        "neutral": {
+          "Dark": "graphite/800",
+          "Light": "concrete/100"
+        },
+        "subtle": {
+          "Dark": "graphite/900",
+          "Light": "concrete/100"
+        },
+        "neutral-hover": {
+          "Dark": "graphite/700",
+          "Light": "concrete/200"
+        },
+        "neutral-pressed": {
+          "Dark": "graphite/600",
+          "Light": "concrete/300"
+        },
+        "paper": {
+          "Dark": "concrete/50",
+          "Light": "graphite/950"
+        },
+        "paper-elevated": {
+          "Dark": "white",
+          "Light": "graphite/900"
+        },
+        "accent": {
+          "Dark": "amber/500",
+          "Light": "amber/500"
+        },
+        "accent-hover": {
+          "Dark": "amber/600",
+          "Light": "amber/600"
+        },
+        "accent-pressed": {
+          "Dark": "amber/700",
+          "Light": "amber/700"
+        },
+        "accent-disabled": {
+          "Dark": "wood/400",
+          "Light": "amber/200"
+        },
+        "accent-subtle": {
+          "Dark": "alpha/amber-16",
+          "Light": "amber/50"
+        },
+        "accent-subtle-hover": {
+          "Dark": "alpha/amber-24",
+          "Light": "amber/100"
+        },
+        "success": {
+          "Dark": "moss/500",
+          "Light": "moss/600"
+        },
+        "success-hover": {
+          "Dark": "moss/600",
+          "Light": "moss/600"
+        },
+        "success-subtle": {
+          "Dark": "alpha/moss-16",
+          "Light": "moss/50"
+        },
+        "success-subtle-hover": {
+          "Dark": "alpha/moss-24",
+          "Light": "moss/100"
+        },
+        "critical": {
+          "Dark": "rust/500",
+          "Light": "rust/600"
+        },
+        "critical-hover": {
+          "Dark": "rust/600",
+          "Light": "rust/600"
+        },
+        "critical-subtle": {
+          "Dark": "alpha/rust-16",
+          "Light": "rust/50"
+        },
+        "critical-subtle-hover": {
+          "Dark": "alpha/rust-24",
+          "Light": "rust/100"
+        },
+        "info": {
+          "Dark": "steel/500",
+          "Light": "steel/600"
+        },
+        "info-subtle": {
+          "Dark": "alpha/steel-16",
+          "Light": "steel/50"
+        },
+        "warning-subtle": {
+          "Dark": "alpha/amber-16",
+          "Light": "amber/50"
+        },
+        "inverse": {
+          "Dark": "concrete/50",
+          "Light": "graphite/950"
+        },
+        "disabled": {
+          "Dark": "graphite/800",
+          "Light": "concrete/200"
+        },
+        "thumb": {
+          "Dark": "white",
+          "Light": "white"
+        }
+      },
+      "overlay": {
+        "modal": {
+          "Dark": "alpha/black-70",
+          "Light": "alpha/black-70"
+        },
+        "hover-neutral": {
+          "Dark": "alpha/white-8",
+          "Light": "alpha/black-8"
+        },
+        "pressed-neutral": {
+          "Dark": "alpha/white-12",
+          "Light": "alpha/black-12"
+        },
+        "hover-accent": {
+          "Dark": "alpha/amber-16",
+          "Light": "alpha/amber-16"
+        },
+        "pressed-accent": {
+          "Dark": "alpha/amber-24",
+          "Light": "alpha/amber-24"
+        }
+      },
+      "border": {
+        "subtle": {
+          "Dark": "alpha/white-8",
+          "Light": "alpha/black-8"
+        },
+        "neutral": {
+          "Dark": "alpha/white-16",
+          "Light": "alpha/black-16"
+        },
+        "neutral-hover": {
+          "Dark": "concrete/500",
+          "Light": "concrete/400"
+        },
+        "paper-subtle": {
+          "Dark": "alpha/black-8",
+          "Light": "alpha/white-8"
+        },
+        "paper-neutral": {
+          "Dark": "alpha/black-16",
+          "Light": "alpha/white-16"
+        },
+        "focus": {
+          "Dark": "alpha/amber-28",
+          "Light": "alpha/amber-28"
+        },
+        "disabled": {
+          "Dark": "alpha/white-8",
+          "Light": "alpha/black-8"
+        },
+        "inverse": {
+          "Dark": "alpha/black-16",
+          "Light": "alpha/white-16"
+        },
+        "accent": {
+          "Dark": "amber/500",
+          "Light": "amber/500"
+        },
+        "accent-disabled": {
+          "Dark": "wood/400",
+          "Light": "amber/200"
+        },
+        "success": {
+          "Dark": "moss/500",
+          "Light": "moss/600"
+        },
+        "critical": {
+          "Dark": "rust/500",
+          "Light": "rust/600"
+        },
+        "warning": {
+          "Dark": "amber/500",
+          "Light": "amber/700"
+        },
+        "info": {
+          "Dark": "steel/500",
+          "Light": "steel/600"
+        }
+      },
+      "text": {
+        "primary": {
+          "Dark": "concrete/50",
+          "Light": "graphite/950"
+        },
+        "secondary": {
+          "Dark": "concrete/300",
+          "Light": "graphite/600"
+        },
+        "tertiary": {
+          "Dark": "concrete/500",
+          "Light": "concrete/700"
+        },
+        "on-paper": {
+          "Dark": "graphite/950",
+          "Light": "concrete/50"
+        },
+        "on-paper-secondary": {
+          "Dark": "graphite/600",
+          "Light": "concrete/300"
+        },
+        "on-paper-tertiary": {
+          "Dark": "concrete/700",
+          "Light": "concrete/500"
+        },
+        "inverse": {
+          "Dark": "graphite/950",
+          "Light": "concrete/50"
+        },
+        "on-accent": {
+          "Dark": "graphite/950",
+          "Light": "graphite/950"
+        },
+        "on-color": {
+          "Dark": "concrete/50",
+          "Light": "concrete/50"
+        },
+        "success": {
+          "Dark": "moss/400",
+          "Light": "moss/600"
+        },
+        "critical": {
+          "Dark": "rust/400",
+          "Light": "rust/600"
+        },
+        "info": {
+          "Dark": "steel/400",
+          "Light": "steel/600"
+        },
+        "warning": {
+          "Dark": "amber/500",
+          "Light": "amber/700"
+        },
+        "disabled": {
+          "Dark": "graphite/600",
+          "Light": "concrete/400"
+        },
+        "accent": {
+          "Dark": "amber/500",
+          "Light": "amber/700"
+        },
+        "accent-hover": {
+          "Dark": "amber/400",
+          "Light": "amber/800"
+        },
+        "accent-pressed": {
+          "Dark": "amber/200",
+          "Light": "amber/800"
+        },
+        "accent-disabled": {
+          "Dark": "wood/400",
+          "Light": "amber/200"
+        }
+      },
+      "brand": {
+        "logo-amber": {
+          "Dark": "brand/orange",
+          "Light": "brand/orange"
+        },
+        "logo-white": {
+          "Dark": "white",
+          "Light": "white"
+        },
+        "logo-black": {
+          "Dark": "graphite/950",
+          "Light": "graphite/950"
+        }
+      },
+      "icon": {
+        "neutral": {
+          "Dark": "text/tertiary",
+          "Light": "text/tertiary"
+        },
+        "primary": {
+          "Dark": "text/primary",
+          "Light": "text/primary"
+        },
+        "secondary": {
+          "Dark": "text/secondary",
+          "Light": "text/secondary"
+        },
+        "tertiary": {
+          "Dark": "text/tertiary",
+          "Light": "text/tertiary"
+        },
+        "disabled": {
+          "Dark": "text/disabled",
+          "Light": "text/disabled"
+        },
+        "inverse": {
+          "Dark": "text/inverse",
+          "Light": "text/inverse"
+        },
+        "on-accent": {
+          "Dark": "text/on-accent",
+          "Light": "text/on-accent"
+        },
+        "on-color": {
+          "Dark": "text/on-color",
+          "Light": "text/on-color"
+        },
+        "accent": {
+          "Dark": "text/accent",
+          "Light": "text/accent"
+        },
+        "accent-hover": {
+          "Dark": "text/accent-hover",
+          "Light": "text/accent-hover"
+        },
+        "accent-disabled": {
+          "Dark": "text/accent-disabled",
+          "Light": "text/accent-disabled"
+        },
+        "success": {
+          "Dark": "text/success",
+          "Light": "text/success"
+        },
+        "critical": {
+          "Dark": "text/critical",
+          "Light": "text/critical"
+        },
+        "info": {
+          "Dark": "text/info",
+          "Light": "text/info"
+        },
+        "warning": {
+          "Dark": "text/warning",
+          "Light": "text/warning"
+        },
+        "on-paper": {
+          "Dark": "text/on-paper",
+          "Light": "text/on-paper"
+        },
+        "on-paper-secondary": {
+          "Dark": "text/on-paper-secondary",
+          "Light": "text/on-paper-secondary"
+        },
+        "on-paper-tertiary": {
+          "Dark": "text/on-paper-tertiary",
+          "Light": "text/on-paper-tertiary"
+        }
+      }
+    },
+    "Radius": {
+      "modes": [
+        "Value"
+      ],
+      "radius": {
+        "xs": 4,
+        "sm": 8,
+        "md": 12,
+        "lg": 16,
+        "xl": 24,
+        "pill": 999,
+        "dialog": 32
+      }
+    },
+    "Spacing": {
+      "modes": [
+        "Value"
+      ],
+      "space": {
+        "1": 4,
+        "2": 8,
+        "3": 12,
+        "4": 16,
+        "5": 20,
+        "6": 24,
+        "7": 28,
+        "8": 32,
+        "10": 40,
+        "12": 48,
+        "16": 64,
+        "20": 80,
+        "24": 96,
+        "32": 128
+      },
+      "size": {
+        "icon-xs": 12,
+        "icon-sm": 16,
+        "icon-md": 20,
+        "icon-lg": 24,
+        "control-sm": 32,
+        "control-md": 40,
+        "control-lg": 48,
+        "stroke-hairline": 1,
+        "stroke-indicator": 2
+      }
+    },
+    "Motion": {
+      "modes": [
+        "Value"
+      ],
+      "duration": {
+        "fast": "120ms",
+        "base": "200ms",
+        "slow": "320ms",
+        "slower": "480ms"
+      },
+      "ease": {
+        "standard": "cubic-bezier(0.2, 0.7, 0.2, 1)",
+        "out": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "in": "cubic-bezier(0.7, 0, 0.85, 0.2)"
+      }
+    }
+  },
+  "text_styles": {
+    "display/2xl": {
+      "family": "font/family/display",
+      "weight": "font/weight/extrabold",
+      "size_px": 72,
+      "line_height_px": 76,
+      "letter_spacing_px": -1.8
+    },
+    "display/xl": {
+      "family": "font/family/display",
+      "weight": "font/weight/bold",
+      "size_px": 56,
+      "line_height_px": 60,
+      "letter_spacing_px": -1.12
+    },
+    "display/lg": {
+      "family": "font/family/display",
+      "weight": "font/weight/bold",
+      "size_px": 44,
+      "line_height_px": 48,
+      "letter_spacing_px": -0.66
+    },
+    "heading/h1": {
+      "family": "font/family/display",
+      "weight": "font/weight/bold",
+      "size_px": 36,
+      "line_height_px": 40,
+      "letter_spacing_px": -0.54
+    },
+    "heading/h2": {
+      "family": "font/family/display",
+      "weight": "font/weight/bold",
+      "size_px": 28,
+      "line_height_px": 32,
+      "letter_spacing_px": -0.28
+    },
+    "heading/h3": {
+      "family": "font/family/display",
+      "weight": "font/weight/semibold",
+      "size_px": 24,
+      "line_height_px": 28,
+      "letter_spacing_px": -0.12
+    },
+    "heading/h4": {
+      "family": "font/family/display",
+      "weight": "font/weight/semibold",
+      "size_px": 20,
+      "line_height_px": 28,
+      "letter_spacing_px": 0
+    },
+    "heading/h5": {
+      "family": "font/family/display",
+      "weight": "font/weight/semibold",
+      "size_px": 16,
+      "line_height_px": 24,
+      "letter_spacing_px": 0
+    },
+    "body/xl": {
+      "family": "font/family/sans",
+      "weight": "font/weight/regular",
+      "size_px": 24,
+      "line_height_px": 36,
+      "letter_spacing_px": 0
+    },
+    "body/lg": {
+      "family": "font/family/sans",
+      "weight": "font/weight/regular",
+      "size_px": 20,
+      "line_height_px": 32,
+      "letter_spacing_px": 0
+    },
+    "body/md": {
+      "family": "font/family/sans",
+      "weight": "font/weight/regular",
+      "size_px": 16,
+      "line_height_px": 24,
+      "letter_spacing_px": 0
+    },
+    "body/sm": {
+      "family": "font/family/sans",
+      "weight": "font/weight/regular",
+      "size_px": 12,
+      "line_height_px": 16,
+      "letter_spacing_px": 0
+    },
+    "label/lg": {
+      "family": "font/family/sans",
+      "weight": "font/weight/medium",
+      "size_px": 16,
+      "line_height_px": 24,
+      "letter_spacing_px": 0.08
+    },
+    "label/md": {
+      "family": "font/family/sans",
+      "weight": "font/weight/medium",
+      "size_px": 16,
+      "line_height_px": 20,
+      "letter_spacing_px": 0.16
+    },
+    "label/sm": {
+      "family": "font/family/sans",
+      "weight": "font/weight/medium",
+      "size_px": 12,
+      "line_height_px": 16,
+      "letter_spacing_px": 0.12
+    },
+    "label/button-md": {
+      "family": "font/family/sans",
+      "weight": "font/weight/semibold",
+      "size_px": 16,
+      "line_height_px": 24,
+      "letter_spacing_px": 0.16
+    },
+    "label/button-sm": {
+      "family": "font/family/sans",
+      "weight": "font/weight/semibold",
+      "size_px": 12,
+      "line_height_px": 16,
+      "letter_spacing_px": 0.12
+    },
+    "label/eyebrow": {
+      "family": "font/family/sans",
+      "weight": "font/weight/semibold",
+      "size_px": 12,
+      "line_height_px": 16,
+      "letter_spacing_px": 1.44
+    },
+    "label/caption": {
+      "family": "font/family/sans",
+      "weight": "font/weight/medium",
+      "size_px": 12,
+      "line_height_px": 16,
+      "letter_spacing_px": 0.12
+    },
+    "mono/md": {
+      "family": "font/family/mono",
+      "weight": "font/weight/medium",
+      "size_px": 16,
+      "line_height_px": 24,
+      "letter_spacing_px": 0.32
+    },
+    "mono/sm": {
+      "family": "font/family/mono",
+      "weight": "font/weight/medium",
+      "size_px": 12,
+      "line_height_px": 16,
+      "letter_spacing_px": 0.36
+    }
+  },
+  "effect_styles": {
+    "elevation/e1": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 0,
+        "blur": 0,
+        "spread": 1,
+        "color": "#FFFFFF",
+        "opacity_pct": 8
+      },
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 1,
+        "blur": 2,
+        "spread": 0,
+        "color": "#000000",
+        "opacity_pct": 35
+      }
+    ],
+    "elevation/e2": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 0,
+        "blur": 0,
+        "spread": 1,
+        "color": "#FFFFFF",
+        "opacity_pct": 8
+      },
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 12,
+        "blur": 32,
+        "spread": -8,
+        "color": "#000000",
+        "opacity_pct": 55
+      }
+    ],
+    "elevation/e3": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 0,
+        "blur": 0,
+        "spread": 1,
+        "color": "#FFFFFF",
+        "opacity_pct": 16
+      },
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 4,
+        "blur": 16,
+        "spread": -4,
+        "color": "#000000",
+        "opacity_pct": 50
+      }
+    ],
+    "elevation/paper-e1": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 0,
+        "blur": 0,
+        "spread": 1,
+        "color": "#000000",
+        "opacity_pct": 10
+      },
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 1,
+        "blur": 2,
+        "spread": 0,
+        "color": "#000000",
+        "opacity_pct": 6
+      }
+    ],
+    "elevation/paper-e2": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 16,
+        "blur": 32,
+        "spread": -12,
+        "color": "#000000",
+        "opacity_pct": 16
+      }
+    ],
+    "glow/accent": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 0,
+        "blur": 0,
+        "spread": 3,
+        "color": "#E68C2C",
+        "opacity_pct": 28
+      }
+    ],
+    "glow/accent-lg": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 0,
+        "blur": 40,
+        "spread": 0,
+        "color": "#E68C2C",
+        "opacity_pct": 28
+      }
+    ],
+    "focus/ring": [
+      {
+        "type": "drop-shadow",
+        "x": 0,
+        "y": 0,
+        "blur": 0,
+        "spread": 3,
+        "color": "#E68C2C",
+        "opacity_pct": 28
+      }
+    ]
+  },
+  "counts": {
+    "Primitives": 108,
+    "Semantic": 87,
+    "Radius": 7,
+    "Spacing": 23,
+    "Motion": 7
+  }
+}

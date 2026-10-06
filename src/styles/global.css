@@ -17,6 +17,7 @@
 @import '../../docs/design-system/tokens/radius.css';
 @import '../../docs/design-system/tokens/shadow.css';
 @import '../../docs/design-system/tokens/motion.css';
+@import '../../docs/design-system/tokens/figma.css';
 @import '../../docs/design-system/tokens/base.css';
 
 /* ---------------------------------------------------------------------- */
@@ -207,6 +208,79 @@ video {
 	--focus-ring: var(--amber-700);
 	--shadow-e1: var(--shadow-paper-e1);
 	--shadow-e2: var(--shadow-paper-e2);
+}
+
+/*
+  Figma "Clavera DS" Light mode, applied to the paper register (2026-10-06).
+  Only the Figma-only tokens from tokens/figma.css are switched here; the
+  register's existing overrides above stay as they are. Icon aliases are
+  redeclared so they resolve against this surface's text tokens.
+*/
+.surface-paper {
+	--bg-page: var(--concrete-50);
+	--bg-neutral: var(--concrete-100);
+	--bg-subtle: var(--concrete-100);
+	--bg-neutral-hover: var(--concrete-200);
+	--bg-neutral-pressed: var(--concrete-300);
+	--bg-accent-disabled: var(--amber-200);
+	--bg-accent-subtle: var(--amber-50);
+	--bg-accent-subtle-hover: var(--amber-100);
+	--bg-success: var(--moss-600);
+	--bg-success-subtle: var(--moss-50);
+	--bg-success-subtle-hover: var(--moss-100);
+	--bg-critical: var(--rust-600);
+	--bg-critical-subtle: var(--rust-50);
+	--bg-critical-subtle-hover: var(--rust-100);
+	--bg-info: var(--steel-600);
+	--bg-info-subtle: var(--steel-50);
+	--bg-warning-subtle: var(--amber-50);
+	--bg-inverse: var(--graphite-950);
+	--bg-disabled: var(--concrete-200);
+
+	--overlay-hover-neutral: var(--alpha-black-8);
+	--overlay-pressed-neutral: var(--alpha-black-12);
+
+	--border-subtle: var(--alpha-black-8);
+	--border-neutral: var(--alpha-black-16);
+	--border-neutral-hover: var(--concrete-400);
+	--border-paper-subtle: var(--alpha-white-8);
+	--border-paper-neutral: var(--alpha-white-16);
+	--border-disabled: var(--alpha-black-8);
+	--border-inverse: var(--alpha-white-16);
+	--border-accent-disabled: var(--amber-200);
+	--border-success: var(--moss-600);
+	--border-critical: var(--rust-600);
+	--border-warning: var(--amber-700);
+	--border-info: var(--steel-600);
+
+	--text-success: var(--moss-600);
+	--text-critical: var(--rust-600);
+	--text-info: var(--steel-600);
+	--text-warning: var(--amber-700);
+	--text-disabled: var(--concrete-400);
+	--text-accent: var(--amber-700);
+	--text-accent-hover: var(--amber-800);
+	--text-accent-pressed: var(--amber-800);
+	--text-accent-disabled: var(--amber-200);
+
+	--icon-neutral: var(--text-tertiary);
+	--icon-primary: var(--text-primary);
+	--icon-secondary: var(--text-secondary);
+	--icon-tertiary: var(--text-tertiary);
+	--icon-disabled: var(--text-disabled);
+	--icon-inverse: var(--text-inverse);
+	--icon-on-accent: var(--text-on-accent);
+	--icon-on-color: var(--text-on-color);
+	--icon-accent: var(--text-accent);
+	--icon-accent-hover: var(--text-accent-hover);
+	--icon-accent-disabled: var(--text-accent-disabled);
+	--icon-success: var(--text-success);
+	--icon-critical: var(--text-critical);
+	--icon-info: var(--text-info);
+	--icon-warning: var(--text-warning);
+	--icon-on-paper: var(--text-on-paper);
+	--icon-on-paper-secondary: var(--text-on-paper-secondary);
+	--icon-on-paper-tertiary: var(--text-on-paper-tertiary);
 }
 
 /* ---------------------------------------------------------------------- */

@@ -2,6 +2,8 @@
 
 Status: **meeting notes received; first read-only Figma inventory completed, detailed component/effect review pending.** This document records the owner's 2026-10-04 meeting handoff and a bounded integration path. It is not approval to change the established brand or to publish the site.
 
+**Update 2026-10-06:** the full variable/style inventory and token integration are done; see `FIGMA_DS_INTEGRATION_2026-10-06.md`. All accepted tokens matched Figma exactly; Figma-only tokens were added with zero rendered change; component-level differences are listed there as open decisions.
+
 ## Source and authority
 
 - Owner-provided meeting notes in the 2026-10-04 Agent Control conversation; local artifact `/Users/k/Downloads/Clavera DS.fig` (export metadata dated 2026-10-01). The `.fig` archive has a proprietary canvas and a small thumbnail, not an extractable token/component table. On 2026-10-04 the file was imported without payment into the existing `Clavera` folder of the owner's authenticated Free-plan Figma account: [Clavera DS](https://www.figma.com/design/EgsFk8V4OWGv0i6oitDVgM/Clavera-DS). No MCP connection was made.
