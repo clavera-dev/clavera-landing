@@ -78,3 +78,7 @@ Risks the run should watch: `@media (scripting)` needs Chrome 120 / Firefox 113 
 4. Kirill supplies ES/EN/RU empty-state copy (D7) whenever wanted; adding `empty:` to the three locale files is the whole change.
 
 Then M5.3 (rhythm and surfaces) per spec §13.
+
+## 6. D4 resolution (2026-10-06)
+
+The owner accepted the designer image brief's recommendation (§4.1, "follow the recommendations", 2026-10-06): **keep the current short-phone band**. Variant A moves text onto the image, a layout change outside the pilot scope; B was not needed. `tests/prototypes/hero-h1.css` and the comparison harness `tests/m5-2-hero-prototypes.spec.ts` are deleted; `Hero.astro` is unchanged apart from its comment. The `m5-2.spec.ts` guard that no prototype switch ships stays. The harness's six desktop H-2 capture cases had been failing on `fce39c6` with "Clipped area is either empty or outside the resulting image"; they produced evidence only and are removed with it. H-2 needs no code change (§5.3). M5.2 is closed on branch `agent/clavera-m5-m7-20261006`.

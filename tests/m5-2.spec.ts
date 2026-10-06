@@ -309,6 +309,10 @@ test.describe('M5.2 reduced motion', () => {
 	});
 });
 
+/*
+  D4 closed 2026-10-06 (current band kept) and the prototype CSS is deleted.
+  The guard stays so a revived prototype switch can never ship by accident.
+*/
 test.describe('M5.2 hero prototypes stay local', () => {
 	test('no shipped page sets or styles the H-1 prototype switch', async ({ page }) => {
 		for (const locale of LOCALES) {
