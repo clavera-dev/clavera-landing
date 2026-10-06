@@ -1,5 +1,7 @@
 # M6 — Motion map (specification only)
 
+Status update 2026-10-06: the owner said «внедряем анимации» (implement the animations), and slices 1 and 2 of §6 are implemented **provisionally** on branch `agent/clavera-m5-m7-20261006`, CSS only, no dependency. The zone list uses an opacity-only fade: the 4px lift made WebKit drop clicks during the transition. The accent rule is a scroll-driven draw inside `@supports (animation-timeline: view())` and `prefers-reduced-motion: no-preference`. Each is one revert away. Tests: `tests/motion.spec.ts`. The Emil Kowalski skills (§5.1) were not installed. FAQ height animation (§5.4) stays native/instant. The original status line follows.
+
 Status: draft for owner/design review. **Nothing in this document was implemented.** No package was installed, no component file was changed, no legal text or product claim was touched. This is the "define a section-by-section motion map… approve before implementation" deliverable from `CLAVERA_EXECUTION_PLAN.md` M6 (lines 388–396) and `M4_M10_LIVE_ROADMAP.md` M6.
 
 ## 0. Tooling fact-check

@@ -145,6 +145,40 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 		background: var(--accent);
 	}
 
+	/*
+	  M6/M7 motion map §3 S11 (provisional, 2026-10-06): the amber rule draws
+	  left to right as the section scrolls in. Scroll-driven and CSS-only —
+	  no script, compositor-only (scaleX). Engines without view timelines and
+	  reduced-motion users get today's static full-width rule.
+	*/
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.section--accent::after {
+				transform-origin: left center;
+				animation: section-accent-draw linear both;
+			}
+
+			/*
+			  A separate rule on purpose: the CSS minifier folds a timeline
+			  declared next to the shorthand into `animation: … view()`, which
+			  browsers reject as a whole, silently dropping the animation.
+			*/
+			.section.section--accent::after {
+				animation-timeline: view();
+				animation-range: entry 10% entry 90%;
+			}
+		}
+	}
+
+	@keyframes section-accent-draw {
+		from {
+			transform: scaleX(0);
+		}
+		to {
+			transform: scaleX(1);
+		}
+	}
+
 	/* Rail ---------------------------------------------------------------- */
 
 	/*
