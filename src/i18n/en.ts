@@ -31,6 +31,7 @@ export const en: Copy = {
 		skipLink: 'Skip to main content',
 		homeLabel: 'CLAVERA — home',
 		languageNavLabel: 'Language',
+		languageNavFooterLabel: 'Language, footer',
 		ownersNavLabel: 'For owners and developers',
 		legalNavLabel: 'Legal',
 	},

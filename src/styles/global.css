@@ -461,6 +461,23 @@ video {
 	line-height: 1;
 }
 
+/* Long Russian words (велосипедами, присоединяйся) are wider than a 320px
+   column at the 44px display step. On the narrowest screens Russian drops to
+   the next approved token step (h1, 36px); hyphenation and overflow-wrap
+   stay as the safety net for any other long word. */
+@media (max-width: 379px) {
+	:root:lang(ru) {
+		--fluid-display: var(--text-h1-size);
+	}
+}
+
+h1,
+h2,
+h3 {
+	overflow-wrap: break-word;
+	hyphens: auto;
+}
+
 .heading-display {
 	font-family: var(--font-display);
 	font-size: var(--fluid-display);

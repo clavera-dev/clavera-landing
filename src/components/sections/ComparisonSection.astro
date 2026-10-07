@@ -29,7 +29,7 @@ const c = getCopy(Astro.currentLocale).comparison;
 	<div
 		class="table-wrap"
 		role="region"
-		aria-labelledby="comparacion-heading"
+		aria-label={c.tableCaption}
 		tabindex="0"
 	>
 		<table class="comparison">
