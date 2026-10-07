@@ -567,8 +567,10 @@ strong {
 	line-height: var(--text-button-line);
 	letter-spacing: var(--text-button-tracking);
 	font-weight: var(--text-button-weight);
-	/* Figma Button md: 12×20, icon gap 8 (decisions D5/D7, 2026-10-06). */
-	padding: var(--space-3) var(--space-5);
+	/* Figma Button md: h 48, padding 12×20, icon gap 8. Figma draws the 1px
+	   stroke inside the box; CSS adds the border outside the padding, so one
+	   pixel comes off each padding to keep Figma's outer size. */
+	padding: calc(var(--space-3) - 1px) calc(var(--space-5) - 1px);
 	border-radius: var(--radius-sm);
 	border: 1px solid transparent;
 	cursor: pointer;
@@ -591,8 +593,15 @@ strong {
 }
 
 .button--lg {
-	/* Figma Button lg: 16×28. */
-	padding: var(--space-4) var(--space-7);
+	/* Figma Button lg: h 56, padding 16×28 (border inside, as above). */
+	padding: calc(var(--space-4) - 1px) calc(var(--space-7) - 1px);
+}
+
+/* Figma Button focus: the 3px accent ring (focus/ring). The global 2px
+   outline stays as well: the 28 % ring alone measures below 3:1 against the
+   dark surface, and visible focus is a brief §9.3 requirement. */
+.button:focus-visible {
+	box-shadow: var(--shadow-focus);
 }
 
 .button--primary {

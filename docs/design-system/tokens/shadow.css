@@ -5,7 +5,7 @@
 --shadow-e3:0 4px 16px -4px oklch(0% 0 0 / 0.5),0 0 0 1px var(--border-hairline-strong);
 
 /* Paper (light) surface elevation */
---shadow-paper-e1:0 1px 2px oklch(0% 0 0 / 0.06),0 0 0 1px var(--border-on-paper);
+--shadow-paper-e1:0 1px 2px oklch(0% 0 0 / 0.06),0 0 0 1px oklch(0% 0 0 / 0.1); /* Figma elevation/paper-e1: ring is black 10%, independent of the paper border token */
 --shadow-paper-e2:0 16px 32px -12px oklch(0% 0 0 / 0.16);
 
 /* Warm LED glow — reserved for the primary accent moment (CTA hover, active status) */

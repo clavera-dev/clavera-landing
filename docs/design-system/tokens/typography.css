@@ -101,3 +101,5 @@
 --text-mono-sm-tracking:0.03em;
 --text-mono-sm-weight:500;
 }
+/* Russian: display type in Onest, because Plus Jakarta Sans has no basic Cyrillic (designer, 2026-10-06). */
+:root:lang(ru){--font-display:'Onest','Helvetica Neue',Arial,sans-serif;}

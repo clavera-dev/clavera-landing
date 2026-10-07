@@ -4,7 +4,7 @@ Read before every task, in this order:
 
 1. `PROJECT_DECISIONS.md`
 2. `docs/brief/CLAVERA_Site_TZ_v1_5.md`
-3. `docs/design-system/`
+3. `docs/design-system/` — the designer's Figma file (snapshot `docs/design-system/tokens/figma/`) is the final design source for every value and component it specifies (owner, 2026-10-06); integrate it without asking, and ask only where Figma is silent or conflicts with the brief, legal rules or accessibility. The designer will send an updated DS (monospace face pending); re-read and integrate it when it arrives. Russian display type is Onest (designer, 2026-10-07). Fonts will be self-hosted once the monospace face is confirmed (PROJECT_DECISIONS.md, 2026-10-07)
 4. `docs/project/CLAVERA_EXECUTION_PLAN.md`
 5. the latest entry in `docs/project/CLAVERA_WORKLOG.md`
 
@@ -39,7 +39,7 @@ If sources conflict, the earlier item wins. Do not infer project state from chat
 ## Technical constraints
 
 - Astro static output, strict TypeScript, and Yarn.
-- Preserve the approved repository design system and brand assets.
+- Preserve the approved design system (Figma Clavera DS as the final source, see the reading order) and brand assets. Page layout and composition are not part of it.
 - Do not add React, Tailwind, a UI framework, a backend, a proxy, external memory, analytics, or a runtime animation library without an explicit recorded decision.
 - Prefer semantic HTML, progressive enhancement, zero unnecessary client JavaScript, responsive images, and `prefers-reduced-motion` support.
 - Use Astro's built-in i18n and static routing. No client-side i18n runtime and no framework component tree duplicated per locale.

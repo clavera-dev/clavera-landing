@@ -19,7 +19,7 @@
 --concrete-50:oklch(96.5% 0.002 80);
 
 /* ---- Amber: warm LED accent ---- */
---amber-700:oklch(52% 0.14 55);
+--amber-700:#9F5100; /* Figma Clavera DS (2026-10-06); was oklch(52% 0.14 55), which sRGB-clips to #A34D00 */
 --amber-600:oklch(62% 0.15 58);
 --amber-500:oklch(72% 0.15 62);
 --amber-400:oklch(80% 0.12 66);
@@ -58,8 +58,8 @@
 /* Borders */
 --border-hairline:oklch(100% 0 0 / 0.08);
 --border-hairline-strong:oklch(100% 0 0 / 0.16);
---border-on-paper:oklch(0% 0 0 / 0.1);
---border-on-paper-strong:oklch(0% 0 0 / 0.18);
+--border-on-paper:oklch(0% 0 0 / 0.08); /* Figma border/paper-subtle */
+--border-on-paper-strong:oklch(0% 0 0 / 0.16); /* Figma border/paper-neutral */
 
 /* Text */
 --text-primary:var(--concrete-50);
