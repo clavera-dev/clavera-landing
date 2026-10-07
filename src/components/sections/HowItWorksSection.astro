@@ -1,0 +1,100 @@
+---
+import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).works;
+---
+
+<Section
+	id="works"
+	index={c.index}
+	railLabel={c.rail}
+	eyebrow={c.eyebrow}
+	heading={c.heading}
+	rhythm="tight"
+>
+	<ol class="steps">
+		{
+			c.steps.map((step) => (
+				<li class="steps__item">
+					<span class="steps__n numeral">{step.n}</span>
+					<h3 class="heading-h4">{step.title}</h3>
+					<p class="body-md">{step.copy}</p>
+				</li>
+			))
+		}
+	</ol>
+</Section>
+
+<style>
+	/*
+	  A measured rail rather than three cards: one continuous hairline runs
+	  across the top of the row and each step hangs from it under an amber tick
+	  — the way stations are marked on a drawing.
+	*/
+	.steps {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: 1fr;
+	}
+
+	.steps__item {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		padding-block: var(--space-8);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	/* The tick where this step meets the rail. */
+	.steps__item::before {
+		content: '';
+		position: absolute;
+		top: -1px;
+		left: 0;
+		width: var(--space-10);
+		height: 2px;
+		background: var(--accent);
+	}
+
+	@media (max-width: 799px) {
+		.steps__item:last-child {
+			border-bottom: 1px solid var(--border-hairline);
+		}
+	}
+
+	.steps__n {
+		font-size: var(--text-display-lg-size);
+		line-height: 1;
+		color: var(--accent);
+		margin-bottom: var(--space-2);
+	}
+
+	.steps__item .body-md {
+		max-width: 40ch;
+	}
+
+	@media (min-width: 800px) {
+		.steps {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			column-gap: var(--space-10);
+		}
+
+		.steps__item {
+			padding-block: var(--space-10) 0;
+		}
+
+		.steps__n {
+			font-size: var(--text-display-xl-size);
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.steps {
+			column-gap: var(--space-16);
+		}
+	}
+</style>

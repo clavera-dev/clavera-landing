@@ -1,0 +1,133 @@
+---
+import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
+
+const copy = getCopy(Astro.currentLocale);
+const c = copy.problem;
+
+/**
+ * The friction moment. Deliberately image-free: it sits between two of the
+ * page's strongest photographs and gives the eye somewhere quiet to land.
+ * Typography carries it — a display-scale statement, then a narrow column of
+ * argument, then the daily loop set as two annotated lines.
+ */
+
+---
+
+<Section id="problema" index={c.index} railLabel={c.rail} labelledby="problema-heading" rhythm="loose">
+	<div class="problem">
+		<div class="problem__lead">
+			<p class="eyebrow">{c.eyebrow}</p>
+			<h2 id="problema-heading" class="problem__statement">
+				{c.statementLead}<br /><span class="problem__statement-dim">{c.statementDim}</span>
+			</h2>
+		</div>
+
+		<div class="problem__grid">
+			<div class="problem__argument">
+				<p class="body-lg">{c.argument}</p>
+			</div>
+
+			<ul class="problem__loop">
+				{
+					c.loop.map((item) => (
+						<li class="problem__loop-item">
+							<span class="mono mono--accent">{item.label}</span>
+							<p class="heading-h3 problem__loop-copy">{item.copy}</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<p class="problem__close">{c.close}</p>
+	</div>
+</Section>
+
+<style>
+	.problem {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-16);
+	}
+
+	.problem__lead {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+
+	.problem__statement {
+		font-family: var(--font-display);
+		font-size: var(--fluid-display);
+		line-height: 1.04;
+		letter-spacing: var(--text-display-2xl-tracking);
+		font-weight: var(--text-display-2xl-weight);
+		color: var(--text-primary);
+		margin: 0;
+		max-width: 22ch;
+		text-wrap: balance;
+	}
+
+	.problem__statement-dim {
+		color: var(--text-tertiary);
+	}
+
+	.problem__grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-12);
+	}
+
+	.problem__argument {
+		max-width: var(--measure);
+	}
+
+	/* The daily loop, set as two annotated lines separated by reveal lines —
+	   no card, no coloured edge strip. */
+	.problem__loop {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.problem__loop-item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		padding-block: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.problem__loop-item:last-child {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.problem__loop-copy {
+		color: var(--text-secondary);
+		font-weight: 500;
+	}
+
+	.problem__close {
+		font-family: var(--font-display);
+		font-size: var(--text-h3-size);
+		line-height: var(--text-h3-line);
+		letter-spacing: var(--text-h3-tracking);
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0;
+		padding-top: var(--space-8);
+		border-top: 2px solid var(--accent);
+		max-width: 34ch;
+	}
+
+	@media (min-width: 900px) {
+		.problem__grid {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+			gap: var(--space-24);
+			align-items: start;
+		}
+	}
+</style>

@@ -1,0 +1,123 @@
+---
+import Section from '../layout/Section.astro';
+import RenderFigure from '../media/RenderFigure.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).security;
+
+/**
+ * The entrance render (an older, separate access/security asset — never R3,
+ * see src/data/media.ts) is the page's one portrait photograph. It is pulled
+ * up so it crosses the boundary into the previous surface: a controlled
+ * overlap that stops the page reading as a stack of separate bands, placed
+ * where the section above leaves its right side empty.
+ *
+ * The list is the owner handoff v1.1 §3.4 set, in its order: theft and weather
+ * first. No cameras (B5). 24/7 lives only in S3 pillar 02 and the access FAQ
+ * (§3.1, §6.2), not here.
+ */
+---
+
+<Section id="seguridad" index={c.index} railLabel={c.rail} surface="raised" labelledby="seguridad-heading">
+	<div class="security">
+		<div class="security__text">
+			<p class="eyebrow">{c.eyebrow}</p>
+			<h2 id="seguridad-heading" class="heading-h2">{c.heading}</h2>
+			<p class="lede">{c.lede}</p>
+
+			<ul class="security__list">
+				{c.items.map((item) => <li class="body-md">{item}</li>)}
+			</ul>
+
+			{/*
+			  Identification and access logging read as a description of
+			  a facility that already exists. None does. This states that they are
+			  planned properties of the future service, without weakening the
+			  approved security boundary and without adding any new guarantee.
+			*/}
+			<p class="body-md security__planned" data-planned-note>{c.plannedNote}</p>
+		</div>
+
+		<div class="security__media">
+			<RenderFigure
+				id="entrance"
+				variant="panel"
+				sizes="(min-width: 900px) 38vw, 100vw"
+				caption
+			/>
+		</div>
+	</div>
+</Section>
+
+<style>
+	.security {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-10);
+	}
+
+	.security__planned {
+		color: var(--text-tertiary);
+	}
+
+	.security__text {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		max-width: var(--measure);
+	}
+
+	/* Stacked, this portrait would otherwise run the full column width and
+	   outweigh the section it illustrates. */
+	.security__media {
+		max-width: 480px;
+	}
+
+	.security__list {
+		list-style: none;
+		margin: var(--space-4) 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.security__list li {
+		position: relative;
+		padding: var(--space-5) 0 var(--space-5) var(--space-8);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.security__list li:last-child {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	/* An amber tick instead of a bullet glyph. */
+	.security__list li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: calc(var(--space-5) + 0.55em);
+		width: var(--space-4);
+		height: 2px;
+		background: var(--accent);
+	}
+
+	@media (min-width: 900px) {
+		.security {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+			gap: var(--space-16);
+			align-items: start;
+		}
+
+		/* Crosses up over the surface boundary above. */
+		.security__media {
+			margin-top: calc(var(--rhythm) * -1 - var(--space-16));
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.security {
+			gap: var(--space-20);
+		}
+	}
+</style>

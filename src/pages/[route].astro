@@ -1,0 +1,14 @@
+---
+/**
+ * `/solicitud` — built only while the application form is live
+ * (src/config/solicitud.ts). With the form off, no path is generated.
+ */
+import SolicitudPage from '../layouts/SolicitudPage.astro';
+import { isSolicitudLive } from '../config/solicitud';
+
+export function getStaticPaths() {
+	return isSolicitudLive() ? [{ params: { route: 'solicitud' } }] : [];
+}
+---
+
+<SolicitudPage />

@@ -1,0 +1,169 @@
+---
+import Section from '../layout/Section.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).comparison;
+
+/**
+ * The page's one full change of surface: after six graphite sections the
+ * comparison arrives on paper, because it is the only block that is pure
+ * documentation rather than atmosphere. The switch is what makes the
+ * argument feel measured instead of sold.
+ *
+ * No prices (owner handoff v1.1 B3). "Cochera de auto (alternativa)" names
+ * the alternative only, never CLAVERA's own service. The note under the table
+ * is the mandatory B3 line saying what CLAVERA is not. It must stay visible,
+ * never collapsed. Written legal approval for S7 is still outstanding.
+ */
+
+---
+
+<Section
+	id="comparacion"
+	index={c.index}
+	railLabel={c.rail}
+	surface="paper"
+	eyebrow={c.eyebrow}
+	heading={c.heading}
+>
+	<div
+		class="table-wrap"
+		role="region"
+		aria-labelledby="comparacion-heading"
+		tabindex="0"
+	>
+		<table class="comparison">
+			<caption class="visually-hidden">{c.tableCaption}</caption>
+			<thead>
+				<tr>
+					<th scope="col"><span class="visually-hidden">{c.rowHeader}</span></th>
+					{
+						c.columns.map((column, i) => (
+							<th scope="col" class={i === 2 ? 'comparison__own' : undefined}>
+								{column}
+							</th>
+						))
+					}
+				</tr>
+			</thead>
+			<tbody>
+				{
+					c.rows.map((row) => (
+						<tr>
+							<th scope="row">{row.label}</th>
+							{row.values.map((value, i) => (
+								<td class={i === 2 ? 'comparison__own' : undefined}>{value}</td>
+							))}
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<p class="mono comparison__hint" aria-hidden="true">{c.scrollHint}</p>
+
+	<p class="body-md comparison__note">{c.note}</p>
+</Section>
+
+<style>
+	.table-wrap {
+		overflow-x: auto;
+		/* Keyboard users need to be able to scroll the table; the region role
+		   plus tabindex makes it a focusable scroll container. */
+		scrollbar-width: thin;
+	}
+
+	.table-wrap:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: 4px;
+	}
+
+	.comparison {
+		width: 100%;
+		border-collapse: collapse;
+		min-width: 660px;
+	}
+
+	.comparison th,
+	.comparison td {
+		text-align: left;
+		padding: var(--space-5) var(--space-5);
+		border-top: 1px solid var(--border-hairline);
+		font-family: var(--font-sans);
+		font-size: var(--text-body-md-size);
+		line-height: var(--text-body-md-line);
+		color: var(--text-secondary);
+		vertical-align: top;
+	}
+
+	.comparison thead th {
+		border-top: 0;
+		padding-bottom: var(--space-4);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		line-height: var(--text-mono-sm-line);
+		letter-spacing: var(--text-mono-sm-tracking);
+		text-transform: uppercase;
+		font-weight: 600;
+		color: var(--text-tertiary);
+	}
+
+	/* Row labels no longer force `nowrap`: German-length or Russian-length
+	   labels would otherwise widen the table until it scrolled on desktop. */
+	.comparison tbody th {
+		font-weight: 600;
+		color: var(--text-primary);
+		padding-left: 0;
+		text-wrap: balance;
+	}
+
+	.comparison tbody tr:last-child th,
+	.comparison tbody tr:last-child td {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	/* CLAVERA's column is the only one carrying weight and warmth — the
+	   comparison should be legible at a glance without any extra chrome. */
+	.comparison__own {
+		background: var(--accent-subtle);
+		color: var(--text-primary);
+		font-weight: 500;
+	}
+
+	.comparison thead th.comparison__own {
+		color: var(--accent);
+		background: transparent;
+		border-bottom: 2px solid var(--accent);
+	}
+
+	/* Below this width the table no longer fits and becomes a scroll region;
+	   the hint is the visual affordance for that. Keyboard and assistive-tech
+	   users reach it through the labelled, focusable region instead. */
+	.comparison__hint {
+		display: none;
+	}
+
+	@media (max-width: 759px) {
+		.comparison__hint {
+			display: block;
+			margin-top: var(--space-4);
+			color: var(--accent);
+		}
+	}
+
+	.comparison__note {
+		margin-top: var(--space-6);
+	}
+
+	@media (min-width: 900px) {
+		.comparison th,
+		.comparison td {
+			padding: var(--space-6);
+		}
+
+		.comparison tbody th {
+			padding-left: 0;
+		}
+	}
+</style>

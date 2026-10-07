@@ -1,0 +1,41 @@
+---
+/**
+ * The landing page body, written once.
+ *
+ * Every locale route renders this same component tree; the strings come from
+ * `Astro.currentLocale` through src/i18n, so nothing here is duplicated per
+ * language. Section order and IDs are fixed by the brief (Part II, §1) and are
+ * identical across locales, which is what lets one anchor survive a language
+ * switch.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import ProblemSection from '../components/sections/ProblemSection.astro';
+import PillarsSection from '../components/sections/PillarsSection.astro';
+import HowItWorksSection from '../components/sections/HowItWorksSection.astro';
+import VehiclesSection from '../components/sections/VehiclesSection.astro';
+import SecuritySection from '../components/sections/SecuritySection.astro';
+import ComparisonSection from '../components/sections/ComparisonSection.astro';
+import HubShowcaseSection from '../components/sections/HubShowcaseSection.astro';
+import ForWhomSection from '../components/sections/ForWhomSection.astro';
+import ZonesSection from '../components/sections/ZonesSection.astro';
+import FoundersSection from '../components/sections/FoundersSection.astro';
+import FaqSection from '../components/sections/FaqSection.astro';
+import SurveyTeaserSection from '../components/sections/SurveyTeaserSection.astro';
+---
+
+<BaseLayout>
+	<Hero />
+	<ProblemSection />
+	<PillarsSection />
+	<HowItWorksSection />
+	<VehiclesSection />
+	<SecuritySection />
+	<ComparisonSection />
+	<HubShowcaseSection />
+	<ForWhomSection />
+	<ZonesSection />
+	<FoundersSection />
+	<FaqSection />
+	<SurveyTeaserSection />
+</BaseLayout>

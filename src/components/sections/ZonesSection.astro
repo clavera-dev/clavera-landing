@@ -1,0 +1,42 @@
+---
+import Section from '../layout/Section.astro';
+import ZoneSelector from '../lead-form/ZoneSelector.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).zones;
+
+/**
+ * S10 — the zone selector in place of the area list (owner handoff v1.1
+ * §3.2). The nine-area list, its caption and its disclaimer are removed.
+ *
+ * The selector's zone list is PROVISIONAL (src/config/candidate-zones.ts),
+ * pending Anna's verification. The rules the old list followed still apply
+ * to it: no numbering, ranking, "first district", addresses, pins, dates or
+ * counters, and original Spanish names in every locale.
+ *
+ * The small print under the selector states that no location has been chosen
+ * and that choosing a zone implies no commitment to open, no date and no
+ * availability.
+ */
+---
+
+<Section
+	id="zonas"
+	index={c.index}
+	railLabel={c.rail}
+	surface="raised"
+	divider
+	eyebrow={c.eyebrow}
+	heading={c.heading}
+>
+	<ZoneSelector name="zonas" highlight />
+
+	<p class="caption zones__disclaimer" data-zones-disclaimer>{c.disclaimer}</p>
+</Section>
+
+<style>
+	.zones__disclaimer {
+		margin-top: var(--space-6);
+		max-width: var(--measure);
+	}
+</style>

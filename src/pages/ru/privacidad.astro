@@ -1,0 +1,11 @@
+---
+/**
+ * Russian courtesy translation, served at `/ru/privacidad`.
+ *
+ * Same route-slug rationale as `/en/privacidad` — see that file.
+ */
+import LegalPage from '../../components/legal/LegalPage.astro';
+import { privacy } from '../../content/legal/privacy';
+---
+
+<LegalPage route="privacidad" doc={privacy.ru} />

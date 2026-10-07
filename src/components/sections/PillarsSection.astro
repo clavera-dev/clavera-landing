@@ -1,0 +1,172 @@
+---
+import Section from '../layout/Section.astro';
+
+/**
+ * Seven properties since the owner handoff v1.1 (2026-09-23): pillar 02
+ * carries 24/7 access (§3.1) — one of only two places it may appear, both
+ * under the planned-service note below — and pillar 08 ("Zona de limpieza")
+ * is removed (§3.5).
+ *
+ * Presented as an index, not as cards: numbered rows divided by hairline
+ * reveal lines, echoing the numbered bays in the renders. Identical bordered
+ * boxes would have flattened the page at exactly the point where it needs to
+ * feel like a specification.
+ *
+ * R2 (vertical lifting storage systems) opens the section, running off the
+ * right edge of the page. It is the render that shows the single idea the
+ * whole product rests on — one numbered, independent bay per member — so it
+ * introduces the list rather than sitting inside it.
+ */
+import RenderFigure from '../media/RenderFigure.astro';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).solution;
+---
+
+<Section
+	id="solucion"
+	index={c.index}
+	railLabel={c.rail}
+	surface="raised"
+	labelledby="solucion-heading"
+	rhythm="loose"
+	divider
+>
+	<div class="solution__intro">
+		<div class="solution__text">
+			<p class="eyebrow">{c.eyebrow}</p>
+			<h2 id="solucion-heading" class="heading-h2">{c.heading}</h2>
+			<p class="lede">{c.lede}</p>
+			{/*
+			  No hub is in operation. The properties below are written in
+			  the present tense as product properties, so this line states
+			  plainly that they are planned properties of the future service.
+			*/}
+			<p class="body-md solution__planned" data-planned-note>{c.plannedNote}</p>
+		</div>
+
+		<div class="solution__media bleed-right">
+			<RenderFigure
+				id="r2"
+				variant="plain"
+				sizes="(min-width: 900px) 60vw, 100vw"
+				caption
+			/>
+		</div>
+	</div>
+
+	<ol class="index">
+		{
+			c.pillars.map((pillar) => (
+				<li class="index__row">
+					<span class="index__n numeral">{pillar.n}</span>
+					<div class="index__text">
+						<h3 class="heading-h4">{pillar.title}</h3>
+						<p class="body-md">{pillar.copy}</p>
+					</div>
+				</li>
+			))
+		}
+	</ol>
+</Section>
+
+<style>
+	.solution__intro {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-10);
+		margin-bottom: var(--space-16);
+	}
+
+	.solution__planned {
+		color: var(--text-tertiary);
+	}
+
+	.solution__text {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		max-width: var(--measure);
+	}
+
+	/* The bleeding image loses its right-hand radius: it is running off the
+	   page, not sitting in a frame. */
+	.solution__media :global(picture) {
+		border-start-end-radius: 0;
+		border-end-end-radius: 0;
+	}
+
+	@media (min-width: 900px) {
+		.solution__intro {
+			grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+			gap: var(--space-16);
+			/* The text column starts at the top so its eyebrow shares the rail
+			   index's line; the image keeps its optical centring on its own. */
+			align-items: start;
+			margin-bottom: var(--space-24);
+		}
+
+		.solution__media {
+			align-self: center;
+		}
+	}
+
+	.index {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: 1fr;
+		column-gap: var(--space-16);
+	}
+
+	.index__row {
+		display: grid;
+		/* minmax(0, 1fr) lets a long translated title wrap instead of forcing
+		   the row wider than its column. */
+		grid-template-columns: 3.5rem minmax(0, 1fr);
+		gap: var(--space-4);
+		align-items: start;
+		padding-block: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.index__row:last-child {
+		border-bottom: 1px solid var(--border-hairline);
+	}
+
+	.index__n {
+		font-size: var(--text-h4-size);
+		padding-top: 2px;
+	}
+
+	.index__text {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.index__text .body-md {
+		max-width: 44ch;
+	}
+
+	@media (min-width: 860px) {
+		.index {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		/* In two columns the last row of each column carries the closing rule,
+		   so both columns end on a line. */
+		.index__row:nth-last-child(-n + 2) {
+			border-bottom: 1px solid var(--border-hairline);
+		}
+
+		.index__row {
+			padding-block: var(--space-8);
+		}
+
+		.index__row:last-child {
+			border-bottom: 1px solid var(--border-hairline);
+		}
+	}
+</style>

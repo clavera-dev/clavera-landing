@@ -1,0 +1,7 @@
+---
+/** es-AR — canonical locale, served unprefixed at `/privacidad`. */
+import LegalPage from '../components/legal/LegalPage.astro';
+import { privacy } from '../content/legal/privacy';
+---
+
+<LegalPage route="privacidad" doc={privacy.es} />

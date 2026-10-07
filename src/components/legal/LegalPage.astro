@@ -1,0 +1,186 @@
+---
+/**
+ * Shared renderer for the three legal documents (privacy, terms, cookies),
+ * reused across all nine routes (3 documents × 3 locales).
+ *
+ * ES is the legal authority; EN and RU carry a courtesy notice with a link
+ * back to the Spanish original (PROJECT_DECISIONS.md). The document body
+ * itself — title, numbered sections — comes from src/content/legal and is
+ * NOT written here, so this component never invents legal text.
+ *
+ * The publication date and policy version are read from a single config
+ * point (src/config/legal.ts). While no date has been supplied, the page
+ * says so in the reader's language rather than showing a fabricated one.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { LegalDocument } from '../../content/legal/types';
+import { getCopy, resolveLocale, localeHome, localePath, LOCALE_DEFINITIONS } from '../../i18n';
+import { LEGAL_LAST_UPDATED, LEGAL_VERSION } from '../../config/legal';
+
+interface Props {
+	route: 'privacidad' | 'terminos' | 'cookies';
+	doc: LegalDocument;
+}
+
+const { route, doc } = Astro.props;
+
+const locale = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+const lp = copy.legalPage;
+
+const path = localePath(locale, route);
+const alternatePaths = {
+	es: localePath('es', route),
+	en: localePath('en', route),
+	ru: localePath('ru', route),
+} as const;
+
+const showCourtesyNotice = locale !== 'es' && lp.courtesyNotice.length > 0;
+
+const lastUpdatedDisplay = LEGAL_LAST_UPDATED
+	? new Intl.DateTimeFormat(LOCALE_DEFINITIONS[locale].lang, { dateStyle: 'long', timeZone: 'UTC' }).format(
+			new Date(`${LEGAL_LAST_UPDATED}T00:00:00Z`),
+		)
+	: lp.lastUpdatedPending;
+---
+
+<BaseLayout title={doc.title} description={doc.title} path={path} alternatePaths={alternatePaths}>
+	<article class="legal shell shell--aligned">
+		<p class="legal__back"><a href={localeHome(locale)}>← {lp.backToHome}</a></p>
+
+		<h1 class="legal__title">{doc.title}</h1>
+
+		<p class="legal__updated caption">
+			{lp.lastUpdatedLabel}: {lastUpdatedDisplay}
+			{route === 'privacidad' && ` · ${lp.versionLabel} ${LEGAL_VERSION}`}
+		</p>
+
+		{
+			showCourtesyNotice && (
+				<p class="legal__notice">
+					{lp.courtesyNotice} <a href={alternatePaths.es}>{lp.readInSpanish}</a>
+				</p>
+			)
+		}
+
+		{
+			doc.sections.map((section) => (
+				<section class="legal__section">
+					{section.heading && (
+						<h2 class="legal__heading" data-legal-id={section.id}>
+							{/^\d+$/.test(section.id) ? `${section.id}. ` : ''}
+							{section.heading}
+						</h2>
+					)}
+					{section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+					{section.list && (
+						<ul>
+							{section.list.map((item) => (
+								<li>{item}</li>
+							))}
+						</ul>
+					)}
+					{section.letteredList && (
+						<ol type="a">
+							{section.letteredList.map((item) => (
+								<li>{item}</li>
+							))}
+						</ol>
+					)}
+					{section.closingParagraphs?.map((paragraph) => <p>{paragraph}</p>)}
+				</section>
+			))
+		}
+	</article>
+</BaseLayout>
+
+<style>
+	.legal {
+		max-width: 72ch;
+		/* The header floats over the page (position: fixed) and only Hero.astro
+		   supplies its own clearance; every other top-level page needs the same
+		   --anchor-offset the site already uses to keep anchored sections clear
+		   of the header, or the first lines here would render underneath it. */
+		padding-block: var(--anchor-offset) var(--rhythm-tight);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+
+	.legal__back a {
+		font-family: var(--font-sans);
+		font-size: var(--text-body-md-size);
+		color: var(--text-secondary);
+	}
+
+	.legal__title {
+		font-family: var(--font-display);
+		font-size: var(--fluid-h2);
+		line-height: 1.08;
+		font-weight: var(--text-display-lg-weight);
+		color: var(--text-primary);
+		margin: 0;
+		text-wrap: balance;
+	}
+
+	.legal__updated {
+		margin: 0;
+	}
+
+	.legal__notice {
+		font-family: var(--font-sans);
+		font-size: var(--text-body-md-size);
+		line-height: var(--text-body-md-line);
+		color: var(--text-secondary);
+		background: var(--bg-elevated);
+		border: 1px solid var(--border-hairline-strong);
+		border-radius: var(--radius-sm);
+		padding: var(--space-4);
+		margin: 0;
+	}
+
+	.legal__notice a {
+		text-decoration: underline;
+		text-underline-offset: 0.15em;
+	}
+
+	.legal__section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	.legal__section:first-of-type {
+		padding-top: 0;
+		border-top: 0;
+	}
+
+	.legal__heading {
+		font-family: var(--font-display);
+		font-size: var(--text-h4-size);
+		line-height: var(--text-h4-line);
+		font-weight: var(--text-h4-weight);
+		color: var(--text-primary);
+		margin: 0;
+	}
+
+	.legal__section p,
+	.legal__section li {
+		font-family: var(--font-sans);
+		font-size: var(--text-body-md-size);
+		line-height: var(--text-body-md-line);
+		color: var(--text-secondary);
+		margin: 0;
+	}
+
+	.legal__section ul,
+	.legal__section ol {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		padding-inline-start: var(--space-6);
+		margin: 0;
+	}
+</style>

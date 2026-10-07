@@ -1,0 +1,5 @@
+# CLAVERA — brief §6.5 / §8.4: everything may be crawled, AI crawlers
+# included, so the site can be cited. A Sitemap line is added together with
+# sitemap.xml, once the production domain is confirmed (plan C9).
+User-agent: *
+Allow: /

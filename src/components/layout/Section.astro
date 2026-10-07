@@ -1,0 +1,257 @@
+---
+/**
+ * Landing-page section shell.
+ *
+ * Provides only what every section shares — surface register, vertical
+ * rhythm, the left index rail and an optional header block. Body layout is
+ * deliberately NOT imposed here: each section composes its own, because the
+ * page's design depends on the sections *not* all looking alike.
+ *
+ * The rail is the page's continuity device: a mono sheet index (01, 02, …)
+ * pinned in the left margin on wide screens, borrowed from the numbered bays
+ * visible in the approved renders.
+ */
+interface Props {
+	id: string;
+	/** Two-digit sheet index shown in the left rail, e.g. "03". */
+	index?: string;
+	/** Short uppercase label under the rail index. */
+	railLabel?: string;
+	eyebrow?: string;
+	heading?: string;
+	headingLevel?: 2 | 3;
+	/**
+	 * Id of a heading the section renders itself, for sections whose heading is
+	 * part of a custom composition rather than the shared header block.
+	 */
+	labelledby?: string;
+	surface?: 'deep' | 'raised' | 'paper' | 'none';
+	/** `coda` is a trailing block that sits close under the section above it. */
+	rhythm?: 'tight' | 'default' | 'loose' | 'coda';
+	/** Hairline reveal line along the top edge of the section. */
+	divider?: boolean;
+	/**
+	 * Amber rule along the top edge — the page's one full-weight accent moment.
+	 * A prop rather than a class the caller styles: Astro scopes a child
+	 * component's styles to that child, so a class passed in from outside
+	 * lands on this element without the caller's scope and silently never
+	 * matches.
+	 */
+	accent?: boolean;
+	class?: string;
+}
+
+const {
+	id,
+	index,
+	railLabel,
+	eyebrow,
+	heading,
+	headingLevel = 2,
+	labelledby,
+	surface = 'none',
+	rhythm = 'default',
+	divider = false,
+	accent = false,
+	class: className,
+} = Astro.props;
+
+const HeadingTag = headingLevel === 3 ? 'h3' : 'h2';
+const headingId = heading ? `${id}-heading` : labelledby;
+const surfaceClass = surface === 'none' ? '' : `surface-${surface}`;
+const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
+---
+
+<section
+	id={id}
+	class:list={[
+		'section',
+		`section--${rhythm}`,
+		surfaceClass,
+		divider && 'section--divided',
+		accent && 'section--accent',
+		className,
+	]}
+	aria-labelledby={headingId}
+>
+	<div class="sheet">
+		{
+			index && (
+				<div class="sheet__rail" aria-hidden="true">
+					<span class="sheet__index">{index}</span>
+					{railLabel && <span class="sheet__label">{railLabel}</span>}
+				</div>
+			)
+		}
+
+		{
+			hasHeader && (
+				<header class="section__header">
+					{eyebrow && <p class="eyebrow">{eyebrow}</p>}
+					{heading && (
+						<HeadingTag id={headingId} class="heading-h2">
+							{heading}
+						</HeadingTag>
+					)}
+					<slot name="lede" />
+				</header>
+			)
+		}
+
+		<slot />
+	</div>
+</section>
+
+<style>
+	.section {
+		position: relative;
+		padding-block: var(--rhythm);
+	}
+
+	.section--tight {
+		padding-block: var(--rhythm-tight);
+	}
+
+	.section--loose {
+		padding-block: var(--rhythm-loose);
+	}
+
+	/* A closing block reads as part of what precedes it, so it does not add a
+	   second full rhythm step on top of the previous section's bottom padding. */
+	.section--coda {
+		padding-block: var(--space-12) var(--rhythm-tight);
+	}
+
+	/* The rule spans the sheet's content box, not the viewport. --edge-exact
+	   is measured from the section itself, so the rule lands on the same left
+	   and right edges as the text above and below it. */
+	.section--divided::before {
+		content: '';
+		position: absolute;
+		inset-inline: var(--edge-exact);
+		top: 0;
+		height: 1px;
+		background: var(--border-hairline);
+	}
+
+	/* The page's single full-width amber rule — the LED turned all the way up,
+	   once. */
+	.section--accent::after {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		top: 0;
+		height: 2px;
+		background: var(--accent);
+	}
+
+	/*
+	  M6/M7 motion map §3 S11 (provisional, 2026-10-06): the amber rule draws
+	  left to right as the section scrolls in. Scroll-driven and CSS-only —
+	  no script, compositor-only (scaleX). Engines without view timelines and
+	  reduced-motion users get today's static full-width rule.
+	*/
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			/* The section is the timeline subject: a 2px pseudo-element as its
+			   own subject would finish the draw within about 2px of scrolling. */
+			.section--accent {
+				view-timeline-name: --section-accent;
+			}
+
+			.section--accent::after {
+				transform-origin: left center;
+				animation: section-accent-draw linear both;
+			}
+
+			/*
+			  A separate rule on purpose: the CSS minifier folds a timeline
+			  declared next to the shorthand into `animation: … view()`, which
+			  browsers reject as a whole, silently dropping the animation.
+			*/
+			.section.section--accent::after {
+				animation-timeline: --section-accent;
+				animation-range: entry 0% entry 60%;
+			}
+		}
+	}
+
+	@keyframes section-accent-draw {
+		from {
+			transform: scaleX(0);
+		}
+		to {
+			transform: scaleX(1);
+		}
+	}
+
+	/* Rail ---------------------------------------------------------------- */
+
+	/*
+	  No corrective top padding: the index is given the eyebrow's line box
+	  (16px) so the two share a line structurally. Every indexed section opens
+	  with an eyebrow on its first row, so the index always has that line to
+	  align to.
+	*/
+	.sheet__rail {
+		padding-right: var(--space-6);
+	}
+
+	.sheet__index {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-md-size);
+		line-height: var(--text-eyebrow-line);
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		color: var(--accent);
+	}
+
+	.sheet__label {
+		display: block;
+		margin-top: var(--space-4);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		/* In vertical writing the line box is the label's *width*; at 1 it is
+		   the glyph column itself, so it starts on the index's left edge with
+		   no nudge. */
+		line-height: 1;
+		letter-spacing: var(--text-mono-sm-tracking);
+		text-transform: uppercase;
+		color: var(--text-tertiary);
+		/* Reads as a sheet edge-label on an architectural drawing. */
+		writing-mode: vertical-rl;
+		transform: rotate(180deg);
+	}
+
+	/* Header -------------------------------------------------------------- */
+
+	.section__header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		max-width: 26ch;
+		margin-bottom: var(--space-12);
+	}
+
+	.section__header :global(.lede),
+	.section__header :global(.body-lg) {
+		max-width: var(--measure);
+	}
+
+	@media (min-width: 700px) {
+		.section__header {
+			max-width: none;
+		}
+
+		.section__header :global(.heading-h2) {
+			max-width: 20ch;
+		}
+	}
+
+	@media (min-width: 900px) {
+		.section__header {
+			margin-bottom: var(--space-16);
+		}
+	}
+</style>

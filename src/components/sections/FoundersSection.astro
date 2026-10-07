@@ -1,0 +1,114 @@
+---
+import Section from '../layout/Section.astro';
+import TypeformBoundary from '../lead-form/TypeformBoundary.astro';
+import SolicitudBlock from '../lead-form/SolicitudBlock.astro';
+import { isSolicitudLive } from '../../config/solicitud';
+import { getCopy } from '../../i18n';
+
+const c = getCopy(Astro.currentLocale).founders;
+const solicitudLive = isSolicitudLive();
+
+/**
+ * "Sumate al piloto" (owner handoff v1.1 B4), which replaced the Socios
+ * Fundadores block. The anchor stays `#fundadores` because the header CTA
+ * points at it.
+ *
+ * Two states, switched only by src/config/solicitud.ts (owner response v1.4
+ * §1.1, TZ Bloque Solicitud v1.1):
+ *
+ * - Application form live: the section holds the application block, which
+ *   adds the `#solicitud` anchor. Its own disclaimer replaces the
+ *   preliminary-interest note.
+ * - Otherwise (today): the v1_2 block — the research survey is the primary
+ *   action and the note states that interest binds nobody. There is no
+ *   "Avisame" button any more; its form was replaced by the application form.
+ *
+ * Every founding-offer number stays gone.
+ *
+ * Still the page's one full-weight amber moment: the amber rule along the top
+ * edge and its largest call to action.
+ *
+ * Sits on the base surface so the tail alternates (Zonas raised → this base →
+ * FAQ raised → Encuesta base) instead of two raised sections back to back
+ * (composition spec R-6 (a), audit O-05).
+ */
+---
+
+<Section
+	id="fundadores"
+	index={c.index}
+	railLabel={c.rail}
+	labelledby={solicitudLive ? 'solicitud-heading' : 'fundadores-heading'}
+	rhythm="loose"
+	accent
+>
+	{
+		solicitudLive ? (
+			<SolicitudBlock />
+		) : (
+			<div class="founders__inner">
+				<div class="founders__head">
+					<p class="eyebrow">{c.eyebrow}</p>
+					<h2 id="fundadores-heading" class="founders__heading">{c.heading}</h2>
+					<p class="lede founders__lede">{c.lede}</p>
+				</div>
+
+				<div class="founders__action">
+					<TypeformBoundary flow="research" name="fundadores" size="lg" label={c.surveyCta} />
+					<p class="body-md founders__note" data-founders-note>{c.note}</p>
+				</div>
+			</div>
+		)
+	}
+</Section>
+
+<style>
+	.founders__inner {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-12);
+	}
+
+	.founders__head {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+
+	.founders__heading {
+		font-family: var(--font-display);
+		font-size: var(--fluid-display);
+		line-height: 1.04;
+		letter-spacing: var(--text-display-2xl-tracking);
+		font-weight: var(--text-display-2xl-weight);
+		color: var(--text-primary);
+		margin: 0;
+		max-width: 16ch;
+		text-wrap: balance;
+	}
+
+	.founders__lede {
+		max-width: var(--measure);
+	}
+
+	/* Action -------------------------------------------------------------- */
+
+	.founders__action {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		max-width: var(--measure);
+	}
+
+	.founders__note {
+		max-width: 70ch;
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--border-hairline);
+	}
+
+	@media (min-width: 900px) {
+		.founders__inner {
+			gap: var(--space-16);
+		}
+	}
+</style>

@@ -1,0 +1,117 @@
+---
+/**
+ * Language switcher.
+ *
+ * Ordinary links to the equivalent page in each locale, so it works with
+ * JavaScript disabled and is reachable and operable by keyboard. The current
+ * locale is still rendered as a link target but marked `aria-current="true"`
+ * so assistive technology announces which one is active.
+ *
+ * `hash` lets a caller keep the reader in place across a language switch —
+ * the footer switcher passes none, but an in-page switcher can.
+ *
+ * `paths` overrides the target of each link with an explicit root-relative
+ * path per locale, for pages that are not the locale home — the legal pages
+ * pass their own three paths so switching language on `/en/privacidad` lands
+ * on `/privacidad`, not on the Spanish homepage.
+ *
+ * Order is fixed by the brief (Part V): ES · EN · RU.
+ *
+ * The page's query string travels with a language switch (TZ Bloque
+ * Solicitud v1.1 §3.4 rule 5), so campaign tags reach the application link in
+ * the new language too. A tiny script adds it at load; without JavaScript the
+ * links are the plain paths. Nothing is stored.
+ */
+import { SWITCHER_ORDER, LOCALE_DEFINITIONS, localeHref, resolveLocale, getCopy, type Locale } from '../../i18n';
+
+interface Props {
+	hash?: string;
+	class?: string;
+	paths?: Record<Locale, string>;
+}
+
+const { hash = '', class: className, paths } = Astro.props;
+const current = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+---
+
+<nav class:list={['lang', className]} aria-label={copy.a11y.languageNavLabel}>
+	<ul class="lang__list">
+		{
+			SWITCHER_ORDER.map((code) => {
+				const definition = LOCALE_DEFINITIONS[code];
+				const isCurrent = code === current;
+				return (
+					<li>
+						<a
+							class="lang__link"
+							href={paths ? paths[code] : localeHref(code, hash)}
+							hreflang={definition.hreflang}
+							lang={definition.lang}
+							aria-current={isCurrent ? 'true' : undefined}
+						>
+							<span class="visually-hidden">{definition.switchLabel}</span>
+							<span aria-hidden="true">{definition.label}</span>
+						</a>
+					</li>
+				);
+			})
+		}
+	</ul>
+</nav>
+
+<script>
+	// Same-site links only; the search string is copied, never stored.
+	const search = window.location.search;
+	if (search) {
+		for (const link of document.querySelectorAll<HTMLAnchorElement>('.lang__link')) {
+			const target = new URL(link.href, window.location.href);
+			if (target.origin !== window.location.origin) continue;
+			target.search = search;
+			link.href = target.toString();
+		}
+	}
+</script>
+
+<style>
+	.lang__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-1);
+	}
+
+	.lang__link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		/* Comfortable target without forcing a fixed box on longer labels. */
+		min-width: var(--space-10);
+		min-height: var(--space-8);
+		padding-inline: var(--space-2);
+		border-radius: var(--radius-xs);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		line-height: var(--text-mono-sm-line);
+		letter-spacing: var(--text-mono-sm-tracking);
+		color: var(--text-tertiary);
+		transition: color var(--duration-fast) var(--ease-standard);
+	}
+
+	.lang__link:hover {
+		color: var(--accent);
+	}
+
+	.lang__link[aria-current='true'] {
+		color: var(--text-primary);
+		box-shadow: inset 0 0 0 1px var(--border-hairline-strong);
+	}
+
+	.lang__link:focus-visible {
+		outline: 2px solid var(--focus-ring);
+		outline-offset: 2px;
+	}
+</style>

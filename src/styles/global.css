@@ -1,0 +1,665 @@
+/*
+  Global stylesheet entry point.
+
+  Design tokens are the approved CLAVERA design system, supplied at
+  docs/design-system/tokens/. They are imported directly (not copied) so the
+  site and the documentation never drift out of sync.
+
+  Everything below the token imports is page-level composition built ON TOP of
+  those tokens: fluid steps that interpolate between approved type sizes, the
+  editorial layout primitives (shell / rail / bleed), and the two surface
+  registers the landing page alternates between (graphite and paper).
+*/
+@import '../../docs/design-system/tokens/fonts.css';
+@import '../../docs/design-system/tokens/colors.css';
+@import '../../docs/design-system/tokens/typography.css';
+@import '../../docs/design-system/tokens/spacing.css';
+@import '../../docs/design-system/tokens/radius.css';
+@import '../../docs/design-system/tokens/shadow.css';
+@import '../../docs/design-system/tokens/motion.css';
+@import '../../docs/design-system/tokens/figma.css';
+@import '../../docs/design-system/tokens/base.css';
+
+/* ---------------------------------------------------------------------- */
+/* Layout scale                                                           */
+/* ---------------------------------------------------------------------- */
+
+:root {
+	/* Editorial shell. Wider than a typical text container because the page
+	   is composition-led: full-bleed imagery and asymmetric splits need room. */
+	--shell: 1320px;
+	--gutter: clamp(20px, 5vw, 72px);
+
+	/*
+	  The left "drawing sheet" rail that carries each section's mono index.
+	  Zero until there is genuinely spare width for it — see the media query
+	  below, which is why every rail-dependent value is expressed in terms of
+	  this token rather than a hard-coded number.
+	*/
+	--rail: 0px;
+
+	/* Reading measures */
+	--measure: 62ch;
+	--measure-tight: 46ch;
+
+	/* Fluid display steps. Both ends of every clamp are approved token sizes,
+	   so the type never leaves the design system's scale — it only moves
+	   between its own steps. */
+	--fluid-display: clamp(
+		var(--text-display-lg-size),
+		4.2vw + 1rem,
+		var(--text-display-2xl-size)
+	);
+	--fluid-display-sm: clamp(var(--text-h1-size), 3vw + 0.75rem, var(--text-display-xl-size));
+	--fluid-h2: clamp(var(--text-h2-size), 2.2vw + 0.75rem, var(--text-display-lg-size));
+	--fluid-lede: clamp(var(--text-body-md-size), 0.55vw + 0.9rem, var(--text-body-lg-size));
+
+	/* Section rhythm. Sections are deliberately not all the same height —
+	   these three steps are the page's pacing vocabulary. */
+	--rhythm-tight: clamp(var(--space-16), 8vw, var(--space-24));
+	--rhythm: clamp(var(--space-20), 11vw, var(--space-32));
+	--rhythm-loose: clamp(var(--space-24), 14vw, 160px);
+
+	/*
+	  Header geometry is DERIVED, never guessed. The header is one control of
+	  --header-control height sitting inside symmetric --header-pad padding,
+	  so --header-h is always the real rendered height. Everything that has to
+	  clear the fixed header (hero padding, anchor targets, sticky offsets)
+	  reads these tokens, so they cannot drift apart again.
+	*/
+	--header-control: 40px;
+	--header-pad: var(--space-3);
+	--header-h: calc(var(--header-control) + var(--header-pad) * 2);
+
+	/* Clearance for anchor targets landing below the fixed header. */
+	--anchor-offset: calc(var(--header-h) + var(--space-6));
+
+	/*
+	  Distance from the sheet's content edge out to the viewport edge. Lets an
+	  image inside a normal grid column bleed off the page without leaving the
+	  grid — the basis of the asymmetric splits.
+	*/
+	--edge: calc((100vw - min(100vw, var(--shell))) / 2 + var(--gutter));
+	--edge-inner: calc(var(--edge) + var(--rail));
+
+	/*
+	  The same distance measured from the element's own containing block
+	  instead of the viewport. 100vw includes the classic scrollbar, which is
+	  right for a full-bleed image (a few px of overshoot into the clipped
+	  region guarantees edge coverage) but wrong for anything being *aligned*,
+	  which would sit ~7px inside the content edge. Custom properties
+	  substitute textually, so the 100% here resolves against whichever
+	  element uses it — only use it where the containing block spans the full
+	  page width.
+	*/
+	--edge-exact: calc((100% - min(100%, var(--shell))) / 2 + var(--gutter));
+}
+
+@media (min-width: 700px) {
+	:root {
+		--header-control: 44px;
+		--header-pad: var(--space-4);
+	}
+}
+
+/*
+  The rail starts at 1200px, not 1100px. At 1100px it took 132px out of a
+  990px content box — a 13% loss arriving as a jump. From 1200px up it is
+  fluid, so the sheet margin grows with the page instead of snapping to a
+  fixed width, and the main column stays ~1000–1075px across every desktop
+  size.
+*/
+@media (min-width: 1200px) {
+	:root {
+		--header-pad: var(--space-5);
+		--rail: clamp(88px, 7vw, 120px);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+/* Base document behaviour                                                */
+/* ---------------------------------------------------------------------- */
+
+html {
+	color-scheme: dark;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+/* True zeros, not the common 0.001ms: a zero combined duration means no
+   CSSTransition is created at all, while 0.001ms ones stay "running" until the
+   next frame in Firefox. Nothing here listens for transitionend/animationend. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0s !important;
+		animation-delay: 0s !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0s !important;
+		transition-delay: 0s !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* Anchored sections must clear the fixed header. */
+[id] {
+	scroll-margin-top: var(--anchor-offset);
+}
+
+img,
+picture,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Surfaces                                                               */
+/* ---------------------------------------------------------------------- */
+
+/*
+  The page runs on two registers: graphite (atmosphere, imagery, product) and
+  paper (documentation — the zoning plan and the comparison). Rather than
+  restyling every utility per surface, a surface class re-points the SEMANTIC
+  token aliases. Every shared class (.body-lg, .caption, .eyebrow, .rule…)
+  then adapts automatically, and the token layer stays the single source of
+  truth for the actual colour values.
+*/
+.surface-deep {
+	background: var(--bg-base);
+}
+
+.surface-raised {
+	background: var(--bg-surface);
+}
+
+.surface-paper {
+	background: var(--bg-paper);
+	color: var(--text-on-paper);
+
+	--text-primary: var(--text-on-paper);
+	--text-secondary: var(--text-on-paper-secondary);
+	/*
+	  Paper text follows the Figma Light mode (decision D1/D2, 2026-10-06):
+	  secondary graphite-600 (7.6:1 on concrete-50), tertiary concrete-700
+	  (6.4:1). The old tertiary step, concrete-500, measured 3.55:1 — below
+	  WCAG AA and below the >=4.5:1 the brief requires for the generated-render
+	  disclosure on this surface — so it is no longer used for paper text.
+	*/
+	--text-tertiary: var(--text-on-paper-tertiary);
+	--border-hairline: var(--border-on-paper);
+	--border-hairline-strong: var(--border-on-paper-strong);
+	/* amber-700 on concrete-50 measures 5.2:1 — the only amber step that
+	   carries text contrast on the light surface. */
+	--accent: var(--amber-700);
+	--accent-hover: var(--amber-700);
+	--focus-ring: var(--amber-700);
+	--shadow-e1: var(--shadow-paper-e1);
+	--shadow-e2: var(--shadow-paper-e2);
+}
+
+/*
+  Figma "Clavera DS" Light mode, applied to the paper register (2026-10-06).
+  Only the Figma-only tokens from tokens/figma.css are switched here; the
+  register's existing overrides above stay as they are. Icon aliases are
+  redeclared so they resolve against this surface's text tokens.
+*/
+.surface-paper {
+	--bg-page: var(--concrete-50);
+	--bg-neutral: var(--concrete-100);
+	--bg-subtle: var(--concrete-100);
+	--bg-neutral-hover: var(--concrete-200);
+	--bg-neutral-pressed: var(--concrete-300);
+	--bg-accent-disabled: var(--amber-200);
+	--bg-accent-subtle: var(--amber-50);
+	--bg-accent-subtle-hover: var(--amber-100);
+	--bg-success: var(--moss-600);
+	--bg-success-subtle: var(--moss-50);
+	--bg-success-subtle-hover: var(--moss-100);
+	--bg-critical: var(--rust-600);
+	--bg-critical-subtle: var(--rust-50);
+	--bg-critical-subtle-hover: var(--rust-100);
+	--bg-info: var(--steel-600);
+	--bg-info-subtle: var(--steel-50);
+	--bg-warning-subtle: var(--amber-50);
+	--bg-inverse: var(--graphite-950);
+	--bg-disabled: var(--concrete-200);
+
+	--overlay-hover-neutral: var(--alpha-black-8);
+	--overlay-pressed-neutral: var(--alpha-black-12);
+
+	--border-subtle: var(--alpha-black-8);
+	--border-neutral: var(--alpha-black-16);
+	--border-neutral-hover: var(--concrete-400);
+	--border-paper-subtle: var(--alpha-white-8);
+	--border-paper-neutral: var(--alpha-white-16);
+	--border-disabled: var(--alpha-black-8);
+	--border-inverse: var(--alpha-white-16);
+	--border-accent-disabled: var(--amber-200);
+	--border-success: var(--moss-600);
+	--border-critical: var(--rust-600);
+	--border-warning: var(--amber-700);
+	--border-info: var(--steel-600);
+
+	--text-success: var(--moss-600);
+	--text-critical: var(--rust-600);
+	--text-info: var(--steel-600);
+	--text-warning: var(--amber-700);
+	--text-disabled: var(--concrete-400);
+	--text-accent: var(--amber-700);
+	--text-accent-hover: var(--amber-800);
+	--text-accent-pressed: var(--amber-800);
+	--text-accent-disabled: var(--amber-200);
+
+	--icon-neutral: var(--text-tertiary);
+	--icon-primary: var(--text-primary);
+	--icon-secondary: var(--text-secondary);
+	--icon-tertiary: var(--text-tertiary);
+	--icon-disabled: var(--text-disabled);
+	--icon-inverse: var(--text-inverse);
+	--icon-on-accent: var(--text-on-accent);
+	--icon-on-color: var(--text-on-color);
+	--icon-accent: var(--text-accent);
+	--icon-accent-hover: var(--text-accent-hover);
+	--icon-accent-disabled: var(--text-accent-disabled);
+	--icon-success: var(--text-success);
+	--icon-critical: var(--text-critical);
+	--icon-info: var(--text-info);
+	--icon-warning: var(--text-warning);
+	--icon-on-paper: var(--text-on-paper);
+	--icon-on-paper-secondary: var(--text-on-paper-secondary);
+	--icon-on-paper-tertiary: var(--text-on-paper-tertiary);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Layout primitives                                                      */
+/* ---------------------------------------------------------------------- */
+
+.shell {
+	width: 100%;
+	max-width: var(--shell);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+/* Shell + the mono index rail as a real grid column, so body content lines up
+   on the same left edge across every section of the page. */
+.sheet {
+	width: 100%;
+	max-width: var(--shell);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+	display: grid;
+	grid-template-columns: var(--rail) minmax(0, 1fr);
+	column-gap: 0;
+}
+
+.sheet > * {
+	grid-column: 2;
+	min-width: 0;
+}
+
+.sheet__rail {
+	grid-column: 1;
+	grid-row: 1 / -1;
+	display: none;
+}
+
+/* Matches the width at which --rail becomes non-zero. */
+@media (min-width: 1200px) {
+	.sheet__rail {
+		display: block;
+	}
+}
+
+/*
+  Escapes to the full viewport width from inside the sheet's content column.
+
+  It cannot use the usual `margin-inline: calc(50% - 50vw)` trick: inside the
+  sheet the content column is offset by the rail and is therefore not centred
+  in the viewport, so percentage-based centring lands it off to one side.
+  Negative margins measured from each edge are exact instead.
+*/
+.bleed {
+	width: auto;
+	max-width: none;
+	margin-left: calc(var(--edge-inner) * -1);
+	margin-right: calc(var(--edge) * -1);
+}
+
+/* Aligns a plain `.shell` block with the sheet's content column. */
+.shell--aligned {
+	padding-inline-start: calc(var(--gutter) + var(--rail));
+}
+
+/* Runs an element off one edge of the page while it stays in its grid column. */
+.bleed-right {
+	width: calc(100% + var(--edge));
+	max-width: none;
+}
+
+.bleed-left {
+	margin-left: calc(var(--edge-inner) * -1);
+	width: calc(100% + var(--edge-inner));
+	max-width: none;
+}
+
+.measure {
+	max-width: var(--measure);
+}
+
+.measure-tight {
+	max-width: var(--measure-tight);
+}
+
+.stack {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Hairline "reveal line" — the system's architectural separator. */
+.rule {
+	height: 1px;
+	border: 0;
+	margin: 0;
+	background: var(--border-hairline);
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skip-link {
+	position: fixed;
+	top: var(--space-2);
+	left: var(--space-2);
+	z-index: 100;
+	padding: var(--space-3) var(--space-5);
+	background: var(--accent);
+	color: var(--accent-on);
+	border-radius: var(--radius-sm);
+	font-family: var(--font-sans);
+	font-size: var(--text-label-md-size);
+	font-weight: 600;
+	transform: translateY(-200%);
+	transition: transform var(--duration-base) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+	transform: translateY(0);
+	color: var(--accent-on);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Typography utilities                                                   */
+/* ---------------------------------------------------------------------- */
+
+.eyebrow {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	font-family: var(--font-sans);
+	font-size: var(--text-eyebrow-size);
+	line-height: var(--text-eyebrow-line);
+	letter-spacing: var(--text-eyebrow-tracking);
+	font-weight: var(--text-eyebrow-weight);
+	text-transform: uppercase;
+	color: var(--text-tertiary);
+	margin: 0;
+}
+
+/* The amber tick: the LED reduced to its smallest possible mark. */
+.eyebrow::before {
+	content: '';
+	flex: none;
+	width: var(--space-4);
+	height: 2px;
+	background: var(--accent);
+}
+
+.mono {
+	font-family: var(--font-mono);
+	font-size: var(--text-mono-sm-size);
+	line-height: var(--text-mono-sm-line);
+	letter-spacing: var(--text-mono-sm-tracking);
+	font-weight: var(--text-mono-sm-weight);
+	font-variant-numeric: tabular-nums;
+	text-transform: uppercase;
+	color: var(--text-tertiary);
+	margin: 0;
+}
+
+.mono--accent {
+	color: var(--accent);
+}
+
+/* Bay numerals — the 01…08 language taken from the racks in the renders. */
+.numeral {
+	font-family: var(--font-mono);
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.02em;
+	color: var(--accent);
+	line-height: 1;
+}
+
+.heading-display {
+	font-family: var(--font-display);
+	font-size: var(--fluid-display);
+	line-height: 1.02;
+	letter-spacing: var(--text-display-2xl-tracking);
+	font-weight: var(--text-display-2xl-weight);
+	margin: 0;
+	text-wrap: balance;
+}
+
+.heading-h2 {
+	font-family: var(--font-display);
+	font-size: var(--fluid-h2);
+	line-height: 1.08;
+	letter-spacing: var(--text-display-lg-tracking);
+	font-weight: var(--text-display-lg-weight);
+	margin: 0;
+	text-wrap: balance;
+}
+
+.heading-h3 {
+	font-family: var(--font-display);
+	font-size: var(--text-h3-size);
+	line-height: var(--text-h3-line);
+	letter-spacing: var(--text-h3-tracking);
+	font-weight: var(--text-h3-weight);
+	margin: 0;
+}
+
+.heading-h4 {
+	font-family: var(--font-display);
+	font-size: var(--text-h4-size);
+	line-height: var(--text-h4-line);
+	letter-spacing: var(--text-h4-tracking);
+	font-weight: var(--text-h4-weight);
+	color: var(--text-primary);
+	margin: 0;
+}
+
+.lede {
+	font-family: var(--font-sans);
+	font-size: var(--fluid-lede);
+	line-height: 1.6;
+	font-weight: var(--text-body-lg-weight);
+	color: var(--text-secondary);
+	margin: 0;
+	text-wrap: pretty;
+}
+
+.body-lg {
+	font-family: var(--font-sans);
+	font-size: var(--text-body-lg-size);
+	line-height: var(--text-body-lg-line);
+	font-weight: var(--text-body-lg-weight);
+	color: var(--text-secondary);
+	margin: 0;
+	text-wrap: pretty;
+}
+
+.body-md {
+	font-family: var(--font-sans);
+	font-size: var(--text-body-md-size);
+	line-height: var(--text-body-md-line);
+	font-weight: var(--text-body-md-weight);
+	color: var(--text-secondary);
+	margin: 0;
+	text-wrap: pretty;
+}
+
+.caption {
+	font-family: var(--font-sans);
+	font-size: var(--text-caption-size);
+	line-height: var(--text-caption-line);
+	letter-spacing: var(--text-caption-tracking);
+	font-weight: var(--text-caption-weight);
+	color: var(--text-tertiary);
+	margin: 0;
+}
+
+.label-lg {
+	font-family: var(--font-sans);
+	font-size: var(--text-label-lg-size);
+	line-height: var(--text-label-lg-line);
+	letter-spacing: var(--text-label-lg-tracking);
+	font-weight: var(--text-label-lg-weight);
+}
+
+strong {
+	color: var(--text-primary);
+	font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Buttons                                                                */
+/* ---------------------------------------------------------------------- */
+
+.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	font-family: var(--font-sans);
+	font-size: var(--text-button-size);
+	line-height: var(--text-button-line);
+	letter-spacing: var(--text-button-tracking);
+	font-weight: var(--text-button-weight);
+	/* Figma Button md: 12×20, icon gap 8 (decisions D5/D7, 2026-10-06). */
+	padding: var(--space-3) var(--space-5);
+	border-radius: var(--radius-sm);
+	border: 1px solid transparent;
+	cursor: pointer;
+	text-decoration: none;
+	/*
+	  Labels wrap rather than forcing the control wider than its container.
+	  `nowrap` here pushed the Russian founders CTA to 415px inside a 375px
+	  viewport; the label is longer in some locales than in Spanish, so the
+	  control has to absorb that intrinsically instead of overflowing.
+	*/
+	max-width: 100%;
+	white-space: normal;
+	text-wrap: balance;
+	transition:
+		background-color var(--duration-fast) var(--ease-standard),
+		border-color var(--duration-fast) var(--ease-standard),
+		color var(--duration-fast) var(--ease-standard),
+		box-shadow var(--duration-base) var(--ease-standard),
+		transform var(--duration-fast) var(--ease-standard);
+}
+
+.button--lg {
+	/* Figma Button lg: 16×28. */
+	padding: var(--space-4) var(--space-7);
+}
+
+.button--primary {
+	background: var(--accent);
+	color: var(--accent-on);
+}
+
+.button--primary:hover {
+	background: var(--accent-hover);
+	color: var(--accent-on);
+	/* The 3px amber ring, as in Figma and the design-system README (D6). */
+	box-shadow: var(--shadow-glow-accent);
+}
+
+.button--primary:active {
+	background: var(--accent-press);
+	transform: scale(0.98);
+}
+
+.button--ghost {
+	background: transparent;
+	border-color: var(--border-hairline-strong);
+	color: var(--text-primary);
+}
+
+.button--ghost:hover {
+	color: var(--accent);
+	border-color: var(--accent);
+}
+
+.button--ghost:active {
+	transform: scale(0.98);
+}
+
+/*
+  The lead-capture controls stay inert until the Typeform URLs are configured.
+  A dimmed solid button reads as broken and drops below contrast, so the
+  disabled state becomes an explicit reserved control instead: outlined, full
+  accent contrast, obviously not pressable. It returns to the solid primary
+  automatically once a URL is set.
+*/
+.button:disabled {
+	cursor: not-allowed;
+	background: transparent;
+	border-color: var(--accent);
+	color: var(--accent);
+	box-shadow: none;
+	transform: none;
+}
+
+/* An inline text link that reads as editorial, not as a button. */
+.link-arrow {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--space-2);
+	font-family: var(--font-sans);
+	font-size: var(--text-label-lg-size);
+	font-weight: 600;
+	color: var(--accent);
+	padding-block: var(--space-1);
+	border-bottom: 1px solid var(--accent-subtle-strong);
+	transition:
+		border-color var(--duration-fast) var(--ease-standard),
+		color var(--duration-fast) var(--ease-standard);
+}
+
+.link-arrow:hover {
+	color: var(--accent-hover);
+	border-color: currentColor;
+}

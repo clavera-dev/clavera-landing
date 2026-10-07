@@ -1,0 +1,176 @@
+---
+import { logo } from '../../data/media';
+import { getCopy, localeHome, resolveLocale, type Locale } from '../../i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+	/** See LanguageSwitcher.astro — overrides the switcher's targets on non-home pages. */
+	alternatePaths?: Record<Locale, string>;
+}
+
+const { alternatePaths } = Astro.props;
+const copy = getCopy(Astro.currentLocale);
+const home = localeHome(resolveLocale(Astro.currentLocale));
+---
+
+<header class="site-header">
+	<div class="shell site-header__inner">
+		<a class="site-header__logo" href={`${home}#top`} aria-label={copy.a11y.homeLabel}>
+			<img src={logo.src} alt={logo.alt} width="89" height="20" />
+		</a>
+
+		<div class="site-header__end">
+			<p class="mono site-header__note" aria-hidden="true">{copy.header.note}</p>
+			<a class="button button--primary" href={`${home}#fundadores`}>{copy.header.cta}</a>
+			{/*
+			  Last element of the navigation, per brief Part V — never first.
+			  The wrapper is owned by this component so the scoped rule below
+			  actually matches: a class passed into a child component lands on
+			  the child's root without this component's scope attribute.
+			*/}
+			<div class="site-header__lang">
+				<LanguageSwitcher paths={alternatePaths} />
+			</div>
+		</div>
+	</div>
+</header>
+
+<style>
+	/*
+	  Fixed, not sticky: the header floats over the hero photograph instead of
+	  reserving a band above it. Its own top-down scrim (plus a light blur) is
+	  what guarantees legibility over every surface the page switches to — no
+	  scroll listener, no JavaScript. Anchor targets clear it through the
+	  global --anchor-offset.
+	*/
+	.site-header {
+		position: fixed;
+		inset-inline: 0;
+		top: 0;
+		z-index: 40;
+		isolation: isolate;
+	}
+
+	/* The scrim lives on a pseudo-element so the fade-out mask applies to the
+	   backdrop only — masking the header itself would fade its logo and CTA. */
+	.site-header::before {
+		content: '';
+		position: absolute;
+		/* Runs past the header box so the fade-out is governed by the scrim,
+		   not by whatever the header height happens to be. */
+		inset: 0 0 auto 0;
+		height: calc(100% + var(--space-10));
+		z-index: -1;
+		background: linear-gradient(
+			to bottom,
+			oklch(15% 0.004 95 / 0.92) 0%,
+			oklch(15% 0.004 95 / 0.74) 55%,
+			oklch(15% 0.004 95 / 0) 100%
+		);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		mask-image: linear-gradient(to bottom, oklch(0% 0 0) 55%, transparent 100%);
+		-webkit-mask-image: linear-gradient(to bottom, oklch(0% 0 0) 55%, transparent 100%);
+		pointer-events: none;
+	}
+
+	/* Symmetric padding around a fixed-height control row: the row's optical
+	   centre and the header's centre are the same line at every width. */
+	.site-header__inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-4);
+		min-height: var(--header-h);
+		padding-block: var(--header-pad);
+	}
+
+	/* flex-shrink: 0 keeps the wordmark at its true proportions. Without it the
+	   flex row squeezed the anchor when a longer locale needed more room for the
+	   CTA — the English header rendered the mark at 98px instead of 107px, i.e.
+	   horizontally squashed against a fixed height. */
+	.site-header__logo {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.site-header__logo img {
+		height: 20px;
+		width: auto;
+	}
+
+	.site-header__end {
+		display: flex;
+		align-items: center;
+		/* Wraps rather than compressing when a locale makes the CTA longer. */
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: var(--space-3) var(--space-5);
+	}
+
+	/*
+	  Below 700px the logo and CTA already fill the row, so the switcher would
+	  wrap to a second line and push the header from 64px to 108px — breaking
+	  the derived --header-h that hero padding, anchor offsets and sticky
+	  offsets all read. On small screens the footer switcher (required by brief
+	  Part V in both places) carries language switching instead, and the header
+	  stays exactly one control row tall at every width.
+	*/
+	.site-header__lang {
+		display: none;
+	}
+
+	@media (min-width: 700px) {
+		.site-header__lang {
+			display: block;
+		}
+	}
+
+	.site-header__note {
+		display: none;
+		color: var(--text-secondary);
+	}
+
+	/* The CTA *is* the header's control height — set it directly instead of
+	   letting padding plus line-height add up to an unpredictable number. */
+	.site-header__end .button {
+		min-height: var(--header-control);
+		padding-block: 0;
+	}
+
+	/*
+	  Below 700px the header row has to hold the longest locale's CTA on ONE
+	  line. "I’m interested in the pilot" and "Мне интересен пилот" are far
+	  longer than the Spanish label; at the default control padding they wrapped
+	  to a second line and pushed the rendered header to 74px against a declared
+	  --header-h of 64px — which hero padding, anchor offsets and sticky offsets
+	  are all derived from.
+
+	  The room comes from the control's own padding and the wordmark stepping
+	  down to its intrinsic 20px height, not from shrinking the label, clipping
+	  it, or giving any locale its own offset.
+	*/
+	@media (max-width: 699px) {
+		.site-header__end .button {
+			padding-inline: var(--space-3);
+		}
+	}
+
+	@media (min-width: 700px) {
+		.site-header__logo img {
+			height: 28px;
+		}
+	}
+
+	@media (min-width: 1000px) {
+		.site-header__note {
+			display: block;
+			padding-right: var(--space-6);
+			border-right: 1px solid var(--border-hairline-strong);
+			/* A divider proportional to the control it separates, rather than
+			   the 16px stub the note's own line box would give. */
+			line-height: var(--space-6);
+		}
+	}
+</style>

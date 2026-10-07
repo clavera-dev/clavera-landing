@@ -1,0 +1,123 @@
+---
+/**
+ * The one place the page links out to Typeform.
+ *
+ * One flow, the research survey, locale-routed from src/config/typeform.ts.
+ * The short "Avisame" pilot form no longer exists: owner response v1.4 §1.1
+ * replaced it with the application form, whose link is built only by
+ * SolicitudBlock.astro from src/config/solicitud.ts.
+ *
+ * Nothing else on the page may build a research-survey URL, so a locale can
+ * never be pointed at the wrong destination by a component that hard-codes
+ * one. (The zone selector asks src/config/typeform.ts for its per-zone hrefs
+ * through the same `buildResearchHref`.)
+ *
+ * Configured destinations are ordinary same-tab links: they work with
+ * JavaScript disabled, need no Typeform SDK, and this component ships no
+ * client-side script.
+ *
+ * When the destination is not written in the page's language — English, whose
+ * research survey is Spanish as an approved beta compromise — the notice next
+ * to the link says so, wired through `aria-describedby` so a screen-reader
+ * user is told before following it, not after.
+ *
+ * Only allowlisted, non-personal attribution is ever appended
+ * (src/config/typeform.ts). No personal data is put in a URL.
+ */
+import {
+	getResearchDestination,
+	destinationLanguageDiffers,
+	buildResearchHref,
+} from '../../config/typeform';
+import { getCopy, resolveLocale, LOCALE_DEFINITIONS } from '../../i18n';
+
+interface Props {
+	flow: 'research';
+	/** Distinguishes the instances so their notice ids stay unique and stable. */
+	name: string;
+	size?: 'md' | 'lg';
+	/** `link` is the weaker inline text link (application block, TZ §3.6). */
+	variant?: 'primary' | 'ghost' | 'link';
+	/** Overrides the flow's default label, e.g. "Respondé la encuesta". */
+	label?: string;
+}
+
+const { flow, name, size = 'md', variant = 'primary', label: labelOverride } = Astro.props;
+
+const locale = resolveLocale(Astro.currentLocale);
+const copy = getCopy(Astro.currentLocale);
+
+const destination = getResearchDestination(locale);
+
+const label = labelOverride ?? copy.survey.cta;
+
+/*
+  The notice is shown when — and only when — the destination's language differs
+  from the page's. Both halves are required: the copy string is empty on the
+  locales whose destination matches, and the config is the authority on which
+  those are.
+*/
+const languageNotice = copy.survey.languageNotice;
+const showLanguageNotice =
+	destinationLanguageDiffers(locale, destination) && languageNotice.length > 0;
+const noticeId = `destination-language-${name}`;
+
+/*
+  The handoff v1.1 §4.1 fragment (`#recruitment_source=…`), fixed per locale,
+  with no `candidate_zone` because no zone is chosen here — the zone selector
+  builds its own per-zone hrefs through the same function.
+*/
+const href = buildResearchHref(locale);
+
+const buttonClass =
+	variant === 'link'
+		? 'link-arrow'
+		: ['button', `button--${variant}`, size === 'lg' && 'button--lg'].filter(Boolean).join(' ');
+---
+
+<div
+	class="typeform-boundary"
+	data-typeform-boundary
+	data-typeform-flow={flow}
+	data-typeform-state="live"
+>
+	<a
+		class={buttonClass}
+		href={href}
+		hreflang={LOCALE_DEFINITIONS[destination.language].hreflang}
+		aria-describedby={showLanguageNotice ? noticeId : undefined}
+	>
+		{label}
+		<span class="typeform-boundary__arrow" aria-hidden="true">
+			↗
+		</span>
+	</a>
+
+	{showLanguageNotice && (
+		<p class="caption typeform-boundary__notice" id={noticeId} data-destination-language-notice>
+			{languageNotice}
+		</p>
+	)}
+</div>
+
+<style>
+	.typeform-boundary {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-2);
+	}
+
+	.typeform-boundary__arrow {
+		transition: transform var(--duration-base) var(--ease-out);
+	}
+
+	.button:hover .typeform-boundary__arrow,
+	.link-arrow:hover .typeform-boundary__arrow {
+		transform: translate(2px, -2px);
+	}
+
+	.typeform-boundary__notice {
+		max-width: 40ch;
+	}
+</style>
