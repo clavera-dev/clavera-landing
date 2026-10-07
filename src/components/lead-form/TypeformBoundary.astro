@@ -2,15 +2,24 @@
 /**
  * The one place the page links out to Typeform.
  *
- * One flow, the research survey, locale-routed from src/config/typeform.ts.
- * The short "Avisame" pilot form no longer exists: owner response v1.4 §1.1
- * replaced it with the application form, whose link is built only by
- * SolicitudBlock.astro from src/config/solicitud.ts.
+ * Two flows, both locale-routed from src/config/typeform.ts:
  *
- * Nothing else on the page may build a research-survey URL, so a locale can
- * never be pointed at the wrong destination by a component that hard-codes
- * one. (The zone selector asks src/config/typeform.ts for its per-zone hrefs
- * through the same `buildResearchHref`.)
+ *   flow="pilot"    — the short "Avisame" form. Its URLs are still being
+ *                     created, so its destination may be `null`.
+ *   flow="research" — the research survey. Primary in "Sumate al piloto"
+ *                     while the Avisame form is absent; secondary otherwise.
+ *
+ * Nothing else on the page may build a Typeform URL, so a locale can never be
+ * pointed at the wrong destination by a component that hard-codes one. (The
+ * zone selector asks src/config/typeform.ts for its per-zone hrefs through the
+ * same `buildResearchHref`.)
+ *
+ * PENDING DESTINATIONS. When the pilot flow has no URL for this locale the
+ * component renders NOTHING (owner handoff v1.1 B4: "do not show the button
+ * until the URL is delivered", and the "en preparación" line is removed). It
+ * never renders an anchor with `href="#"`, an empty href, a placeholder
+ * domain, a disabled button, or any other control that looks actionable and
+ * is not. Supplying the URL in the central config is the only change needed.
  *
  * Configured destinations are ordinary same-tab links: they work with
  * JavaScript disabled, need no Typeform SDK, and this component ships no
@@ -25,19 +34,21 @@
  * (src/config/typeform.ts). No personal data is put in a URL.
  */
 import {
+	getPilotDestination,
 	getResearchDestination,
 	destinationLanguageDiffers,
+	buildDestinationHref,
 	buildResearchHref,
+	type PendingDestination,
 } from '../../config/typeform';
 import { getCopy, resolveLocale, LOCALE_DEFINITIONS } from '../../i18n';
 
 interface Props {
-	flow: 'research';
+	flow: 'pilot' | 'research';
 	/** Distinguishes the instances so their notice ids stay unique and stable. */
 	name: string;
 	size?: 'md' | 'lg';
-	/** `link` is the weaker inline text link (application block, TZ §3.6). */
-	variant?: 'primary' | 'ghost' | 'link';
+	variant?: 'primary' | 'ghost';
 	/** Overrides the flow's default label, e.g. "Respondé la encuesta". */
 	label?: string;
 }
@@ -47,9 +58,10 @@ const { flow, name, size = 'md', variant = 'primary', label: labelOverride } = A
 const locale = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
 
-const destination = getResearchDestination(locale);
+const destination: PendingDestination =
+	flow === 'pilot' ? getPilotDestination(locale) : getResearchDestination(locale);
 
-const label = labelOverride ?? copy.survey.cta;
+const label = labelOverride ?? (flow === 'pilot' ? copy.pilot.cta : copy.survey.cta);
 
 /*
   The notice is shown when — and only when — the destination's language differs
@@ -57,48 +69,62 @@ const label = labelOverride ?? copy.survey.cta;
   locales whose destination matches, and the config is the authority on which
   those are.
 */
-const languageNotice = copy.survey.languageNotice;
+const languageNotice = flow === 'research' ? copy.survey.languageNotice : '';
 const showLanguageNotice =
 	destinationLanguageDiffers(locale, destination) && languageNotice.length > 0;
 const noticeId = `destination-language-${name}`;
 
 /*
-  The handoff v1.1 §4.1 fragment (`#recruitment_source=…`), fixed per locale,
-  with no `candidate_zone` because no zone is chosen here — the zone selector
-  builds its own per-zone hrefs through the same function.
-*/
-const href = buildResearchHref(locale);
+  Attribution differs per flow.
 
-const buttonClass =
-	variant === 'link'
-		? 'link-arrow'
-		: ['button', `button--${variant}`, size === 'lg' && 'button--lg'].filter(Boolean).join(' ');
+  Research: the handoff v1.1 §4.1 fragment (`#recruitment_source=…`), fixed per
+  locale, with no `candidate_zone` because no zone is chosen here — the zone
+  selector builds its own per-zone hrefs through the same function.
+
+  Pilot: allowlisted, non-personal build-time query attribution (`lang`,
+  `source`). The visitor's own incoming `utm_*` values are NOT forwarded.
+*/
+const href =
+	destination === null
+		? null
+		: flow === 'pilot'
+			? buildDestinationHref(destination.url, { lang: locale, source: 'landing' })
+			: buildResearchHref(locale);
+
+const buttonClass = ['button', `button--${variant}`, size === 'lg' && 'button--lg']
+	.filter(Boolean)
+	.join(' ');
 ---
 
-<div
-	class="typeform-boundary"
-	data-typeform-boundary
-	data-typeform-flow={flow}
-	data-typeform-state="live"
->
-	<a
-		class={buttonClass}
-		href={href}
-		hreflang={LOCALE_DEFINITIONS[destination.language].hreflang}
-		aria-describedby={showLanguageNotice ? noticeId : undefined}
-	>
-		{label}
-		<span class="typeform-boundary__arrow" aria-hidden="true">
-			↗
-		</span>
-	</a>
+{/* A pending destination renders nothing at all — see the header comment. */}
+{
+	href !== null && (
+		<div
+			class="typeform-boundary"
+			data-typeform-boundary
+			data-typeform-flow={flow}
+			data-typeform-state="live"
+		>
+			<a
+				class={buttonClass}
+				href={href}
+				hreflang={LOCALE_DEFINITIONS[destination!.language].hreflang}
+				aria-describedby={showLanguageNotice ? noticeId : undefined}
+			>
+				{label}
+				<span class="typeform-boundary__arrow" aria-hidden="true">
+					↗
+				</span>
+			</a>
 
-	{showLanguageNotice && (
-		<p class="caption typeform-boundary__notice" id={noticeId} data-destination-language-notice>
-			{languageNotice}
-		</p>
-	)}
-</div>
+			{showLanguageNotice && (
+				<p class="caption typeform-boundary__notice" id={noticeId} data-destination-language-notice>
+					{languageNotice}
+				</p>
+			)}
+		</div>
+	)
+}
 
 <style>
 	.typeform-boundary {
@@ -112,8 +138,7 @@ const buttonClass =
 		transition: transform var(--duration-base) var(--ease-out);
 	}
 
-	.button:hover .typeform-boundary__arrow,
-	.link-arrow:hover .typeform-boundary__arrow {
+	.button:hover .typeform-boundary__arrow {
 		transform: translate(2px, -2px);
 	}
 

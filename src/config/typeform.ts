@@ -20,10 +20,6 @@
  *
  * These are public responder URLs, not secrets.
  *
- * 2026-10-04 (owner response v1.4 §1.1): the "Avisame" pilot form is retired.
- * Its role passes to the application form in src/config/solicitud.ts; this
- * file now routes the research survey only.
- *
  * 2026-09-28 (owner handoff v1.1): the pilot form is the short "Avisame" form.
  * While its URL is absent it is not shown at all, and the research survey is
  * the primary action (handoff B4). Research links carry the handoff §4.1
@@ -153,12 +149,28 @@ export function buildResearchHref(locale: Locale, zoneSlug?: string): string {
 }
 
 /* -------------------------------------------------------------------------
-   2. Pilot interest ("Avisame") — retired
-   -------------------------------------------------------------------------
-   Owner response v1.4 §1.1 (2026-10-04): there is no separate Avisame form.
-   Its place is taken by the application form, configured and switched on in
-   src/config/solicitud.ts only.
+   2. Pilot interest ("Avisame") — pending
    ------------------------------------------------------------------------- */
+
+/**
+ * Locale → pilot-interest ("Avisame") form.
+ *
+ * >>> THIS IS THE ONLY PLACE THE REAL PILOT URLS ARE ENTERED. <<<
+ *
+ * The Typeform is being created externally. Until each URL is supplied its
+ * entry stays `null` and the pilot call to action is not rendered at all
+ * (handoff v1.1 B4). Activation is exactly this: replace a `null`
+ * with `{ url: '…', language: '…' }`. No component, template, test or
+ * document needs to change.
+ *
+ * Explicit and total, with no fallback: an unsupplied locale must never
+ * inherit another locale's form.
+ */
+export const PILOT_INTEREST_DESTINATIONS: Record<Locale, PendingDestination> = {
+	es: null,
+	en: null,
+	ru: null,
+};
 
 /* -------------------------------------------------------------------------
    Accessors
@@ -166,6 +178,10 @@ export function buildResearchHref(locale: Locale, zoneSlug?: string): string {
 
 export function getResearchDestination(locale: Locale): SurveyDestination {
 	return RESEARCH_SURVEY_DESTINATIONS[locale];
+}
+
+export function getPilotDestination(locale: Locale): PendingDestination {
+	return PILOT_INTEREST_DESTINATIONS[locale];
 }
 
 /**

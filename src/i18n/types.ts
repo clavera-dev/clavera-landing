@@ -188,6 +188,8 @@ export interface Copy {
 		lede: string;
 		/** Preliminary interest: reserves nothing, no contract, no payment. */
 		note: string;
+		/** Shown before the survey link only when the Avisame form is live. */
+		surveyPrompt: string;
 		surveyCta: string;
 	};
 	faq: {
@@ -198,31 +200,15 @@ export interface Copy {
 		items: FaqCopy[];
 	};
 	/**
-	 * Application block (TZ Bloque Solicitud v1.1 §3.2–3.3), shown in
-	 * "Sumate al piloto" and on `/solicitud` only while src/config/solicitud.ts
-	 * is live. ES is the only legally binding version; EN/RU carry the same
-	 * structure and the same mandatory disclaimer.
+	 * The short pilot-interest ("Avisame") form.
 	 *
-	 * `{zone}` and `{hint}` are filled from the config; `{privacy}` becomes the
-	 * link to the privacy policy, labelled `privacyLink`. No digit may appear
-	 * in the block's text — steps are numbered by the list markup.
+	 * Non-binding: it reserves no space, creates no contract, accepts no
+	 * payment, and promises no admission to the pilot. While its URL is `null`
+	 * in src/config/typeform.ts nothing is rendered for it (handoff v1.1 B4).
 	 */
-	solicitud: {
-		eyebrow: string;
-		heading: string;
-		hint: string;
-		lead: string;
-		steps: [string, string, string];
+	pilot: {
+		/** Shown only once a real destination exists for this locale. */
 		cta: string;
-		microcopy: string;
-		privacyLink: string;
-		disclaimer: string;
-		secondary: string;
-		whatsapp: string;
-		/** Label on the candidate zone in the selector. */
-		selectorBadge: string;
-		/** Page title of `/solicitud`; never names the zone (TZ §2.3). */
-		pageTitle: string;
 	};
 	survey: {
 		eyebrow: string;

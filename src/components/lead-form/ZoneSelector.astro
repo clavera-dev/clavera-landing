@@ -3,11 +3,7 @@
  * Zone selector (owner handoff v1.1 §3.2), used in the hero and in S10.
  *
  * Searchable single-select combobox, alphabetical, with zone names in their
- * original Spanish on every locale. No zone is ranked. While the application
- * form is live (src/config/solicitud.ts), the S10 instance (`highlight`) gives
- * the one candidate zone a label and an amber marker (owner response v1.4 §1.4,
- * TZ §2.4); it keeps its alphabetical place and works like every other option.
- * The hero instance never highlights (TZ §2.3).
+ * original Spanish on every locale. No zone is highlighted or ranked.
  * The working list is in src/config/candidate-zones.ts (owner response v1.2).
  *
  * "Seguir" opens the research survey. Every allowed zone has a build-time
@@ -24,21 +20,14 @@ import {
 	destinationLanguageDiffers,
 } from '../../config/typeform';
 import { CANDIDATE_ZONES, CANDIDATE_ZONES_STATUS } from '../../config/zones';
-import { selectorHighlightSlug } from '../../config/solicitud';
 import { getCopy, resolveLocale, LOCALE_DEFINITIONS } from '../../i18n';
 
 interface Props {
 	/** Keeps ids unique between the hero and S10 instances. */
 	name: string;
-	/**
-	 * Show the candidate-zone label while the application form is live.
-	 * Section 09 only (owner response v1.4 §1.4, TZ §2.4); the hero does not
-	 * change (TZ §2.3).
-	 */
-	highlight?: boolean;
 }
 
-const { name, highlight = false } = Astro.props;
+const { name } = Astro.props;
 
 const locale = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
@@ -46,11 +35,9 @@ const c = copy.zoneSelector;
 
 const destination = getResearchDestination(locale);
 const baseHref = buildResearchHref(locale);
-const highlightSlug = highlight ? selectorHighlightSlug() : null;
 const zones = CANDIDATE_ZONES.map((zone) => ({
 	...zone,
 	href: buildResearchHref(locale, zone.slug),
-	candidate: zone.slug === highlightSlug,
 }));
 
 const inputId = `zone-search-${name}`;
@@ -95,24 +82,8 @@ const showLanguageNotice =
 			<ul id={listId} class="zone-selector__list" role="listbox" hidden data-zone-list>
 				{
 					zones.map((zone, index) => (
-						<li
-							id={`${listId}-${index}`}
-							role="option"
-							aria-selected="false"
-							class:list={{ 'zone-selector__option--candidate': zone.candidate }}
-							data-zone-option
-							data-slug={zone.slug}
-							data-label={zone.label}
-							data-href={zone.href}
-							data-zone-candidate={zone.candidate ? '' : undefined}
-							lang="es-AR"
-						>
+						<li id={`${listId}-${index}`} role="option" aria-selected="false" data-zone-option data-slug={zone.slug} data-label={zone.label} data-href={zone.href} lang="es-AR">
 							{zone.label}
-							{zone.candidate && (
-								<span class="zone-selector__badge" lang={LOCALE_DEFINITIONS[locale].lang} data-zone-badge>
-									{copy.solicitud.selectorBadge}
-								</span>
-							)}
 						</li>
 					))
 				}
@@ -416,22 +387,6 @@ const showLanguageNotice =
 	.zone-selector__list [role='option']:hover,
 	.zone-selector__list .is-active { background: var(--bg-surface); }
 
-	/*
-	  The candidate zone (TZ §2.4): an amber marker on the left edge and a label
-	  in secondary text — never amber text on a grey surface.
-	*/
-	.zone-selector__list .zone-selector__option--candidate {
-		box-shadow: inset 2px 0 0 var(--brand-orange);
-	}
-
-	.zone-selector__badge {
-		display: block;
-		font-family: var(--font-sans);
-		font-size: var(--text-caption-size);
-		line-height: var(--text-caption-line);
-		letter-spacing: var(--text-caption-tracking);
-		color: var(--text-secondary);
-	}
 
 	.zone-selector__input:hover {
 		border-color: var(--accent);
