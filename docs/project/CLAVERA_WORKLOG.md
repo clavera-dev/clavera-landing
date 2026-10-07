@@ -2,6 +2,10 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-10-07 — Font hosting decided: self-host (branch `agent/clavera-figma-final-20261006`)
+
+The owner delegated font hosting as a technical decision. Fonts will be self-hosted (brief §9.2) instead of loaded from the Google Fonts CDN; the switch waits for the designer's monospace answer so the file set is final. Recorded in `PROJECT_DECISIONS.md`, `CLAUDE.md`, `FONTS_DECISION_FACTS.md`; F1 moved to closed in `OWNER_DECISIONS_OPEN.md`. No code change yet.
+
 ## 2026-10-07 — Russian display type in Onest (branch `agent/clavera-figma-final-20261006`)
 
 The designer chose Onest for Cyrillic (relayed by the owner). Russian pages now set every display and heading style in Onest instead of the Helvetica/Arial fallback: `:root:lang(ru)` overrides `--font-display` in `docs/design-system/tokens/typography.css`, and Onest 800 is added to the Google Fonts import for display-2xl. ES and EN are unchanged. RU pages no longer download Plus Jakarta Sans. `tests/fonts.spec.ts` checks the declared heading family per locale.
