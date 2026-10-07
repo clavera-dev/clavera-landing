@@ -1,5 +1,7 @@
 # Pre-publication readiness — brief §6.5, §9, §12 (plan C8, 2026-10-06)
 
+> **2026-10-07: the pilot spec (Respuesta v1.4, TZ Bloque Solicitud v1.1) was withdrawn by the owner.** References below to the application block, `/solicitud`, `src/config/solicitud.ts` and the Villa Crespo highlight describe code that was removed; the governing spec is Handoff v1.1 + Respuesta v1.2 again (see PROJECT_DECISIONS.md).
+
 Reconciles each acceptance item of `docs/brief/CLAVERA_Site_TZ_v1_5.md` with later owner documents and the code on branch `agent/clavera-m5-m7-20261006`. Status words: **done (test)** — implemented and asserted by the named test; **superseded (decision)** — replaced by a later owner document; **not done (work)** — engineering work remains; **owner value (where)** — needs a value or decision only the owner can give; **not reconciled** — the source needed to decide is not in this repository. Publication itself, the domain, money and legal sign-off stay with the owner (`PROJECT_DECISIONS.md`, owner response v1.4 §1.8).
 
 ## §12.1 Blockers

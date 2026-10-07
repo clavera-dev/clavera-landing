@@ -2,6 +2,10 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-10-07 — Pilot spec withdrawn, back to Handoff v1.1 + Respuesta v1.2 (branch `agent/clavera-spec-rollback-v1-2-20261007`)
+
+Owner: the business dropped the pilot; content and functionality return to Dev_Handoff_Beta_v1_1 + Respuesta v1.2, design stays Figma. Reverted the content of commit 3cc98a8 (application block, `/solicitud`, UTM carry-over, Avisame retirement, v1.4 price FAQ) and the Villa Crespo highlight; kept every Figma/design, motion, SEO and font change. See PROJECT_DECISIONS.md.
+
 ## 2026-10-07 — Font hosting decided: self-host (branch `agent/clavera-figma-final-20261006`)
 
 The owner delegated font hosting as a technical decision. Fonts will be self-hosted (brief §9.2) instead of loaded from the Google Fonts CDN; the switch waits for the designer's monospace answer so the file set is final. Recorded in `PROJECT_DECISIONS.md`, `CLAUDE.md`, `FONTS_DECISION_FACTS.md`; F1 moved to closed in `OWNER_DECISIONS_OPEN.md`. No code change yet.
@@ -44,10 +48,6 @@ Branch `agent/clavera-m9-local-20261006`, stacked on `863ac53`. JSON-LD (Organiz
 ## 2026-10-06 — M5.2 closed, M7 motion (provisional), M8 budget report, readiness check (branch)
 
 Branch `agent/clavera-m5-m7-20261006`, stacked on the v1.4 branch. C3: D4 closed with the current band (owner, image brief §4.1); deleted `tests/prototypes/hero-h1.css` and `tests/m5-2-hero-prototypes.spec.ts` (its six desktop clip cases had been failing on `fce39c6`). C4/C5: the two CSS-only motions from `M6_MOTION_MAP.md` §6, provisional, after the owner said to implement animations. C7: `tests/perf-budget.spec.ts` reports the §9.2 numbers without enforcing them; locally LCP is 0.26–0.34 s, CLS ≤ 0.035, and there are 7–10 font files from the Google CDN. C8: `PREPUBLICATION_READINESS.md`. Full Playwright run, three engines: 1437 passed, 131 skipped, 1 failed. The failure, `structure.spec.ts:139` es@768 anchor clearance, then passed 90/90 on repeat, so it is a load-timing flake. A WebKit click flake caused by the zone list's lift was found and removed. Not pushed, not published.
-
-## 2026-10-06 — Owner response v1.4 / application block TZ v1.1 implemented (branch, switched off)
-
-Implemented `CLAVERA_Dev_Respuesta_v1_4` and `CLAVERA_Dev_TZ_Bloque_Solicitud_v1_1` on `agent/clavera-solicitud-v1-4-20261006` (stacked on the design-system branch): application config `src/config/solicitud.ts` (off: `enabled: false`, empty `form_url`), `SolicitudBlock.astro`, `/solicitud` in three locales built only while live, Villa Crespo label in the selector while live, validated UTM carry-over to the form link and through the language switcher, v1.4 price FAQ. The Avisame pilot flow is removed. Off state renders the v1_2 page except the new FAQ answer. Checks: `yarn astro check` 0 errors; Playwright three engines off 1435 passed / 155 skipped / 6 failed, live (local synthetic form URL, not committed) 1498 / 92 / 6; the 6 are the pre-existing `m5-2-hero-prototypes.spec.ts:135` desktop clip failures, identical on `fce39c6`. Fixed the stale `option[data-href]` selector in `survey.spec.ts`. Details, unfinished checklist items and four owner questions: `SOLICITUD_V1_4_2026-10-06.md`. Not pushed, not published; CLAVERA's Agent Control queue untouched.
 
 ## 2026-10-06 — Figma design-system tokens integrated (branch, zero rendered change)
 

@@ -62,9 +62,7 @@ for (const locale of LOCALES) {
 					.evaluateAll((els) =>
 						els.map((el) => ({
 							value: (el as HTMLElement).dataset.slug,
-							// The zone name itself; a live application form adds a label
-							// to one option (owner response v1.4 §1.4), outside the name.
-							label: (el as HTMLElement).dataset.label,
+							label: (el.textContent ?? '').trim(),
 						})),
 					);
 
@@ -78,7 +76,7 @@ for (const locale of LOCALES) {
 			await page.goto(locale.path);
 			const labels = await page
 				.locator('#zonas [data-zone-option]')
-				.evaluateAll((els) => els.map((el) => (el as HTMLElement).dataset.label ?? ''));
+				.evaluateAll((els) => els.map((el) => (el.textContent ?? '').trim()));
 
 			for (const label of labels) {
 				expect(/[Ѐ-ӿ]/.test(label), `"${label}" is transliterated`).toBe(false);

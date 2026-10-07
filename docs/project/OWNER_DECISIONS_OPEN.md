@@ -1,5 +1,7 @@
 # CLAVERA — открытые решения владельца и дизайнера (сводка)
 
+> **2026-10-07: the pilot spec (Respuesta v1.4, TZ Bloque Solicitud v1.1) was withdrawn by the owner.** References below to the application block, `/solicitud`, `src/config/solicitud.ts` and the Villa Crespo highlight describe code that was removed; the governing spec is Handoff v1.1 + Respuesta v1.2 again (see PROJECT_DECISIONS.md).
+
 Дата: 2026-10-06. Заменяет сводку от 2026-09-29. Статус: **справочник, сам ничего не одобряет.** Всё сделанное 06.10 лежит в локальных ветках и ждёт вашей приёмки: `agent/clavera-ds-integration-20261006` → `agent/clavera-solicitud-v1-4-20261006` → `agent/clavera-m5-m7-20261006` → `agent/clavera-m9-local-20261006`.
 
 ## 1. Нужны ваши ответы

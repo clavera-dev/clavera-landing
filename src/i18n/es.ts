@@ -195,6 +195,7 @@ export const es: Copy = {
 		heading: 'Sumate al piloto',
 		lede: 'Dejanos tu zona y cómo contactarte. Te avisamos cuando haya novedades del piloto cerca tuyo.',
 		note: 'Es una manifestación preliminar de interés: no reserva ningún lugar, no genera ningún contrato y no se acepta ningún pago.',
+		surveyPrompt: '¿Tenés 3 minutos más?',
 		surveyCta: 'Respondé la encuesta',
 	},
 	faq: {
@@ -212,10 +213,10 @@ export const es: Copy = {
 				q: '¿En qué horario puedo entrar?',
 				a: 'El acceso está pensado para funcionar las 24 horas, todos los días, con tu código personal. Es una propiedad prevista del servicio: todavía no hay ninguna sede en operación.',
 			},
-			// Owner response v1.4 §1.2
+			// B4
 			{
 				q: '¿Cuánto cuesta?',
-				a: 'Todavía no publicamos precios. Si dejás tu solicitud y confirmás que necesitás guardar tu vehículo en la zona en evaluación, te enviamos el precio y las condiciones.',
+				a: 'Todavía no publicamos el precio. Lo publicamos junto con las condiciones completas antes de cualquier contratación. No se acepta ningún pago.',
 			},
 			// §3.7
 			{
@@ -244,25 +245,8 @@ export const es: Copy = {
 			},
 		],
 	},
-	// TZ Bloque Solicitud v1.1 §3.2–3.3 (owner response v1.4)
-	solicitud: {
-		eyebrow: 'Sumate al piloto',
-		heading: 'Estamos evaluando {zone} para el primer piloto',
-		hint: 'Zona de referencia: {hint}',
-		lead: 'Si necesitás guardar tu bicicleta, monopatín u otro vehículo de movilidad en esta zona, dejá tu solicitud.',
-		steps: [
-			'Completá un formulario corto.',
-			'Confirmá que necesitás guardar tu vehículo en esta zona.',
-			'Te enviamos el precio y las condiciones por el medio que elijas.',
-		],
-		cta: 'Solicitar un lugar',
-		microcopy: 'Se abre en Typeform. Tus datos se tratan según la {privacy}.',
-		privacyLink: 'Política de Privacidad',
-		disclaimer: 'Ubicación en evaluación: no está confirmada y no tiene fecha de apertura. Enviar una solicitud no implica reserva, pago ni compromiso de apertura, fecha o disponibilidad.',
-		secondary: 'Prefiero responder la encuesta general',
-		whatsapp: '¿Dudas? Escribinos por WhatsApp',
-		selectorBadge: 'Candidata a primer piloto',
-		pageTitle: 'Sumate al piloto · CLAVERA',
+	pilot: {
+		cta: 'Avisame',
 	},
 	// §3.3
 	survey: {
