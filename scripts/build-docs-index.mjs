@@ -22,7 +22,7 @@ for (const [file, maxDepth] of DOCS) {
 	lines.forEach((line, i) => {
 		if (line.startsWith('```')) inFence = !inFence;
 		const m = !inFence && /^(#{1,6}) (.+)/.exec(line);
-		if (m && m[1].length <= maxDepth) out.push(`${i + 1}  ${m[2].slice(0, 80)}`);
+		if (m && m[1].length <= maxDepth) out.push(`${i + 1}  ${m[2].slice(0, 80).trimEnd()}`);
 	});
 	out.push('');
 }

@@ -142,7 +142,7 @@ Format: `line  heading`. Open a file with an offset/limit around the line you ne
 ## docs/project/CLAVERA_WORKLOG.md (568 lines)
 
 1  CLAVERA Landing — Worklog
-5  2026-10-08 — Token-economy rollout (branch `claude/token-economy-rules-fe6xlx`, 
+5  2026-10-08 — Token-economy rollout (branch `claude/token-economy-rules-fe6xlx`,
 9  2026-10-08 — Respuesta v1.5 applied (branch `agent/clavera-v1-5-check-20261008`)
 13  2026-10-07 — Pilot spec withdrawn, back to Handoff v1.1 + Respuesta v1.2 (branch
 17  2026-10-07 — Font hosting decided: self-host (branch `agent/clavera-figma-final-
@@ -157,7 +157,7 @@ Format: `line  heading`. Open a file with an offset/limit around the line you ne
 78  2026-09-29 — M4 session chain consolidated into a handoff; 4 superseded appendic
 82  2026-09-29 — M4.1 measured-evidence pack (document-only; no site/source edits)
 92  2026-09-28 — Owner response v1.2 integrated into M3.5.2 candidate (uncommitted)
-105  2026-09-28 — Codex independent review of M3.5.2 candidate (uncommitted; pending 
+105  2026-09-28 — Codex independent review of M3.5.2 candidate (uncommitted; pending
 115  2026-09-28 (second pass) — Legal Spec confirmed; three legal routes built; RU he
 135  2026-09-28 — M3.5.2 owner handoff v1.1 reconciliation and beta corrections (unco
 178  2026-08-23 — M3.5.1 beta-conversion preparation (pending review; not accepted, n
