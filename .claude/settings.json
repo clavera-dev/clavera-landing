@@ -83,7 +83,26 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PROJECT_DIR}/.claude/hooks/filter-test-output.py",
+            "timeout": 10
+          }
+        ]
+      }
     ]
+  },
+  "autoCompactWindow": 150000,
+  "bashOutputMaxChars": 10000,
+  "modelSettings": {
+    "claude-haiku-5-5": {
+      "autoCompactWindow": 100000
+    }
   },
   "env": {
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
