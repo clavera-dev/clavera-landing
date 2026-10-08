@@ -47,6 +47,7 @@ export interface Copy {
 		skipLink: string;
 		homeLabel: string;
 		languageNavLabel: string;
+		languageNavFooterLabel: string;
 		ownersNavLabel: string;
 		legalNavLabel: string;
 	};

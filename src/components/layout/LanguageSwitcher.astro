@@ -23,14 +23,16 @@ interface Props {
 	hash?: string;
 	class?: string;
 	paths?: Record<Locale, string>;
+	/** Distinct accessible name for the second (footer) instance. */
+	footer?: boolean;
 }
 
-const { hash = '', class: className, paths } = Astro.props;
+const { hash = '', class: className, paths, footer = false } = Astro.props;
 const current = resolveLocale(Astro.currentLocale);
 const copy = getCopy(Astro.currentLocale);
 ---
 
-<nav class:list={['lang', className]} aria-label={copy.a11y.languageNavLabel}>
+<nav class:list={['lang', className]} aria-label={footer ? copy.a11y.languageNavFooterLabel : copy.a11y.languageNavLabel}>
 	<ul class="lang__list">
 		{
 			SWITCHER_ORDER.map((code) => {
