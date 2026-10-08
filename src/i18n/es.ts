@@ -22,6 +22,7 @@ export const es: Copy = {
 		skipLink: 'Saltar al contenido principal',
 		homeLabel: 'CLAVERA — inicio',
 		languageNavLabel: 'Idioma',
+		languageNavFooterLabel: 'Idioma, pie de página',
 		ownersNavLabel: 'Para propietarios y desarrolladores',
 		legalNavLabel: 'Legal',
 	},

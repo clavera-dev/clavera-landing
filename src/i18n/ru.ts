@@ -32,6 +32,7 @@ export const ru: Copy = {
 		skipLink: 'Перейти к основному содержанию',
 		homeLabel: 'CLAVERA — на главную',
 		languageNavLabel: 'Язык',
+		languageNavFooterLabel: 'Язык, нижняя часть страницы',
 		ownersNavLabel: 'Владельцам помещений и девелоперам',
 		legalNavLabel: 'Правовая информация',
 	},
