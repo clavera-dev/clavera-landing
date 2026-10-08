@@ -26,6 +26,7 @@ export const privacy: LegalDocumentByLocale = {
 				paragraphs: [
 					'CLAVERA es la denominación bajo la cual Anna Kazanova, CUIT 20-96380996-5, con domicilio en Aráoz 2686, Ciudad Autónoma de Buenos Aires, República Argentina (en adelante, "el Responsable"), desarrolla su actividad. El Responsable es titular de la base de datos.',
 					'Contacto para el ejercicio de derechos: hola@clavera.ar',
+					'WhatsApp: +54 11 2832-9931',
 				],
 			},
 			{
@@ -153,6 +154,7 @@ export const privacy: LegalDocumentByLocale = {
 				paragraphs: [
 					'CLAVERA is the name under which Anna Kazanova, CUIT 20-96380996-5, with address at Aráoz 2686, City of Buenos Aires (CABA), Argentina (the "Controller"), carries out this activity. The Controller is the owner of the database.',
 					'Contact for exercising your rights: hola@clavera.ar',
+					'WhatsApp: +54 11 2832-9931',
 				],
 			},
 			{
@@ -280,6 +282,7 @@ export const privacy: LegalDocumentByLocale = {
 				paragraphs: [
 					'CLAVERA — обозначение, под которым Anna Kazanova (Анна Казанова), CUIT 20-96380996-5, с адресом Aráoz 2686, город Буэнос-Айрес (CABA), Аргентина (далее «Ответственный»), ведёт свою деятельность. Ответственный является владельцем базы данных.',
 					'Контакт для реализации прав: hola@clavera.ar',
+					'WhatsApp: +54 11 2832-9931',
 				],
 			},
 			{
