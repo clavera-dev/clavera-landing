@@ -1,6 +1,8 @@
 # CLAVERA Landing — Claude Instructions
 
-Read before every task, in this order:
+Reading order (token economy, owner 2026-10-08): this file is always loaded and holds the hard rules. Then read `docs/INDEX.md` (a routing table, about 2 KB) and open only the sections of the big documents that the task needs, using `docs/INDEX-HEADINGS.md` for line numbers. Do not read `PROJECT_DECISIONS.md`, the brief, the execution plan or the worklog in full unless the task is a decisions/plan audit. Always read the newest worklog entry. If a hard rule below and a section you did not open could disagree, the hard rule in this file stands; if you find a rule that lives only in an unopened section and would have changed your work, report it so it can be moved here.
+
+Sources, in authority order (the earlier one wins on conflict):
 
 1. `PROJECT_DECISIONS.md`
 2. `docs/brief/CLAVERA_Site_TZ_v1_5.md`
@@ -8,7 +10,7 @@ Read before every task, in this order:
 4. `docs/project/CLAVERA_EXECUTION_PLAN.md`
 5. the latest entry in `docs/project/CLAVERA_WORKLOG.md`
 
-If sources conflict, the earlier item wins. Do not infer project state from chat history when the repository documents answer it.
+Do not infer project state from chat history when the repository documents answer it.
 
 ## Product and content constraints
 
