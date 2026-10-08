@@ -155,3 +155,6 @@ vite.config.ts.timestamp-*
 /playwright-report/
 /blob-report/
 /.playwright/
+
+# Test-output hook log (full output of filtered test runs)
+/.claude/test-output/
