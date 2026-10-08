@@ -2,6 +2,10 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-10-08 — Respuesta v1.5 applied (branch `agent/clavera-v1-5-check-20261008`)
+
+Checked the build against the v1.5 §2 string list (clean, see PROJECT_DECISIONS.md), opened the footer WhatsApp link in a new tab, added `WhatsApp: +54 11 2832-9931` to `/privacidad` point 1 in ES/EN/RU. Chromium suite 476 passed, 5 skipped.
+
 ## 2026-10-07 — Pilot spec withdrawn, back to Handoff v1.1 + Respuesta v1.2 (branch `agent/clavera-spec-rollback-v1-2-20261007`)
 
 Owner: the business dropped the pilot; content and functionality return to Dev_Handoff_Beta_v1_1 + Respuesta v1.2, design stays Figma. Reverted the content of commit 3cc98a8 (application block, `/solicitud`, UTM carry-over, Avisame retirement, v1.4 price FAQ) and the Villa Crespo highlight; kept every Figma/design, motion, SEO and font change. See PROJECT_DECISIONS.md.

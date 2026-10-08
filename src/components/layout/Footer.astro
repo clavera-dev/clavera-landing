@@ -100,7 +100,7 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 								whatsapp === null ? (
 									<span class="site-footer__pending-item">{copy.footer.whatsappPending}</span>
 								) : (
-									<a href={whatsapp} rel="me">
+									<a href={whatsapp} rel="me noopener noreferrer" target="_blank">
 										WhatsApp Business
 									</a>
 								)
