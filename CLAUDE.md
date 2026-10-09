@@ -6,7 +6,7 @@ Sources, in authority order (the earlier one wins on conflict):
 
 1. `PROJECT_DECISIONS.md`
 2. `docs/brief/CLAVERA_Site_TZ_v1_5.md`
-3. `docs/design-system/` — the designer's Figma file (snapshot `docs/design-system/tokens/figma/`) is the final design source for every value and component it specifies (owner, 2026-10-06); integrate it without asking, and ask only where Figma is silent or conflicts with the brief, legal rules or accessibility. The designer will send an updated DS (monospace face pending); re-read and integrate it when it arrives. Russian display type is Onest (designer, 2026-10-07). Fonts will be self-hosted once the monospace face is confirmed (PROJECT_DECISIONS.md, 2026-10-07)
+3. `docs/design-system/` — the designer's Figma file (snapshot `docs/design-system/tokens/figma/`) is the final design source for every value and component it specifies (owner, 2026-10-06); integrate it without asking, and ask only where Figma is silent or conflicts with the brief, legal rules or accessibility. The designer will send an updated DS (monospace face pending); re-read and integrate it when it arrives. Russian display type is Onest (designer, 2026-10-07). Fonts are self-hosted in `public/fonts/` (PROJECT_DECISIONS.md, 2026-10-07; done 2026-10-09); only the monospace face may still change
 4. `docs/project/CLAVERA_EXECUTION_PLAN.md`
 5. the latest entry in `docs/project/CLAVERA_WORKLOG.md`
 

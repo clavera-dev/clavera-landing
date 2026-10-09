@@ -63,11 +63,11 @@ const xDefault = new URL(pathFor(DEFAULT_LOCALE), Astro.site).href;
 		<meta name="generator" content={Astro.generator} />
 		<meta name="theme-color" content="#0c0b09" />
 
-		{/* The type tokens pull Plus Jakarta Sans, Onest and IBM Plex Mono from
-		    Google Fonts. Preconnecting saves a round trip on the render-blocking
-		    font request without changing where the tokens live. */}
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		{/* Fonts are self-hosted (public/fonts, declared in the type tokens). Preload
+		    only what the first paint needs: the body face, plus the display face for
+		    ES/EN or the Cyrillic cut of Onest for RU (display type is Onest there). */}
+		<link rel="preload" as="font" type="font/woff2" href={`/fonts/onest-normal-400-800-${definition.lang === 'ru' ? 'cyrillic' : 'latin'}.woff2`} crossorigin />
+		{definition.lang !== 'ru' && <link rel="preload" as="font" type="font/woff2" href="/fonts/plus-jakarta-sans-normal-400-800-latin.woff2" crossorigin />}
 
 		<title>{pageTitle}</title>
 		<meta name="description" content={pageDescription} />
