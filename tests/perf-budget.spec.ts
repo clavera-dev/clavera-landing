@@ -11,7 +11,7 @@ import { LOCALES } from './locales';
  * annotations and fails only if the page cannot be measured. Chromium only —
  * the paint-timing APIs used here are Chromium's.
  *
- * Requests to fonts.googleapis.com / fonts.gstatic.com are counted separately
+ * Requests to fonts.googleapis.com (none expected since self-hosting) / fonts.gstatic.com are counted separately
  * so the font question has a number.
  */
 
