@@ -11,11 +11,14 @@ Hosting is already decided: Cloudflare (PROJECT_DECISIONS.md, Technical stack). 
 ## Owner-only (see handoff/clavera/LAUNCH_STEPS.md)
 Domain registration/holder check, Cloudflare account and Pages project, DNS, redirects, deploy approval.
 
-## Depends on the lawyer / owner values (public deploy stays blocked until resolved)
-- `/privacidad`, `/terminos`, `/cookies` final sign-off, or the owner's written decision to publish without it (PROJECT_DECISIONS.md, Legal and publishing gates).
-- Domain holder and company data (CUIT/legal name) for `.ar` registration and for the legal pages.
-- RNBD number (`src/config/legal.ts` stays absent until issued) and `LEGAL_LAST_UPDATED` (`null` until a real date).
-- S7 comparison legal approval (or a separately approved exclusion).
+## Publication gates (updated 2026-10-10 under Legal Spec v3.1 and Respuesta v1.5)
+The lawyer's sign-off is **no longer a launch blocker**: Anna decided to publish without it (decision 04.10, confirmed 07.10; PROJECT_DECISIONS.md, owner response v1.5) and lawyer edits follow after launch. What still gates the public deploy:
+- Anna names the publication date and hour **in writing**, after the Handoff v1.1 §6 checklist passes and she approves the preview.
+- `LEGAL_LAST_UPDATED` in `src/config/legal.ts` is set to the real publication date (`null` until then; the three legal pages show "pending" text).
+- RNBD number: the line stays unpublished until a number exists (Spec §11); the site does not wait for it unless the owner decides so. Registration "before launch" per Spec §2.1 is an owner action.
+- Responsable name, CUIT and domicilio (Spec §11) are already supplied and live in `src/config/legal.ts` and the legal texts; nothing to fill.
+- Domain holder for `.ar` registration (owner, LAUNCH_STEPS.md step 1).
+- Machine STOP-list (Spec §9) must pass on the built site: `tests/stop-list-v31.spec.ts`.
 
 ## Config values still `null` (one-line activation each)
 - `PILOT_INTEREST_DESTINATIONS` es/en/ru in `src/config/typeform.ts` (pilot control renders nothing while null; the research survey is primary).
