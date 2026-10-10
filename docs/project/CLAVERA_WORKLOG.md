@@ -9,6 +9,9 @@ Legal pages now carry their own meta description (`LegalDocument.description`, E
 ## 2026-10-10 — SEO wiring: llms.txt, favicon and share-image config (branch `claude/project-thread-9i24bq`, stacked on PR #12)
 
 `src/pages/llms.txt.ts` builds a draft `/llms.txt` (ES/EN/RU) from each locale's approved meta description plus a "pilot stage, no service operating yet" status line and the 12 built URLs, all from `site`. `src/config/seo.ts` is the single place for the designer's favicon set and the share image (both `null` until supplied); `BaseLayout.astro` renders `<link rel="icon">`, `apple-touch-icon`, `og:image` (+ type/width/height) and `twitter:image` from it, absolute via `site`. Verified by temporarily filling both and building (tags correct), then reverted. Avisame check: temporarily replacing the three `PILOT_INTEREST_DESTINATIONS` nulls built the pilot link in ES/EN/RU with `lang`/`source` attribution and the "3 minutos más" secondary prompt, so activation is the config value only. Domain change = `site` in `astro.config.mjs` plus the Sitemap line in `public/robots.txt` (guarded by `tests/seo.spec.ts`). Chromium suite 493 passed, 5 skipped.
+## 2026-10-10 — Deploy setup draft (branch `claude/project-thread-5knqwe`, config only)
+
+Added `public/_headers`, `.node-version`, `.github/workflows/ci.yml` (check + build, no deploy, no secrets) and `docs/project/LAUNCH_CHECKLIST.md`. Hosting stays Cloudflare Pages (free); deploy, DNS and domain are owner-only. Domain status could not be checked from the sandbox. `yarn astro check` and `yarn build` pass; no rendered change.
 
 ## 2026-10-09 — Mobile speed: self-hosted fonts and a lighter hero image (branch `claude/clavera-mobile-speed-abjfvg`, performance only)
 
