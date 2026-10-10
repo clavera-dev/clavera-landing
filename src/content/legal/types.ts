@@ -26,6 +26,8 @@ export interface LegalSection {
 
 export interface LegalDocument {
 	title: string;
+	/** Meta description, at most ~160 characters; no dates or registration numbers. */
+	description: string;
 	sections: LegalSection[];
 }
 

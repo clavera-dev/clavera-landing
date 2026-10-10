@@ -3,7 +3,7 @@ import { LOCALES } from './locales';
 
 /**
  * Brief §6.5 / §8.2 / §8.4 — local technical SEO (plan C9, provisional).
- * No sitemap.xml and no Sitemap line until the production domain is confirmed.
+ * sitemap.xml and the robots.txt Sitemap line follow `site` in astro.config.mjs.
  */
 
 for (const locale of LOCALES) {
@@ -45,11 +45,31 @@ for (const locale of LOCALES) {
 	});
 }
 
-test('robots.txt allows every crawler and names no sitemap yet', async ({ request }) => {
+test('robots.txt allows every crawler and points at the sitemap on the canonical origin', async ({ request, page }) => {
 	const response = await request.get('/robots.txt');
 	expect(response.status()).toBe(200);
 	const body = await response.text();
 	expect(body).toMatch(/User-agent: \*\s+Allow: \//);
 	expect(body).not.toMatch(/^Disallow:/m);
-	expect(body).not.toMatch(/^Sitemap:/m);
+	await page.goto('/');
+	const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+	const origin = new URL(canonical!).origin;
+	expect(body).toContain(`Sitemap: ${origin}/sitemap.xml`);
+});
+
+test('sitemap.xml lists every built page once per locale, matching canonicals and hreflang', async ({ request, page }) => {
+	const response = await request.get('/sitemap.xml');
+	expect(response.status()).toBe(200);
+	const xml = await response.text();
+	const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+	expect(locs).toHaveLength(12);
+	expect(new Set(locs).size).toBe(12);
+	for (const loc of locs) {
+		const path = new URL(loc).pathname;
+		await page.goto(path);
+		expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe(loc);
+		for (const tag of await page.locator('link[rel="alternate"][hreflang]').all()) {
+			expect(xml).toContain(`hreflang="${await tag.getAttribute('hreflang')}" href="${await tag.getAttribute('href')}"`);
+		}
+	}
 });
