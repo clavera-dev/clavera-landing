@@ -35,3 +35,20 @@ Run from the repository root:
 4. Manual, in real Safari and Firefox, at `/`, `/en/`, `/ru/`: tab through the page, use the zone selector with the keyboard, check the language switcher, FAQ `<details>` toggling, and that no layout overflow appears at 375px (Safari responsive mode).
 5. Click each external link once: both Typeform surveys (ES `ARGCABA`, RU `latam`), WhatsApp Business, Instagram, Facebook, TikTok, `tel:` and `mailto:`. Confirm they open and the Typeform URL fragment does not break the form.
 6. VoiceOver (Cmd+F5) on `/` and `/en/`: landmarks, the zone combobox announces its options, the "survey is in Spanish" notice is read with the link.
+
+## Results of the Mac run (local, 2026-10-10 ~16:08Z)
+
+Reported by the coordinator session after a local run on the owner's Mac; not re-measured here.
+
+| Check | Result |
+|---|---|
+| Playwright on Chromium, Firefox and WebKit | 1402 passed, 68 skipped by design, 0 failed |
+| Live external links | Both Typeform surveys (ES, RU, including the `#` parameters), Instagram, Facebook and WhatsApp returned HTTP 200 |
+| TikTok | HTTP 200 but a stub page; needs one manual visual check of the profile |
+| Defects / code changes | None found, none made |
+
+## Optional pre-launch checks (need a person at the screen)
+
+- VoiceOver pass on `/` and `/en/` (steps 6 above).
+- Manual visual pass in real Safari and Firefox (steps 4 above).
+- Open the TikTok profile once and confirm it shows the real account.
