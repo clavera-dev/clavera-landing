@@ -264,6 +264,22 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 		gap: var(--space-3);
 	}
 
+	/* Touch target: the link text line is ~24px tall; pad it to 44px on small
+	   screens and take the same amount out of the list gap so the visible
+	   rhythm does not move. */
+	@media (max-width: 700px) {
+		.site-footer__col ul {
+			gap: 0;
+		}
+
+		.site-footer__col a {
+			display: inline-block;
+			min-block-size: 44px;
+			padding-block: 0.625rem;
+			box-sizing: border-box;
+		}
+	}
+
 	.site-footer__col a {
 		font-family: var(--font-sans);
 		font-size: var(--text-body-md-size);
