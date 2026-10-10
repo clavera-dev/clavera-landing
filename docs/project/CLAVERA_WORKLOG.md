@@ -2,6 +2,10 @@
 
 This is the current-state companion to `CLAVERA_EXECUTION_PLAN.md`. Update it after every accepted milestone, tool decision, scope change, blocker, or branch change. New chats must read the latest entry before planning work.
 
+## 2026-10-10 — Deploy setup draft (branch `claude/project-thread-5knqwe`, config only)
+
+Added `public/_headers`, `.node-version`, `.github/workflows/ci.yml` (check + build, no deploy, no secrets) and `docs/project/LAUNCH_CHECKLIST.md`. Hosting stays Cloudflare Pages (free); deploy, DNS and domain are owner-only. Domain status could not be checked from the sandbox. `yarn astro check` and `yarn build` pass; no rendered change.
+
 ## 2026-10-09 — Mobile speed: self-hosted fonts and a lighter hero image (branch `claude/clavera-mobile-speed-abjfvg`, performance only)
 
 Fonts are now self-hosted (decision of 2026-10-07): `public/fonts/` holds woff2 files for Plus Jakarta Sans, Onest and IBM Plex Mono (latin, latin-ext, cyrillic; Onest also `symbols` for the arrows), declared in `docs/design-system/tokens/fonts.css` with `font-display: swap` and `unicode-range`. The Google Fonts `@import` and both `preconnect` links are gone; `BaseLayout.astro` preloads Onest (latin, or cyrillic on RU) and, on ES/EN, Plus Jakarta Sans latin. Same families, weights and tokens, so no visual change. The monospace face is still pending from the designer; swapping it means replacing the three IBM Plex Mono file sets. R1 hero AVIF at 640/960/1280 re-encoded smaller at the same measured PSNR against the 2048 variant (960: 32.9 → 23.4 KB). Lighthouse mobile (simulated throttling, local static server without compression, 3 runs): 76–79 before, 94 after; LCP 4.0 → 2.6 s. `docs/project/C2_DRAFTS_20261009.md` holds C2 drafts (legal meta descriptions ES/EN/RU, sitemap plan, footer tap targets), not applied.
