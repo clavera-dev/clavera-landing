@@ -69,8 +69,16 @@ if (!reduce && 'IntersectionObserver' in window) {
 			{ threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
 		);
 
+		// Anything already on screen is shown without a transition: the first
+		// screen never fades in half-visible, and nothing flashes in at load.
+		items.forEach((el) => {
+			const r = el.getBoundingClientRect();
+			if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('is-in');
+		});
 		root.classList.add('motion-on');
-		items.forEach((el) => io.observe(el));
+		items.forEach((el) => {
+			if (!el.classList.contains('is-in')) io.observe(el);
+		});
 
 		// Safety net: never leave content hidden if something is not observed.
 		window.setTimeout(() => {
