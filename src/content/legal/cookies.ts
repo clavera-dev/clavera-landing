@@ -14,6 +14,7 @@ import type { LegalDocumentByLocale } from './types';
 export const cookies: LegalDocumentByLocale = {
 	es: {
 		title: 'Política de Cookies — clavera.ar',
+		description: 'Qué cookies y tecnologías similares usa el sitio de CLAVERA y cómo controlarlas.',
 		sections: [
 			{
 				id: 'intro',
@@ -55,6 +56,7 @@ export const cookies: LegalDocumentByLocale = {
 	},
 	en: {
 		title: 'Cookie Policy — clavera.ar',
+		description: 'Which cookies and similar technologies the CLAVERA website uses and how to control them. Courtesy translation; Spanish prevails.',
 		sections: [
 			{
 				id: 'intro',
@@ -96,6 +98,7 @@ export const cookies: LegalDocumentByLocale = {
 	},
 	ru: {
 		title: 'Политика в отношении cookie-файлов — clavera.ar',
+		description: 'Какие файлы cookie и похожие технологии использует сайт CLAVERA и как ими управлять. Перевод для удобства; приоритет у испанской версии.',
 		sections: [
 			{
 				id: 'intro',

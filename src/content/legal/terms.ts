@@ -13,6 +13,7 @@ import type { LegalDocumentByLocale } from './types';
 export const terms: LegalDocumentByLocale = {
 	es: {
 		title: 'Términos y Condiciones de Uso — clavera.ar',
+		description: 'Condiciones de uso del sitio de CLAVERA y de la beta: alcance, responsabilidades y contacto.',
 		sections: [
 			{
 				id: '1',
@@ -103,6 +104,7 @@ export const terms: LegalDocumentByLocale = {
 	},
 	en: {
 		title: 'Terms and Conditions of Use — clavera.ar',
+		description: 'Terms of use for the CLAVERA website and beta: scope, responsibilities and contact. Courtesy translation; Spanish prevails.',
 		sections: [
 			{
 				id: '1',
@@ -189,6 +191,7 @@ export const terms: LegalDocumentByLocale = {
 	},
 	ru: {
 		title: 'Условия использования — clavera.ar',
+		description: 'Условия использования сайта CLAVERA и беты: рамки, ответственность и контакты. Перевод для удобства; приоритет у испанской версии.',
 		sections: [
 			{
 				id: '1',

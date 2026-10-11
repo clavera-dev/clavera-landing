@@ -1,5 +1,7 @@
 # CLAVERA — brief §6.5 / §8.4: everything may be crawled, AI crawlers
-# included, so the site can be cited. A Sitemap line is added together with
-# sitemap.xml, once the production domain is confirmed (plan C9).
+# included, so the site can be cited. The Sitemap origin must equal `site` in
+# astro.config.mjs; tests/seo.spec.ts fails if they drift.
 User-agent: *
 Allow: /
+
+Sitemap: https://clavera.ar/sitemap.xml

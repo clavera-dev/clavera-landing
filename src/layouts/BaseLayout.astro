@@ -11,6 +11,7 @@ import {
 	localeHome,
 	type Locale,
 } from '../i18n';
+import { FAVICON, SHARE_IMAGE } from '../config/seo';
 import '../styles/global.css';
 
 /**
@@ -50,6 +51,7 @@ const alternates = SWITCHER_ORDER.map((code) => ({
 	href: new URL(pathFor(code), Astro.site).href,
 }));
 const xDefault = new URL(pathFor(DEFAULT_LOCALE), Astro.site).href;
+const shareImageUrl = SHARE_IMAGE ? new URL(SHARE_IMAGE.path, Astro.site).href : null;
 ---
 
 <!doctype html>
@@ -57,9 +59,12 @@ const xDefault = new URL(pathFor(DEFAULT_LOCALE), Astro.site).href;
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		{/* No favicon yet: the only CLAVERA brand asset is the wide wordmark, which
-		    does not produce a legible small icon. Add a real one when a proper
-		    mark/monogram is supplied — do not reintroduce the Astro default. */}
+		{/* Favicon set is wired in src/config/seo.ts and stays absent until the
+		    designer supplies a real mark: the wide wordmark does not produce a
+		    legible small icon, and the Astro default must not come back. */}
+		{FAVICON?.svg && <link rel="icon" type="image/svg+xml" href={FAVICON.svg} />}
+		{FAVICON?.ico && <link rel="icon" sizes="32x32" href={FAVICON.ico} />}
+		{FAVICON?.appleTouch && <link rel="apple-touch-icon" href={FAVICON.appleTouch} />}
 		<meta name="generator" content={Astro.generator} />
 		<meta name="theme-color" content="#0c0b09" />
 
@@ -82,10 +87,19 @@ const xDefault = new URL(pathFor(DEFAULT_LOCALE), Astro.site).href;
 		<meta property="og:description" content={pageDescription} />
 		<meta property="og:url" content={canonicalUrl.href} />
 		<meta property="og:locale" content={definition.lang.replace('-', '_')} />
+		{SHARE_IMAGE && shareImageUrl && (
+			<>
+				<meta property="og:image" content={shareImageUrl} />
+				<meta property="og:image:type" content={SHARE_IMAGE.type} />
+				<meta property="og:image:width" content={String(SHARE_IMAGE.width)} />
+				<meta property="og:image:height" content={String(SHARE_IMAGE.height)} />
+			</>
+		)}
 
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title ?? copy.meta.ogTitle} />
 		<meta name="twitter:description" content={pageDescription} />
+		{shareImageUrl && <meta name="twitter:image" content={shareImageUrl} />}
 
 		{/* JSON-LD (brief §8.2) on the landing document only. */}
 		{path === undefined && <StructuredData />}

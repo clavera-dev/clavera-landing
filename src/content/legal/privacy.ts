@@ -19,6 +19,7 @@ import type { LegalDocumentByLocale } from './types';
 export const privacy: LegalDocumentByLocale = {
 	es: {
 		title: 'Política de Privacidad — CLAVERA',
+		description: 'Cómo CLAVERA recoge, usa y protege tus datos personales durante la beta, y cómo ejercer tus derechos.',
 		sections: [
 			{
 				id: '1',
@@ -147,6 +148,7 @@ export const privacy: LegalDocumentByLocale = {
 	},
 	en: {
 		title: 'Privacy Policy — CLAVERA',
+		description: 'How CLAVERA collects, uses and protects your personal data during the beta, and how to exercise your rights. Courtesy translation; Spanish prevails.',
 		sections: [
 			{
 				id: '1',
@@ -275,6 +277,7 @@ export const privacy: LegalDocumentByLocale = {
 	},
 	ru: {
 		title: 'Политика конфиденциальности — CLAVERA',
+		description: 'Как CLAVERA собирает, использует и защищает ваши персональные данные в бете и как реализовать ваши права. Перевод для удобства; приоритет у испанской версии.',
 		sections: [
 			{
 				id: '1',
