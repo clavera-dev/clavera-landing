@@ -1,0 +1,143 @@
+/*
+ * Visual variant C — "Quiet luxury".
+ *
+ * Premium through scale, air and restraint rather than scroll choreography:
+ * a larger type scale (still the DS steps), more vertical space, one calm
+ * entrance, a cross-fade between languages, and polished micro-interactions.
+ * No script. Motion is gated on prefers-reduced-motion: no-preference.
+ */
+
+:root {
+	--fluid-h2: clamp(var(--text-h2-size), 4.6vw + 0.4rem, var(--text-display-xl-size));
+	--fluid-display: clamp(var(--text-display-lg-size), 5.4vw + 0.5rem, var(--text-display-2xl-size));
+	--fluid-lede: clamp(var(--text-body-lg-size), 0.6vw + 1rem, var(--text-h4-size));
+	--rhythm-tight: clamp(var(--space-24), 12vw, 144px);
+	--rhythm: clamp(var(--space-24), 15vw, 200px);
+	--rhythm-loose: clamp(var(--space-32), 18vw, 260px);
+	--measure: 56ch;
+}
+
+::selection {
+	background: var(--accent);
+	color: var(--bg-base);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	/* Language switches and in-site navigation cross-fade instead of flashing. */
+	@view-transition {
+		navigation: auto;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 420ms;
+		animation-timing-function: var(--ease-standard);
+	}
+
+	/* One calm entrance for the first screen. */
+	.hero__media picture img {
+		animation: quiet-fade 1800ms var(--ease-out) both;
+	}
+
+	.hero__body {
+		animation: quiet-rise 1400ms var(--ease-out) 250ms both;
+	}
+
+	@keyframes quiet-fade {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+
+	/* clip-path + transform, never opacity, so text stays fully opaque and
+	   contrast checks never sample a half-faded colour. */
+	@keyframes quiet-rise {
+		from { clip-path: inset(0 0 100% 0); transform: translateY(18px); }
+		to { clip-path: inset(-100px); transform: none; }
+	}
+
+	/* Below the fold, only the images and hairlines respond, softly. */
+	@supports (animation-timeline: view()) {
+		.render-figure {
+			animation: quiet-fade linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 45%;
+		}
+
+		.section--divided::before {
+			transform-origin: left center;
+			animation: hairline linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 50%;
+		}
+
+		@keyframes hairline {
+			from { transform: scaleX(0); }
+			to { transform: none; }
+		}
+	}
+
+	/* Micro-interactions ------------------------------------------------- */
+
+	.render-figure picture img {
+		transition: transform 1200ms var(--ease-out);
+	}
+
+	@media (hover: hover) {
+		.render-figure:hover picture img {
+			transform: scale(1.035);
+		}
+	}
+
+	.button {
+		transition-property: background-color, border-color, color, box-shadow, transform;
+	}
+
+	.button:hover {
+		transform: translateY(-1px);
+	}
+
+	.button:active {
+		transform: scale(0.98);
+	}
+
+	.faq__q {
+		transition: color var(--duration-base) var(--ease-standard), padding-left var(--duration-slow) var(--ease-out);
+	}
+
+	.faq__q:hover {
+		padding-left: var(--space-2);
+	}
+
+	/* Header nav links and footer links wipe an underline in. */
+	.site-header a:not(.button):not(.site-header__logo),
+	.site-footer a {
+		background: linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat;
+		transition: background-size var(--duration-slow) var(--ease-out), color var(--duration-fast) var(--ease-standard);
+	}
+
+	.site-header a:not(.button):not(.site-header__logo):hover,
+	.site-footer a:hover {
+		background-size: 100% 1px;
+	}
+
+	@supports (interpolate-size: allow-keywords) {
+		:root {
+			interpolate-size: allow-keywords;
+		}
+
+		.faq__item::details-content {
+			block-size: 0;
+			overflow: hidden;
+			opacity: 0;
+			transition:
+				block-size var(--duration-slower) var(--ease-out),
+				opacity var(--duration-slower) var(--ease-out),
+				content-visibility var(--duration-slower) allow-discrete;
+		}
+
+		.faq__item[open]::details-content {
+			block-size: auto;
+			opacity: 1;
+		}
+	}
+}
