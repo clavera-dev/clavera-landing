@@ -139,6 +139,11 @@ for (const locale of LOCALES) {
 		});
 
 		test('"Seguir" carries the chosen zone in the fragment, and only then', async ({ page }) => {
+			// The page scrolls smoothly when motion is allowed. Scrolling from the
+			// hero's selector down to #zonas could still be under way when the
+			// option was clicked, so the click landed beside it (about 1 run in
+			// 100 on main too). This test is about the href, not about motion.
+			await page.emulateMedia({ reducedMotion: 'reduce' });
 			await page.goto(locale.path);
 
 			for (const scope of ['#top', '#zonas']) {

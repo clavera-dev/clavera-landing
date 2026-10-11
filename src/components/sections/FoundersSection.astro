@@ -103,8 +103,11 @@ const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== nu
 		text-wrap: balance;
 	}
 
+	/* --measure is set in ch, so at the lede's 20px it ran past the rule
+	   and note below it (16px). Four fifths brings all three to one right
+	   edge. */
 	.founders__lede {
-		max-width: var(--measure);
+		max-width: calc(var(--measure) * 0.8);
 	}
 
 	/* Action -------------------------------------------------------------- */

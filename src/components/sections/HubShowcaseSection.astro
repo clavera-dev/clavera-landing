@@ -163,7 +163,9 @@ const c = getCopy(Astro.currentLocale).hub;
 		.hub__plan {
 			grid-template-columns: minmax(0, 1fr) minmax(0, 0.42fr);
 			gap: var(--space-12);
-			align-items: center;
+			/* The legend's title lines up with the drawing's top edge, as on a
+			   drawing sheet, instead of floating at mid-height. */
+			align-items: start;
 			padding: var(--space-10);
 		}
 

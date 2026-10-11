@@ -88,7 +88,10 @@ const c = getCopy(Astro.currentLocale).vehicles;
 		gap: var(--space-2) var(--mark);
 		overflow: hidden;
 		font-family: var(--font-display);
-		font-size: var(--fluid-display-sm);
+		/* Capped at 50px: above that the content column stops growing while
+		   the type kept climbing, and the last item dropped to a line of its
+		   own in English (and in Spanish from 1600px). */
+		font-size: min(var(--fluid-display-sm), 50px);
 		line-height: 1.25;
 		letter-spacing: var(--text-display-lg-tracking);
 		font-weight: 600;
@@ -103,10 +106,10 @@ const c = getCopy(Astro.currentLocale).vehicles;
 		content: '';
 		position: absolute;
 		/* Centred in the gap, on the middle of the x-height. */
-		inset-inline-start: calc(var(--mark) / -2 - 0.15em);
-		top: 0.42em;
-		width: 0.3em;
-		height: 0.3em;
+		inset-inline-start: calc(var(--mark) / -2 - 0.12em);
+		top: 0.45em;
+		width: 0.24em;
+		height: 0.24em;
 		border-radius: var(--radius-pill);
 		background: var(--text-tertiary);
 	}
@@ -130,6 +133,13 @@ const c = getCopy(Astro.currentLocale).vehicles;
 
 		.vehicles__item::before {
 			display: none;
+		}
+
+		/* "Городской велосипед" is wider than a phone column at the 36px
+		   floor and wrapped into what read as two vehicles. Russian scales
+		   with the viewport here until it fits on one line. */
+		:global(:root:lang(ru)) .vehicles__list {
+			font-size: min(var(--fluid-display-sm), 8.2vw);
 		}
 	}
 
