@@ -17,7 +17,8 @@
     "test:report": "playwright show-report"
   },
   "dependencies": {
-    "astro": "^7.2.4"
+    "astro": "^7.2.4",
+    "motion": "^14.1.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
