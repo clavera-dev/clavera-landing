@@ -9,12 +9,13 @@
  *    band (Header.astro). This is legibility, not motion, so it runs under
  *    reduced motion too. Without JavaScript the gradient stays, as before.
  *
- * 2. One-shot reveals. Section headings, render figures, divider
- *    hairlines, the pillar cells and the step ticks get `data-reveal` and
+ * 2. One-shot reveals. Section headings, divider hairlines, the pillar
+ *    cells and the step ticks get `data-reveal` and
  *    receive `.is-in` the first time they enter the viewport. Every hiding
  *    rule in src/styles/motion.css is gated on `html.motion-on`, which is
  *    only set here and never under prefers-reduced-motion, so no-JS, a failed
- *    script and reduced motion all show the complete static page.
+ *    script and reduced motion all show the complete static page. Render
+ *    figures are not tagged: an image is simply there (motion.css, item 4).
  */
 const root = document.documentElement;
 
@@ -61,7 +62,6 @@ if (motionAllowed && main && 'IntersectionObserver' in window) {
 	main.querySelectorAll('.section .heading-h2, .problem__statement, .founders__heading').forEach((el) =>
 		tag(el, 'heading'),
 	);
-	main.querySelectorAll('.section .render-figure').forEach((el) => tag(el, 'curtain'));
 	main.querySelectorAll('.section--divided').forEach((el) => tag(el, 'divider'));
 	main.querySelectorAll('.index__row').forEach((el) => tag(el, 'tile'));
 	main.querySelectorAll('.steps__item').forEach((el, i) => tag(el, 'tick', i));

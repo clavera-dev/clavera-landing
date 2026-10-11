@@ -6,7 +6,7 @@
     1  Hero load sequence          CSS keyframes, on load
     2  Hero exit push and darken   CSS view timeline, desktop
     3  Heading rise                IntersectionObserver, once
-    4  Render curtain              IntersectionObserver, once
+    4  (render curtain — removed on owner review, see below)
     5  Hairline draw               IntersectionObserver, once
     6  Pillar cells mask in        IntersectionObserver, once
     7  Step ticks draw             IntersectionObserver, once, 150 ms stagger
@@ -23,6 +23,14 @@
   lede rise (the heading alone carries the entrance) and the 60 ms stagger
   across the seven pillar cells.
 
+  Removed after the owner's review (2026-10-11): the render curtain. A frame
+  that opens top to bottom as it scrolls in reads as an image still loading,
+  and it was quick: the DS --ease-out puts about 80 % of the movement into
+  the first fifth of the time. The renders below the hero are simply there;
+  the hero keeps its entrance and exit, and a render still leans in under a
+  pointer (11). The scroll reveals that remain (3, 5, 6, 7) travel less and
+  run on --ease-reveal, which starts gently and settles, so nothing snaps.
+
   The pilot section's amber rule (Section.astro) keeps its scroll-linked
   draw from M7 — an owner-approved motion with its own test — and is not
   part of this layer.
@@ -34,13 +42,19 @@
   is never sampled mid-fade. Every hiding rule for the scroll reveals is gated
   on html.motion-on, which only src/scripts/motion.ts sets — no JavaScript
   means no hidden content. Nothing moves on its own, nothing loops, nothing
-  springs; timing comes from the DS motion tokens (--ease-out, --duration-*).
+  springs. Pointer and load timing come from the DS motion tokens
+  (--ease-out, --duration-*). The DS does not cover scroll reveals; they use
+  --ease-reveal (the CSS `ease` curve), not --ease-out, because a reveal
+  starts at the bottom edge of the screen, outside the reader's focus, and a
+  curve that front-loads its movement reads there as a jolt.
 */
 
 @media (prefers-reduced-motion: no-preference) {
 	:root {
 		--reveal-rise: 28px;
-		--reveal-rise-heading: 44px;
+		--reveal-rise-heading: 24px;
+		--reveal-rise-tile: 12px;
+		--ease-reveal: ease;
 	}
 
 	/* 1. Hero load sequence ------------------------------------------------
@@ -85,7 +99,7 @@
 		to { clip-path: inset(-100px); translate: 0 0; }
 	}
 
-	/* 3–7. Scroll reveals (tagged by src/scripts/motion.ts) -----------------
+	/* 3, 5–7. Scroll reveals (tagged by src/scripts/motion.ts) --------------
 	   The hidden state has no transition, so tagging never animates
 	   anything backwards; only the way in is transitioned. A rise shorter
 	   than one line of the heading never pushes it over the text below. */
@@ -98,19 +112,8 @@
 		clip-path: inset(-100px);
 		translate: 0 0;
 		transition:
-			clip-path 900ms var(--ease-out),
-			translate 900ms var(--ease-out);
-	}
-
-	/* 4. Render curtain: the frame opens top to bottom, once. The end inset
-	   of -2px keeps the panel's 1px hairline ring visible. */
-	html.motion-on [data-reveal='curtain']:not(.is-in) picture {
-		clip-path: inset(0 0 100% 0);
-	}
-
-	html.motion-on [data-reveal='curtain'].is-in picture {
-		clip-path: inset(-2px);
-		transition: clip-path 900ms var(--ease-out);
+			clip-path 1100ms var(--ease-reveal),
+			translate 1100ms var(--ease-reveal);
 	}
 
 	/* 5. Hairlines draw rather than appear. */
@@ -124,22 +127,22 @@
 
 	html.motion-on [data-reveal='divider'].is-in::before {
 		scale: 1 1;
-		transition: scale 1000ms var(--ease-out);
+		transition: scale 1200ms var(--ease-reveal);
 	}
 
 	/* 6. Each pillar cell opens from its hairline down. A mask, not a fade:
 	   the text is never semi-transparent. */
 	html.motion-on [data-reveal='tile']:not(.is-in) {
 		clip-path: inset(0 0 100% 0);
-		translate: 0 16px;
+		translate: 0 var(--reveal-rise-tile);
 	}
 
 	html.motion-on [data-reveal='tile'].is-in {
 		clip-path: inset(-2px);
 		translate: 0 0;
 		transition:
-			clip-path 700ms var(--ease-out),
-			translate 700ms var(--ease-out);
+			clip-path 1000ms var(--ease-reveal),
+			translate 1000ms var(--ease-reveal);
 	}
 
 	/* 7. Each step's amber tick draws along the rail, 150 ms apart. */
@@ -149,7 +152,7 @@
 
 	html.motion-on [data-reveal='tick'].is-in::before {
 		scale: 1 1;
-		transition: scale 900ms var(--ease-out);
+		transition: scale 1000ms var(--ease-reveal);
 		transition-delay: calc(var(--reveal-order, 0) * 150ms + 150ms);
 	}
 
@@ -158,7 +161,6 @@
 	   would keep the visible part blank the longest. Declared after the
 	   reveal rules so it wins at equal specificity. */
 	html.motion-on [data-reveal].reveal-instant,
-	html.motion-on [data-reveal].reveal-instant picture,
 	html.motion-on [data-reveal].reveal-instant::before {
 		transition: none;
 	}
@@ -246,9 +248,12 @@
 	@supports (animation-timeline: view()) {
 		@media (min-width: 900px) {
 			/* 2. Leaving the hero, the shot pushes in and darkens. The copy does
-			   not fade; it simply scrolls away over it. */
+			   not fade; it simply scrolls away over it. `clip`, not `hidden`:
+			   a hidden overflow makes the frame a scroll container, view()
+			   then tracks that frame, which never scrolls, and the push never
+			   ran (found on review, 2026-10-11). */
 			.hero__media {
-				overflow: hidden;
+				overflow: clip;
 			}
 
 			.hero__media picture {
@@ -274,9 +279,5 @@
 	html.motion-on [data-reveal] {
 		clip-path: none !important;
 		translate: none !important;
-	}
-
-	html.motion-on [data-reveal] picture {
-		clip-path: none !important;
 	}
 }
