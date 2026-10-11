@@ -1,0 +1,615 @@
+/*
+  Variant G — "Lo mejor de cada una" (experiment branch claude/visual-g-best*).
+
+  A synthesis of variants A–F, kept inside the dark CLAVERA design system
+  (graphite + one amber accent, DS type steps, DS radii and motion tokens).
+  What came from where is written up in handoff/clavera/VISUAL_G.md; each
+  block below names its source.
+
+  Two layers:
+  1. Static composition (always on, also under reduced motion and without JS):
+     larger type and more air (C), sticky sheet stamps (D, dark), pillar bento
+     with linework glyphs (F), hero spec panel (F, solid instead of glass),
+     micro-interactions (A/C).
+  2. Motion (only under prefers-reduced-motion: no-preference; the scroll
+     reveals additionally need `html.g-motion`, which src/scripts/variant-g.ts
+     adds itself): hero load sequence (A), hero push-out on scroll (B), masked
+     reveals and image curtains (A/E), LED progress rail (E), scroll-linked
+     vehicle line (E's marquee, driven by scroll as in B so nothing moves on
+     its own), stamp progress bars and the steps rail filling in (new, from D
+     and the Vitsœ four-step sequence).
+
+  Copy, legal text and structure are untouched: this file only restyles
+  existing classes. No dependency.
+*/
+
+/* ---------------------------------------------------------------------- */
+/* 1. Static: type scale and air (C)                                       */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='g'] {
+	/* Still inside the DS scale: h2 grows to display/xl, the hero reaches
+	   display/2xl earlier. */
+	--fluid-h2: clamp(var(--text-h2-size), 3.6vw + 0.4rem, var(--text-display-xl-size));
+	--g-stamp-bg: var(--bg-base);
+}
+
+@media (min-width: 900px) {
+	html[data-variant='g'] {
+		--fluid-display: clamp(var(--text-display-lg-size), 5vw + 0.5rem, var(--text-display-2xl-size));
+		--fluid-lede: clamp(var(--text-body-lg-size), 0.5vw + 1rem, var(--text-h4-size));
+		--rhythm-tight: clamp(var(--space-20), 10vw, var(--space-32));
+		--rhythm: clamp(var(--space-24), 13vw, 160px);
+		--rhythm-loose: clamp(var(--space-32), 16vw, 200px);
+	}
+}
+
+html[data-variant='g'] .heading-h2 {
+	line-height: 1.04;
+	letter-spacing: -0.025em;
+}
+
+html[data-variant='g'] .hero__heading {
+	line-height: 1;
+	letter-spacing: -0.03em;
+}
+
+html[data-variant='g'] ::selection {
+	background: var(--amber-500);
+	color: var(--graphite-950);
+}
+
+/* ---------------------------------------------------------------------- */
+/* 2. Static: sheet stamps that travel with the section (D, on graphite)   */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='g'] .surface-raised {
+	--g-stamp-bg: var(--bg-surface);
+}
+
+html[data-variant='g'] .surface-paper {
+	--g-stamp-bg: var(--bg-paper);
+}
+
+@media (min-width: 1200px) {
+	html[data-variant='g'] .sheet__rail {
+		align-self: start;
+		position: sticky;
+		top: calc(var(--header-h) + var(--space-6));
+		width: calc(var(--rail) - var(--space-6));
+		padding: var(--space-3) var(--space-3) var(--space-4);
+		border: 1px solid var(--border-hairline-strong);
+		border-radius: var(--radius-md);
+		background: var(--g-stamp-bg);
+		overflow: hidden;
+	}
+
+	html[data-variant='g'] .sheet__index {
+		font-family: var(--font-display);
+		font-size: clamp(28px, 2.4vw, 40px);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		line-height: 1;
+		color: var(--text-primary);
+	}
+
+	/* "/ 11", added by the script: the slide counter of the reference sites. */
+	html[data-variant='g'] .g-stamp__total {
+		display: block;
+		margin-top: var(--space-1);
+		font-family: var(--font-mono);
+		font-size: var(--text-mono-sm-size);
+		line-height: 1;
+		color: var(--text-tertiary);
+		font-variant-numeric: tabular-nums;
+	}
+
+	html[data-variant='g'] .sheet__label {
+		margin-top: var(--space-3);
+		padding-left: var(--space-2);
+		border-right: 1px solid var(--border-hairline);
+		color: var(--text-secondary);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+/* 3. Static: pillars as a bento of tiles with linework glyphs (F)          */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='g'] .index {
+	grid-template-columns: repeat(6, minmax(0, 1fr));
+	gap: var(--space-3);
+}
+
+html[data-variant='g'] .index__row {
+	position: relative;
+	grid-column: span 6;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto 1fr;
+	gap: var(--space-6);
+	padding: var(--space-6);
+	background: var(--bg-elevated);
+	border: 1px solid var(--border-hairline);
+	border-radius: var(--radius-lg);
+	transition:
+		background-color var(--duration-base) var(--ease-standard),
+		border-color var(--duration-base) var(--ease-standard);
+}
+
+@media (hover: hover) {
+	/* DS hover: a neutral surface lightens one graphite step. */
+	html[data-variant='g'] .index__row:hover {
+		background: var(--bg-elevated-2);
+		border-color: var(--border-hairline-strong);
+	}
+}
+
+html[data-variant='g'] .index__n {
+	position: absolute;
+	top: var(--space-5);
+	right: var(--space-6);
+	font-size: var(--text-mono-sm-size);
+	color: var(--text-tertiary);
+}
+
+html[data-variant='g'] .index__text {
+	align-self: end;
+}
+
+html[data-variant='g'] .index__row::before {
+	content: '';
+	display: block;
+	width: 28px;
+	height: 28px;
+	background: var(--accent);
+	mask-size: contain;
+	mask-repeat: no-repeat;
+	-webkit-mask-size: contain;
+	-webkit-mask-repeat: no-repeat;
+}
+
+@media (min-width: 700px) {
+	html[data-variant='g'] .index__row {
+		grid-column: span 3;
+		min-height: 220px;
+		padding: var(--space-7);
+	}
+
+	html[data-variant='g'] .index__row:nth-child(-n + 2) {
+		min-height: 280px;
+	}
+
+	html[data-variant='g'] .index__row:nth-child(-n + 2) .heading-h4 {
+		font-size: var(--text-h3-size);
+		line-height: var(--text-h3-line);
+	}
+}
+
+@media (min-width: 1000px) {
+	html[data-variant='g'] .index__row:nth-child(3),
+	html[data-variant='g'] .index__row:nth-child(4),
+	html[data-variant='g'] .index__row:nth-child(5) {
+		grid-column: span 2;
+	}
+}
+
+/* Glyphs (24px stroke linework, from variant F), keyed on list position so
+   every locale shares them without a markup change. */
+html[data-variant='g'] .index__row:nth-child(1)::before {
+	--g-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Cpath d='M8 9h8M8 13h5'/%3E%3C/svg%3E");
+}
+
+html[data-variant='g'] .index__row:nth-child(2)::before {
+	--g-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7' rx='1'/%3E%3Crect x='14' y='3' width='7' height='7' rx='1'/%3E%3Crect x='3' y='14' width='7' height='7' rx='1'/%3E%3Cpath d='M14 14h3v3h-3zM20 14v7h-6v-3'/%3E%3C/svg%3E");
+}
+
+html[data-variant='g'] .index__row:nth-child(3)::before {
+	--g-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a9 9 0 0 1 9 9H3a9 9 0 0 1 9-9z'/%3E%3Cpath d='M12 12v6a2 2 0 0 0 4 0'/%3E%3C/svg%3E");
+}
+
+html[data-variant='g'] .index__row:nth-child(4)::before {
+	--g-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='4' width='14' height='17' rx='2'/%3E%3Cpath d='M9 4V3h6v1M9 11h6M9 15h4'/%3E%3C/svg%3E");
+}
+
+html[data-variant='g'] .index__row:nth-child(5)::before {
+	--g-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='10' height='14' rx='1.5'/%3E%3Cpath d='M13 12h8M18 9l3 3-3 3'/%3E%3C/svg%3E");
+}
+
+html[data-variant='g'] .index__row:nth-child(6)::before {
+	--g-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 17l5-8h6l5 8M9 9l3 8 3-8'/%3E%3Ccircle cx='4' cy='17' r='1.5'/%3E%3Ccircle cx='20' cy='17' r='1.5'/%3E%3C/svg%3E");
+}
+
+html[data-variant='g'] .index__row:nth-child(7)::before {
+	--g-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6' width='18' height='12' rx='2'/%3E%3Cpath d='M3 10h18M7 15h4'/%3E%3C/svg%3E");
+}
+
+html[data-variant='g'] .index__row::before {
+	mask-image: var(--g-glyph);
+	-webkit-mask-image: var(--g-glyph);
+}
+
+/* ---------------------------------------------------------------------- */
+/* 4. Static: hero facts as a spec panel (F, solid: the DS keeps blur for   */
+/*    the nav only). No pulsing dot: nothing should read as a live hub.     */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='g'] .hero .hero__facts {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0;
+	width: min(100%, 22rem);
+	margin-top: var(--space-4);
+	padding: var(--space-2);
+	border: 1px solid var(--border-hairline-strong);
+	border-radius: var(--radius-md);
+	background: oklch(15% 0.004 95 / 0.86);
+}
+
+/* `.hero` and `:nth-child(n)` lift these above the hero's scoped rules
+   (Astro adds an attribute to every compound of a scoped selector). */
+html[data-variant='g'] .hero .hero__facts li:nth-child(n) {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	padding: var(--space-3);
+	border: 0;
+	color: var(--text-primary);
+}
+
+html[data-variant='g'] .hero .hero__facts li:nth-child(n) + li {
+	border-top: 1px solid var(--border-hairline);
+}
+
+html[data-variant='g'] .hero__facts li::before {
+	content: '';
+	flex: none;
+	width: 6px;
+	height: 6px;
+	border-radius: var(--radius-pill);
+	background: var(--accent);
+}
+
+@media (min-width: 1100px) {
+	html[data-variant='g'] .hero__inner {
+		position: relative;
+	}
+
+	html[data-variant='g'] .hero__facts {
+		position: absolute;
+		right: var(--edge-exact);
+		bottom: calc(var(--space-24) + var(--space-10));
+		width: 20rem;
+		margin: 0;
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+/* 5. Static: micro-interactions (A, C; Emil Kowalski's rules)              */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='g'] .button {
+	transition-property: background-color, border-color, color, box-shadow, transform;
+}
+
+@media (hover: hover) {
+	html[data-variant='g'] .button:hover {
+		transform: translateY(-2px);
+	}
+
+	html[data-variant='g'] .render-figure picture img {
+		transition: transform 1200ms var(--ease-out);
+	}
+
+	html[data-variant='g'] .render-figure:hover picture img {
+		transform: scale(1.03);
+	}
+}
+
+html[data-variant='g'] .button:active {
+	transform: scale(0.97);
+}
+
+/* Header and footer links wipe an underline in. */
+html[data-variant='g'] .site-header a:not(.button):not(.site-header__logo),
+html[data-variant='g'] .site-footer a {
+	background: linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat;
+	transition:
+		background-size var(--duration-slow) var(--ease-out),
+		color var(--duration-fast) var(--ease-standard);
+}
+
+html[data-variant='g'] .site-header a:not(.button):not(.site-header__logo):hover,
+html[data-variant='g'] .site-footer a:hover {
+	background-size: 100% 1px;
+}
+
+html[data-variant='g'] .faq__q {
+	transition:
+		color var(--duration-base) var(--ease-standard),
+		padding-left var(--duration-slow) var(--ease-out);
+}
+
+@media (hover: hover) {
+	html[data-variant='g'] .faq__q:hover {
+		padding-left: var(--space-2);
+	}
+}
+
+/* ====================================================================== */
+/* Motion: everything below runs only when the visitor allows motion       */
+/* ====================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+	/* Language switch cross-fades instead of flashing (C). */
+	@view-transition {
+		navigation: auto;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 420ms;
+		animation-timing-function: var(--ease-standard);
+	}
+
+	/* Hero load sequence (A): the shot settles, text rises behind a mask.
+	   clip-path + transform, never opacity, so contrast is never sampled
+	   mid-fade. ---------------------------------------------------------- */
+	html[data-variant='g'] .hero__media {
+		overflow: hidden;
+	}
+
+	/* Fill `backwards`, not `both`: once the entrance ends nothing stays
+	   clipped, so the zone selector's suggestion list can open freely. */
+	html[data-variant='g'] .hero__media img {
+		animation: g-settle 2000ms var(--ease-out) backwards;
+	}
+
+	html[data-variant='g'] .hero__inner > * {
+		animation: g-rise 900ms var(--ease-out) backwards;
+	}
+
+	html[data-variant='g'] .hero__inner > :nth-child(1) { animation-delay: 150ms; }
+	html[data-variant='g'] .hero__inner > :nth-child(2) { animation-delay: 280ms; animation-duration: 1100ms; }
+	html[data-variant='g'] .hero__inner > :nth-child(3) { animation-delay: 500ms; }
+	html[data-variant='g'] .hero__inner > :nth-child(4) { animation-delay: 640ms; }
+	html[data-variant='g'] .hero__inner > :nth-child(5) { animation-delay: 760ms; }
+	html[data-variant='g'] .hero__inner > :nth-child(6) { animation-delay: 880ms; }
+
+	@keyframes g-settle {
+		from { scale: 1.08; }
+		to { scale: 1; }
+	}
+
+	@keyframes g-rise {
+		from { clip-path: inset(0 0 100% 0); transform: translateY(28px); }
+		to { clip-path: inset(-100px); transform: none; }
+	}
+
+	/* Scroll reveals (A), tagged by the script -------------------------- */
+	html.g-motion [data-g-reveal] {
+		clip-path: inset(0 0 94% 0);
+		transform: translateY(28px);
+		transition:
+			clip-path 900ms var(--ease-out),
+			transform 900ms var(--ease-out);
+		transition-delay: calc(var(--g-i, 0) * 80ms);
+	}
+
+	html.g-motion [data-g-reveal].is-in {
+		clip-path: inset(-100px);
+		transform: none;
+	}
+
+	html.g-motion :is(h2, .problem__statement, .founders__heading)[data-g-reveal] {
+		transform: translateY(44px);
+		transition-duration: 1100ms;
+	}
+
+	html.g-motion :is(h2, .problem__statement, .founders__heading)[data-g-reveal].is-in {
+		transform: none;
+	}
+
+	/* Bento tiles settle with a short lift (F) and open from the top. Still a
+	   mask, not opacity: axe scrolls tiles into view and would otherwise read
+	   their text mid-fade. */
+	html.g-motion .index__row[data-g-reveal] {
+		clip-path: inset(0 0 100% 0 round var(--radius-lg));
+		transform: translateY(16px);
+		transition:
+			clip-path 700ms var(--ease-out),
+			transform 700ms var(--ease-out),
+			background-color var(--duration-base) var(--ease-standard),
+			border-color var(--duration-base) var(--ease-standard);
+		transition-delay: calc(var(--g-i, 0) * 60ms);
+	}
+
+	html.g-motion .index__row[data-g-reveal].is-in {
+		clip-path: inset(0 0 0 0 round var(--radius-lg));
+		transform: none;
+	}
+
+	/* Image curtain (A/E): the picture opens top to bottom. */
+	html.g-motion [data-g-image] picture {
+		clip-path: inset(0 0 94% 0);
+		transition: clip-path 1300ms var(--ease-out);
+	}
+
+	html.g-motion [data-g-image].is-in picture {
+		clip-path: inset(0);
+	}
+
+	/* Hairlines draw rather than appear (A/C). */
+	html.g-motion .section--divided::before {
+		transform: scaleX(0);
+		transform-origin: left center;
+		transition: transform 1400ms var(--ease-out);
+	}
+
+	html.g-motion .section--divided.is-in::before {
+		transform: none;
+	}
+
+	/* Steps: the amber tick runs along the rail as each step arrives — the
+	   numbered sequence of the Vitsœ inquiry page, drawn. */
+	html.g-motion .steps__item[data-g-reveal]::before {
+		transition: width 1200ms var(--ease-out);
+		transition-delay: calc(var(--g-i, 0) * 160ms + 200ms);
+	}
+
+	html.g-motion .steps__item[data-g-reveal].is-in::before {
+		width: 100%;
+	}
+
+	/* LED progress rail (E) --------------------------------------------- */
+	html[data-variant='g'] .g-led {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 3px;
+		z-index: 50;
+		pointer-events: none;
+		background: oklch(100% 0 0 / 0.06);
+	}
+
+	html[data-variant='g'] .g-led::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--amber-500);
+		box-shadow: 0 0 12px 1px oklch(72% 0.15 62 / 0.5);
+		transform-origin: top center;
+		transform: scaleY(var(--g-progress, 0));
+	}
+
+	/* Scroll-driven parts: only where the engine has scroll timelines.
+	   Timelines sit in their own rules: the minifier folds a timeline next to
+	   the `animation` shorthand into one declaration browsers reject. */
+	@supports (animation-timeline: view()) {
+		html[data-variant='g'] .g-led::before {
+			animation: g-fill-y linear both;
+		}
+
+		html[data-variant='g'] body .g-led::before {
+			animation-timeline: scroll(root);
+		}
+
+		@keyframes g-fill-y {
+			from { transform: scaleY(0); }
+			to { transform: scaleY(1); }
+		}
+
+		/* Hero pushes in and darkens as you leave it (B). */
+		html[data-variant='g'] .hero__media picture {
+			animation: g-hero-exit linear both;
+		}
+
+		html[data-variant='g'] .hero .hero__media picture {
+			animation-timeline: view();
+			animation-range: exit 0% exit 100%;
+		}
+
+		@keyframes g-hero-exit {
+			from { transform: none; filter: brightness(1); }
+			to { transform: scale(1.18); filter: brightness(0.4); }
+		}
+
+		/* Slow parallax inside every render frame (A). */
+		html[data-variant='g'] .section .render-figure img {
+			scale: 1.1;
+			animation: g-drift linear both;
+		}
+
+		html[data-variant='g'] .section .render-figure picture img {
+			animation-timeline: view();
+			animation-range: cover 0% cover 100%;
+		}
+
+		@keyframes g-drift {
+			from { translate: 0 -4%; }
+			to { translate: 0 4%; }
+		}
+
+		/* Stamp progress (D + B): the bar under each sheet stamp fills while
+		   you read that section. */
+		@media (min-width: 1200px) {
+			html[data-variant='g'] .section > .sheet {
+				view-timeline: --g-sheet block;
+			}
+
+			html[data-variant='g'] .sheet__rail::after {
+				content: '';
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				height: 2px;
+				background: var(--accent);
+				transform-origin: left center;
+				animation: g-fill-x linear both;
+			}
+
+			html[data-variant='g'] .section .sheet__rail::after {
+				animation-timeline: --g-sheet;
+				animation-range: entry 100% exit 0%;
+			}
+
+			@keyframes g-fill-x {
+				from { transform: scaleX(0); }
+				to { transform: scaleX(1); }
+			}
+		}
+
+		/* Vehicles: E's display line, but moved by the scroll (B) instead of
+		   a timer, so nothing moves on its own (WCAG 2.2.2). The script wraps
+		   the list in a clipping .g-track; without it the list stays as is. */
+		@media (min-width: 900px) {
+			html.g-motion .g-track {
+				overflow: hidden;
+				padding-inline: var(--edge-inner) var(--edge);
+			}
+
+			html.g-motion .g-track .vehicles__list {
+				flex-wrap: nowrap;
+				width: max-content;
+				max-width: none;
+				white-space: nowrap;
+				font-size: clamp(var(--text-display-lg-size), 5vw, var(--text-display-2xl-size));
+				line-height: 1.1;
+				animation: g-line linear both;
+			}
+
+			html.g-motion .g-track .vehicles__list {
+				animation-timeline: view();
+				animation-range: cover 10% cover 90%;
+			}
+
+			@keyframes g-line {
+				from { translate: 6% 0; }
+				to { translate: calc(-100% + 100vw - var(--edge-inner) - var(--edge)) 0; }
+			}
+		}
+	}
+
+	/* FAQ answers open with an animated height where supported (A/C). */
+	@supports (interpolate-size: allow-keywords) {
+		html[data-variant='g'] {
+			interpolate-size: allow-keywords;
+		}
+
+		html[data-variant='g'] .faq__item::details-content {
+			block-size: 0;
+			overflow: hidden;
+			opacity: 0;
+			transition:
+				block-size var(--duration-slower) var(--ease-out),
+				opacity var(--duration-slower) var(--ease-out),
+				content-visibility var(--duration-slower) allow-discrete;
+		}
+
+		html[data-variant='g'] .faq__item[open]::details-content {
+			block-size: auto;
+			opacity: 1;
+		}
+	}
+}
