@@ -1,0 +1,189 @@
+/*
+  Variant E — "Cinético" (experiment branch claude/visual-e-kinetic).
+
+  The page moves: GSAP + ScrollTrigger + SplitText with Lenis smooth scroll
+  (src/scripts/kinetic.ts). This sheet holds what the script needs from CSS:
+  the LED progress rail, masked-line type, the vehicles marquee and the
+  larger display scale. Every effect is gated on `html.e-js`, which the head
+  script adds only when motion is allowed; without it the page is the plain
+  skeleton, fully visible.
+*/
+
+html[data-variant='e'] {
+	--fluid-display: clamp(48px, 6.4vw + 0.5rem, 104px);
+	--fluid-h2: clamp(34px, 3.2vw + 0.5rem, 64px);
+}
+
+html[data-variant='e'] .hero__heading,
+html[data-variant='e'] .problem__statement,
+html[data-variant='e'] .founders__heading {
+	line-height: 0.96;
+	letter-spacing: -0.035em;
+}
+
+html[data-variant='e'] .heading-h2 {
+	line-height: 1;
+	letter-spacing: -0.03em;
+}
+
+/* Until the script has set its own initial states, the reveal targets are
+   invisible so nothing flashes before the first frame. The script switches
+   them to visibility: inherit as it takes over; a safety timer in the head
+   removes `e-js` if the module never runs. */
+html.e-js .hero__inner > *,
+html.e-js .hero__media,
+html.e-js .section .render-figure picture,
+html.e-js [data-e-reveal],
+html.e-js [data-e-lines] {
+	visibility: hidden;
+}
+
+/* Masked lines: SplitText wraps each line in a mask with overflow hidden. */
+html[data-variant='e'] [data-e-lines] {
+	text-wrap: balance;
+}
+
+/* ---------------------------------------------------------------------- */
+/* LED progress rail                                                       */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='e'] .e-led {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 3px;
+	z-index: 50;
+	pointer-events: none;
+	background: oklch(100% 0 0 / 0.06);
+}
+
+html[data-variant='e'] .e-led::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: var(--amber-500);
+	box-shadow: 0 0 14px 1px oklch(72% 0.15 62 / 0.6);
+	transform-origin: top center;
+	transform: scaleY(var(--e-progress, 0));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	@supports (animation-timeline: scroll()) {
+		html[data-variant='e'] .e-led::before {
+			animation: e-led-fill linear both;
+			animation-timeline: scroll(root);
+		}
+	}
+}
+
+@keyframes e-led-fill {
+	from {
+		transform: scaleY(0);
+	}
+	to {
+		transform: scaleY(1);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+/* Vehicles marquee: the six names run as one continuous display line     */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='e'] .e-marquee {
+	overflow: hidden;
+	mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+	-webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+html[data-variant='e'] .e-marquee__track {
+	display: flex;
+	width: max-content;
+	gap: 0;
+}
+
+html[data-variant='e'] .e-marquee .vehicles__list {
+	flex: none;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	align-items: baseline;
+	max-width: none;
+	padding-inline-end: 0.5em;
+	white-space: nowrap;
+	font-size: clamp(40px, 6vw, 96px);
+	line-height: 1.1;
+}
+
+html[data-variant='e'] .e-marquee .vehicles__item:not(:last-child)::after,
+html[data-variant='e'] .e-marquee .vehicles__item:last-child::after {
+	content: '';
+	display: inline-block;
+	width: 0.3em;
+	height: 0.3em;
+	margin-inline: 0.45em;
+	border-radius: var(--radius-pill);
+	background: var(--accent);
+	transform: translateY(-0.25em);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html[data-variant='e'] .e-marquee__track {
+		animation: e-marquee 38s linear infinite;
+	}
+
+	html[data-variant='e'] .e-marquee:hover .e-marquee__track {
+		animation-play-state: paused;
+	}
+}
+
+@keyframes e-marquee {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+/* Hero: the image is the full frame, the type sits on a slight overlap    */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='e'] .hero__media {
+	overflow: hidden;
+}
+
+html[data-variant='e'] .hero__media picture {
+	will-change: transform;
+}
+
+@media (min-width: 900px) {
+	html[data-variant='e'] .hero {
+		min-height: min(100svh, 980px);
+	}
+
+	html[data-variant='e'] .hero__heading {
+		max-width: 12ch;
+	}
+}
+
+/* Figures reveal with a curtain: the script animates clip-path on picture. */
+html[data-variant='e'] .section .render-figure picture {
+	will-change: clip-path;
+}
+
+/* Link and button micro-interactions: slightly livelier than the DS. */
+html[data-variant='e'] .button {
+	transition-duration: var(--duration-base);
+}
+
+html[data-variant='e'] .button--primary:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-glow-accent), 0 10px 24px -10px oklch(72% 0.15 62 / 0.5);
+}
+
+html[data-variant='e'] .button--ghost:hover {
+	transform: translateY(-2px);
+}
+
+/* The FAQ answer is height-animated by the script; keep padding stable. */
+html[data-variant='e'] .faq__a {
+	overflow: hidden;
+}

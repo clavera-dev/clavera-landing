@@ -13,6 +13,7 @@ import {
 } from '../i18n';
 import { FAVICON, SHARE_IMAGE } from '../config/seo';
 import '../styles/global.css';
+import '../styles/variant-e.css';
 
 /**
  * Every locale is a full static document with its own `lang`, its own
@@ -55,7 +56,7 @@ const shareImageUrl = SHARE_IMAGE ? new URL(SHARE_IMAGE.path, Astro.site).href :
 ---
 
 <!doctype html>
-<html lang={definition.lang}>
+<html lang={definition.lang} data-variant="e">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -67,6 +68,16 @@ const shareImageUrl = SHARE_IMAGE ? new URL(SHARE_IMAGE.path, Astro.site).href :
 		{FAVICON?.appleTouch && <link rel="apple-touch-icon" href={FAVICON.appleTouch} />}
 		<meta name="generator" content={Astro.generator} />
 		<meta name="theme-color" content="#0c0b09" />
+		{/* Variant E: mark the document as script-driven before first paint, with a
+		    safety timer so content can never stay hidden if the module fails. */}
+		<script is:inline>
+			if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				document.documentElement.classList.add('e-js');
+				setTimeout(function () {
+					if (!document.documentElement.classList.contains('e-ready')) document.documentElement.classList.remove('e-js');
+				}, 4000);
+			}
+		</script>
 
 		{/* Fonts are self-hosted (public/fonts, declared in the type tokens). Preload
 		    only what the first paint needs: the body face, plus the display face for
@@ -111,5 +122,7 @@ const shareImageUrl = SHARE_IMAGE ? new URL(SHARE_IMAGE.path, Astro.site).href :
 			<slot />
 		</main>
 		<Footer alternatePaths={alternatePaths} />
+		<div class="e-led" aria-hidden="true"></div>
+		<script src="../scripts/kinetic.ts"></script>
 	</body>
 </html>
