@@ -1,0 +1,145 @@
+/*
+ * Visual variant B — "Cinematic scroll".
+ *
+ * Pure CSS scroll-driven animation (animation-timeline: view()/scroll()), no
+ * script. Compositor-only properties (transform, opacity, clip-path). Everything
+ * is inside @supports and prefers-reduced-motion: no-preference, so browsers
+ * without view timelines, no-JS and reduced-motion get the static page.
+ * Heavier effects (stacking sections, parallax) switch on only from 900px up.
+ */
+
+:root {
+	--fluid-h2: clamp(var(--text-h2-size), 4.4vw + 0.4rem, var(--text-display-xl-size));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	@supports (animation-timeline: view()) {
+		/* Reading progress: a 2px amber line along the top edge. */
+		body::before {
+			content: '';
+			position: fixed;
+			inset: 0 0 auto 0;
+			height: 2px;
+			background: var(--accent);
+			transform-origin: left center;
+			transform: scaleX(0);
+			z-index: 60;
+			pointer-events: none;
+			animation: progress linear both;
+			animation-timeline: scroll(root block);
+		}
+
+		@keyframes progress {
+			to { transform: scaleX(1); }
+		}
+
+		/* Hero: the shot pushes in and falls into the dark as you leave it. */
+		.hero__media picture img {
+			animation: hero-push linear both;
+			animation-timeline: view();
+			animation-range: exit 0% exit 100%;
+		}
+
+		.hero__inner {
+			animation: hero-lift linear both;
+			animation-timeline: view();
+			animation-range: exit 0% exit 70%;
+		}
+
+		@keyframes hero-push {
+			from { transform: scale(1); filter: brightness(1); }
+			to { transform: scale(1.28); filter: brightness(0.35); }
+		}
+
+		@keyframes hero-lift {
+			from { transform: none; opacity: 1; }
+			to { transform: translateY(-70px); opacity: 0; }
+		}
+
+		/* Scrubbed reveals: tied to scroll position, so they feel physical. */
+		.section :is(.eyebrow, h2, h3, .lede),
+		.section > .shell > p,
+		.problem__statement,
+		.founders__heading {
+			animation: scrub-rise linear both;
+			animation-timeline: view();
+			animation-range: entry 5% entry 55%;
+		}
+
+		.section :is(.index, .steps, .vehicles__list, .security__list, .hub__legend-list, .casos__list, .problem__loop) > *,
+		.faq__item {
+			animation: scrub-rise linear both;
+			animation-timeline: view();
+			animation-range: entry 10% entry 60%;
+		}
+
+		@keyframes scrub-rise {
+			from { opacity: 0; transform: translateY(48px); }
+			to { opacity: 1; transform: none; }
+		}
+
+		/* Images open from the middle and settle, scrubbed. */
+		.render-figure picture {
+			animation: scrub-open linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 75%;
+		}
+
+		.render-figure img {
+			animation: scrub-settle linear both;
+			animation-timeline: view();
+			animation-range: entry 0% exit 100%;
+		}
+
+		@keyframes scrub-open {
+			from { clip-path: inset(18% 12% 18% 12% round var(--radius-xl)); }
+			to { clip-path: inset(0 0 0 0 round var(--radius-xl)); }
+		}
+
+		@keyframes scrub-settle {
+			from { transform: scale(1.25) translateY(-3%); }
+			to { transform: scale(1) translateY(3%); }
+		}
+
+		/* Vehicle names drift sideways in opposite directions. */
+		.vehicles__list > *:nth-child(odd) {
+			animation: drift-r linear both;
+			animation-timeline: view();
+		}
+
+		.vehicles__list > *:nth-child(even) {
+			animation: drift-l linear both;
+			animation-timeline: view();
+		}
+
+		@keyframes drift-r { from { translate: -40px 0; } to { translate: 40px 0; } }
+		@keyframes drift-l { from { translate: 40px 0; } to { translate: -40px 0; } }
+	}
+
+	/* Stacking sections (desktop): each sheet pins at its bottom edge and the
+	   next one slides over it. The negative top keeps tall sections scrollable
+	   to their end before they pin. */
+	@media (min-width: 900px) {
+		@supports (position: sticky) {
+			main > .section {
+				position: sticky;
+				top: min(0px, calc(100svh - 100%));
+				box-shadow: 0 -30px 60px -30px rgb(0 0 0 / 0.55);
+			}
+
+			/* Sections without a surface are transparent; give them the page ground
+			   so the sheet underneath does not show through. */
+			main > .section:not(.surface-raised, .surface-paper, .surface-deep) {
+				background: var(--bg-base);
+			}
+
+			main > .section.surface-paper {
+				box-shadow: 0 -30px 60px -30px rgb(0 0 0 / 0.35);
+			}
+		}
+	}
+
+	.button { transition-property: background-color, border-color, color, box-shadow, transform; }
+	.button:hover { transform: translateY(-2px); }
+	.button:active { transform: scale(0.98); }
+}
