@@ -52,7 +52,9 @@ const c = getCopy(Astro.currentLocale).hub;
 			</div>
 
 			<div class="hub__legend">
-				<p class="mono mono--accent">{c.legendTitle}</p>
+				{/* Neutral label; the numerals below stay amber because they key to
+				    the amber bay numbers printed in the drawing itself. */}
+				<p class="mono">{c.legendTitle}</p>
 				<ol class="hub__legend-list">
 					{
 						c.legend.map((zone, i) => (

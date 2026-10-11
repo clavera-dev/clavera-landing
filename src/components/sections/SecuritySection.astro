@@ -74,6 +74,25 @@ const c = getCopy(Astro.currentLocale).security;
 		max-width: 480px;
 	}
 
+	/* On a tablet the 480px portrait left a third of the column empty
+	   beside it. There it fills the column as a 4:3 crop that keeps the
+	   door and the sign. */
+	@media (min-width: 600px) and (max-width: 899px) {
+		.security__media {
+			max-width: none;
+		}
+
+		.security .security__media :global(.render-figure picture) {
+			aspect-ratio: 4 / 3;
+		}
+
+		.security .security__media :global(.render-figure img) {
+			height: 100%;
+			object-fit: cover;
+			object-position: 50% 45%;
+		}
+	}
+
 	.security__list {
 		list-style: none;
 		margin: var(--space-4) 0 0;

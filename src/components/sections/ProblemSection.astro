@@ -142,15 +142,52 @@ const c = copy.problem;
 		max-width: 34ch;
 	}
 
+	/* Stacked, the closing line follows the loop and opens with its own
+	   rule; a second rule closing the loop just above it would double up. */
+	@media (max-width: 899px) {
+		.problem__loop-item:last-child {
+			border-bottom: 0;
+		}
+	}
+
+	/*
+	  Two columns from 900px: the argument and the closing line on the left,
+	  the daily loop beside both on the right. The close sits directly under
+	  the argument instead of on a row of its own, which left a hole under
+	  the paragraph while the loop ran on. Reading order is unchanged —
+	  argument, loop, close — because only the grid placement moves.
+	*/
 	@media (min-width: 900px) {
 		.problem {
-			gap: var(--space-20);
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+			column-gap: var(--space-24);
+			row-gap: var(--space-12);
+			align-items: start;
+		}
+
+		.problem__lead {
+			grid-column: 1 / -1;
+			margin-bottom: var(--space-8);
 		}
 
 		.problem__grid {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-			gap: var(--space-24);
-			align-items: start;
+			display: contents;
+		}
+
+		.problem__argument {
+			grid-column: 1;
+			grid-row: 2;
+		}
+
+		.problem__loop {
+			grid-column: 2;
+			grid-row: 2 / span 2;
+		}
+
+		.problem__close {
+			grid-column: 1;
+			grid-row: 3;
 		}
 
 		/* The two moments of the day get room to be read as two lines. */

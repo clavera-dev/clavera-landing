@@ -51,10 +51,12 @@ const c = getCopy(Astro.currentLocale).zones;
 		gap: var(--space-4);
 	}
 
+	/* The rule spans the block, so the selector row and the disclaimer
+	   share one right edge; the caption itself wraps where it wraps. */
 	.zones__disclaimer {
 		margin-top: var(--space-6);
 		padding-top: var(--space-5);
 		border-top: 1px solid var(--border-hairline);
-		max-width: var(--measure);
+		text-wrap: pretty;
 	}
 </style>

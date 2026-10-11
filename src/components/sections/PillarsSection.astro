@@ -309,6 +309,10 @@ const GLYPHS: string[][] = [
 		}
 	}
 
+	.index__row:last-child {
+		padding-bottom: 0;
+	}
+
 	@media (min-width: 700px) {
 		.index {
 			grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -343,6 +347,12 @@ const GLYPHS: string[][] = [
 
 		.index__row--lead {
 			padding-bottom: var(--space-16);
+		}
+
+		/* The last row ends on its text: the section's own padding is the
+		   bottom margin, as in every other section. */
+		.index__row:nth-last-child(-n + 2) {
+			padding-bottom: 0;
 		}
 	}
 </style>

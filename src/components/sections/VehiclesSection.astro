@@ -70,15 +70,23 @@ const c = getCopy(Astro.currentLocale).vehicles;
 	}
 
 	/* One flowing line of what fits, at heading scale, separated by quiet
-	   marks — the alternative to six identical pills. */
+	   marks — the alternative to six identical pills.
+
+	   Each mark hangs in the gap in front of its item, and the list clips
+	   at its own edges. The mark in front of whichever item starts a line
+	   therefore falls outside the list and is cut away, so no line ever
+	   starts or ends on a separator, whatever the locale or width. The
+	   items themselves never leave the list's box. */
 	.vehicles__list {
+		--mark: 1.3em;
 		list-style: none;
 		margin: 0;
 		padding: 0;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: baseline;
-		gap: var(--space-2) 0;
+		gap: var(--space-2) var(--mark);
+		overflow: hidden;
 		font-family: var(--font-display);
 		font-size: var(--fluid-display-sm);
 		line-height: 1.25;
@@ -88,20 +96,19 @@ const c = getCopy(Astro.currentLocale).vehicles;
 	}
 
 	.vehicles__item {
-		display: inline-flex;
-		align-items: baseline;
+		position: relative;
 	}
 
-	.vehicles__item:not(:last-child)::after {
+	.vehicles__item::before {
 		content: '';
-		display: inline-block;
-		width: 0.34em;
-		height: 0.34em;
-		margin-inline: 0.5em;
+		position: absolute;
+		/* Centred in the gap, on the middle of the x-height. */
+		inset-inline-start: calc(var(--mark) / -2 - 0.15em);
+		top: 0.42em;
+		width: 0.3em;
+		height: 0.3em;
 		border-radius: var(--radius-pill);
 		background: var(--text-tertiary);
-		/* Sits on the x-height rather than the baseline. */
-		transform: translateY(-0.28em);
 	}
 
 	.vehicles__note {
@@ -113,8 +120,7 @@ const c = getCopy(Astro.currentLocale).vehicles;
 		border-top: 1px solid var(--border-hairline);
 	}
 
-	/* The middot run is a desktop device: wrapped on a narrow screen it strands
-	   a separator at the end of a line. On a phone the same list simply stacks. */
+	/* On a phone the same list simply stacks, without marks. */
 	@media (max-width: 699px) {
 		.vehicles__list {
 			flex-direction: column;
@@ -122,7 +128,7 @@ const c = getCopy(Astro.currentLocale).vehicles;
 			gap: var(--space-1);
 		}
 
-		.vehicles__item:not(:last-child)::after {
+		.vehicles__item::before {
 			display: none;
 		}
 	}

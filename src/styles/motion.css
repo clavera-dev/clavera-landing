@@ -49,19 +49,20 @@
 	   clipped, so the zone selector's suggestion list opens freely. The end
 	   inset of -100px leaves descenders and focus rings uncut. */
 	.hero__media picture img {
-		animation: hero-settle 1600ms var(--ease-out) backwards;
+		animation: hero-settle 1400ms var(--ease-out) backwards;
 	}
 
 	.hero__inner > * {
 		animation: hero-rise 800ms var(--ease-out) backwards;
 	}
 
+	/* The whole sequence lands within 1.4 s (spec §5). */
 	.hero__inner > :nth-child(1) { animation-delay: 100ms; }
-	.hero__inner > :nth-child(2) { animation-delay: 200ms; animation-duration: 900ms; }
-	.hero__inner > :nth-child(3) { animation-delay: 380ms; }
-	.hero__inner > :nth-child(4) { animation-delay: 500ms; }
-	.hero__inner > :nth-child(5) { animation-delay: 600ms; }
-	.hero__inner > :nth-child(6) { animation-delay: 700ms; }
+	.hero__inner > :nth-child(2) { animation-delay: 180ms; animation-duration: 900ms; }
+	.hero__inner > :nth-child(3) { animation-delay: 320ms; }
+	.hero__inner > :nth-child(4) { animation-delay: 420ms; }
+	.hero__inner > :nth-child(5) { animation-delay: 500ms; }
+	.hero__inner > :nth-child(6) { animation-delay: 580ms; }
 
 	/* On a phone the copy is the first thing read; it arrives in half the
 	   time. */

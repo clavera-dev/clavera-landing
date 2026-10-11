@@ -64,7 +64,7 @@
 	/* A section heading that shares its row with an image or a list gets
 	   about half a column, so it stops one step lower (48, the Russian cap)
 	   instead of stacking into a four-line tower. */
-	--fluid-h2-split: clamp(var(--text-h2-size), 2.6vw + 0.5rem, 48px);
+	--fluid-h2-split: clamp(var(--text-h2-size), 3.2vw + 0.4rem, 48px);
 	/* The problem statement: louder than any section heading, still one
 	   notch under the hero's 72. */
 	--fluid-statement: clamp(var(--text-display-lg-size), 4.4vw + 0.5rem, 64px);
@@ -143,7 +143,7 @@
 	--fluid-display: clamp(var(--text-display-lg-size), 5vw + 0.5rem, 64px);
 	--fluid-display-xl: clamp(var(--text-h1-size), 4vw + 0.5rem, 48px);
 	--fluid-h2: clamp(var(--text-h2-size), 3.6vw + 0.4rem, 48px);
-	--fluid-h2-split: clamp(var(--text-h2-size), 2.6vw + 0.5rem, 44px);
+	--fluid-h2-split: clamp(var(--text-h2-size), 3vw + 0.4rem, 44px);
 	--fluid-statement: clamp(var(--text-display-lg-size), 4.4vw + 0.5rem, 56px);
 }
 
@@ -528,6 +528,13 @@ video {
 @media (max-width: 379px) {
 	:root:lang(ru) {
 		--fluid-display: var(--text-h1-size);
+	}
+}
+
+/* The Russian problem statement is two long sentences; at 44px on a phone
+   it stood as a five-line tower. Up to 429px it takes the h1 step too. */
+@media (max-width: 429px) {
+	:root:lang(ru) {
 		--fluid-statement: var(--text-h1-size);
 	}
 }
