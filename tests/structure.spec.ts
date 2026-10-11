@@ -49,6 +49,12 @@ for (const locale of LOCALES) {
 						// runs to the viewport edge.
 						if (el.closest('.table-wrap')) return;
 						if (el.closest('.bleed, .bleed-left, .bleed-right')) return;
+						// Motion variants scale images inside an overflow:hidden
+						// <picture>; the visible box is the picture's, not the image's.
+						if (el.tagName === 'IMG' && el.parentElement?.tagName === 'PICTURE') {
+							const pr = el.parentElement.getBoundingClientRect();
+							if (pr.right <= vw + 2 && pr.left >= -2) return;
+						}
 
 						const rect = el.getBoundingClientRect();
 						if (rect.right > vw + 2 || rect.left < -2) {

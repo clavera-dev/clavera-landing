@@ -13,6 +13,7 @@ import {
 } from '../i18n';
 import { FAVICON, SHARE_IMAGE } from '../config/seo';
 import '../styles/global.css';
+import '../styles/motion.css';
 
 /**
  * Every locale is a full static document with its own `lang`, its own
@@ -111,5 +112,8 @@ const shareImageUrl = SHARE_IMAGE ? new URL(SHARE_IMAGE.path, Astro.site).href :
 			<slot />
 		</main>
 		<Footer alternatePaths={alternatePaths} />
+		<script>
+			import '../scripts/motion.ts';
+		</script>
 	</body>
 </html>

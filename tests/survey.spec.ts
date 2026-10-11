@@ -168,7 +168,8 @@ for (const locale of LOCALES) {
 					type: s.getAttribute('type'),
 				})),
 			);
-			expect(scripts.length, 'client scripts').toBeLessThanOrEqual(1);
+			// Visual variant: the zone selector plus the first-party motion script.
+			expect(scripts.length, 'client scripts').toBeLessThanOrEqual(2);
 			for (const script of scripts) {
 				if (script.src !== null) {
 					expect(script.src, 'script is first-party').toMatch(/^\/_astro\//);
