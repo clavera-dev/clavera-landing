@@ -140,6 +140,6 @@
 	}
 
 	.button { transition-property: background-color, border-color, color, box-shadow, transform; }
-	.button:hover { transform: translateY(-2px); }
-	.button:active { transform: scale(0.98); }
+	@media (hover: hover) { .button:hover { transform: translateY(-2px); } }
+	.button:active { transform: scale(0.97); }
 }
