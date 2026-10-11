@@ -1,4 +1,5 @@
 ---
+import Typeset from '../typography/Typeset.astro';
 import Section from '../layout/Section.astro';
 import { getCopy } from '../../i18n';
 
@@ -35,7 +36,7 @@ const c = getCopy(Astro.currentLocale).faq;
 	<div class="faq-layout">
 		<header class="faq__head">
 			<p class="eyebrow">{c.eyebrow}</p>
-			<h2 id="faq-heading" class="heading-h2">{c.heading}</h2>
+			<h2 id="faq-heading" class="heading-h2"><Typeset text={c.heading} /></h2>
 		</header>
 
 		<div class="faq">
@@ -57,9 +58,12 @@ const c = getCopy(Astro.currentLocale).faq;
 </Section>
 
 <style>
+	/* One column at every width: heading above, questions below, like every
+	   other section. A heading-beside-list split left a tall empty column
+	   and repeated the "Para quién" composition two sections earlier. */
 	.faq-layout {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
+		display: flex;
+		flex-direction: column;
 		gap: var(--space-12);
 	}
 
@@ -69,14 +73,15 @@ const c = getCopy(Astro.currentLocale).faq;
 		gap: var(--space-5);
 	}
 
-	/* Measured in the heading's own size, so it wraps on words, never
-	   inside one. */
+	/* The same measure as the shared section headings (Section.astro). */
 	.faq__head .heading-h2 {
-		max-width: 14ch;
+		max-width: 20ch;
 	}
 
-	/* Hairline rows rather than bordered boxes. */
+	/* Hairline rows rather than bordered boxes, at a reading width: the
+	   marker stays near the question it belongs to. */
 	.faq {
+		max-width: 52rem;
 		border-top: 1px solid var(--border-hairline);
 	}
 
@@ -118,6 +123,7 @@ const c = getCopy(Astro.currentLocale).faq;
 	   allowed — see src/styles/motion.css). */
 	.faq__q-text {
 		display: block;
+		text-wrap: pretty;
 	}
 
 	/* A drawn plus/minus rather than a text glyph, so it stays optically
@@ -136,7 +142,7 @@ const c = getCopy(Astro.currentLocale).faq;
 		position: absolute;
 		inset: 50% 0 auto 0;
 		height: 2px;
-		background: var(--accent);
+		background: var(--text-secondary);
 		transform: translateY(-50%);
 		transition: opacity var(--duration-fast) var(--ease-standard);
 	}
@@ -152,22 +158,29 @@ const c = getCopy(Astro.currentLocale).faq;
 		opacity: 0;
 	}
 
+	/* Neutral at rest; amber only when the row is pointed at or open. */
+	.faq__q:hover .faq__mark::before,
+	.faq__q:hover .faq__mark::after,
+	.faq__item[open] .faq__mark::before {
+		background: var(--accent);
+	}
+
 	.faq__a {
 		padding-bottom: var(--space-8);
 		max-width: var(--measure);
 	}
 
 	@media (min-width: 900px) {
+		.faq-layout {
+			gap: var(--space-16);
+		}
+
+		.faq__head {
+			gap: var(--space-6);
+		}
+
 		.faq__q {
 			padding-block: var(--space-8);
-		}
-	}
-
-	@media (min-width: 1100px) {
-		.faq-layout {
-			grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-			gap: var(--space-16);
-			align-items: start;
 		}
 	}
 </style>

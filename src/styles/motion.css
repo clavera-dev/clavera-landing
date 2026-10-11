@@ -5,17 +5,27 @@
 
     1  Hero load sequence          CSS keyframes, on load
     2  Hero exit push and darken   CSS view timeline, desktop
-    3  Heading and lede rise       IntersectionObserver, once
+    3  Heading rise                IntersectionObserver, once
     4  Render curtain              IntersectionObserver, once
     5  Hairline draw               IntersectionObserver, once
-    6  Pillar tiles mask in        IntersectionObserver, once, 60 ms stagger
+    6  Pillar cells mask in        IntersectionObserver, once
     7  Step ticks draw             IntersectionObserver, once, 150 ms stagger
-    8  Figure parallax ±3 %        CSS view timeline, desktop
+    8  (figure parallax — removed on review, see below)
     9  Button lift and press       pointer
     10 Link underline wipe         pointer (Footer.astro)
     11 Render hover zoom 1.03      pointer
     12 FAQ height                  click, interpolate-size
     13 Locale cross-fade           cross-document view transition
+
+  Removed after the first design review, as too much movement for a page
+  that should feel still: the ±3 % figure drift (every render had a curtain,
+  a drift and a hover zoom; the drift also cropped each render by 6 %), the
+  lede rise (the heading alone carries the entrance) and the 60 ms stagger
+  across the seven pillar cells.
+
+  The pilot section's amber rule (Section.astro) keeps its scroll-linked
+  draw from M7 — an owner-approved motion with its own test — and is not
+  part of this layer.
 
   Rules. Everything sits under prefers-reduced-motion: no-preference; the
   global reduce rule in global.css zeroes whatever might slip through.
@@ -76,30 +86,19 @@
 
 	/* 3–7. Scroll reveals (tagged by src/scripts/motion.ts) -----------------
 	   The hidden state has no transition, so tagging never animates
-	   anything backwards; only the way in is transitioned. */
-	html.motion-on [data-reveal='heading']:not(.is-in),
-	html.motion-on [data-reveal='lede']:not(.is-in) {
-		clip-path: inset(0 0 100% 0);
-		translate: 0 var(--reveal-rise);
-	}
-
+	   anything backwards; only the way in is transitioned. A rise shorter
+	   than one line of the heading never pushes it over the text below. */
 	html.motion-on [data-reveal='heading']:not(.is-in) {
+		clip-path: inset(0 0 100% 0);
 		translate: 0 var(--reveal-rise-heading);
 	}
 
-	html.motion-on [data-reveal='heading'].is-in,
-	html.motion-on [data-reveal='lede'].is-in {
+	html.motion-on [data-reveal='heading'].is-in {
 		clip-path: inset(-100px);
 		translate: 0 0;
 		transition:
 			clip-path 900ms var(--ease-out),
 			translate 900ms var(--ease-out);
-	}
-
-	/* The lede follows its heading a beat later and a little faster. */
-	html.motion-on [data-reveal='lede'].is-in {
-		transition-duration: 700ms;
-		transition-delay: 120ms;
 	}
 
 	/* 4. Render curtain: the frame opens top to bottom, once. The end inset
@@ -127,22 +126,19 @@
 		transition: scale 1000ms var(--ease-out);
 	}
 
-	/* 6. Pillar tiles open from the top, 60 ms apart. A mask, not a fade:
-	   the tile's text is never semi-transparent. */
+	/* 6. Each pillar cell opens from its hairline down. A mask, not a fade:
+	   the text is never semi-transparent. */
 	html.motion-on [data-reveal='tile']:not(.is-in) {
-		clip-path: inset(0 0 100% 0 round var(--radius-lg));
+		clip-path: inset(0 0 100% 0);
 		translate: 0 16px;
 	}
 
 	html.motion-on [data-reveal='tile'].is-in {
-		clip-path: inset(-2px round var(--radius-lg));
+		clip-path: inset(-2px);
 		translate: 0 0;
 		transition:
-			clip-path 600ms var(--ease-out),
-			translate 600ms var(--ease-out),
-			background-color var(--duration-base) var(--ease-standard),
-			border-color var(--duration-base) var(--ease-standard);
-		transition-delay: calc(var(--reveal-order, 0) * 60ms), calc(var(--reveal-order, 0) * 60ms), 0s, 0s;
+			clip-path 700ms var(--ease-out),
+			translate 700ms var(--ease-out);
 	}
 
 	/* 7. Each step's amber tick draws along the rail, 150 ms apart. */
@@ -156,8 +152,31 @@
 		transition-delay: calc(var(--reveal-order, 0) * 150ms + 150ms);
 	}
 
-	/* 9. Buttons lift 2px under a pointer and press to 0.97 (global.css). */
+	/* Something that enters from above — after a jump down the page and a
+	   scroll back up — is simply there: a mask opening from its far edge
+	   would keep the visible part blank the longest. Declared after the
+	   reveal rules so it wins at equal specificity. */
+	html.motion-on [data-reveal].reveal-instant,
+	html.motion-on [data-reveal].reveal-instant picture,
+	html.motion-on [data-reveal].reveal-instant::before {
+		transition: none;
+	}
+
+	/* 9. Buttons lift 2px under a pointer and press to 0.97 (global.css).
+	   The hit area reaches 2px below the button, so a pointer resting on
+	   its bottom edge does not drop off it as it lifts and set it
+	   flickering. */
 	@media (hover: hover) {
+		.button:not(:disabled) {
+			position: relative;
+		}
+
+		.button:not(:disabled)::after {
+			content: '';
+			position: absolute;
+			inset: 0 0 -2px;
+		}
+
 		.button:not(:disabled):hover {
 			translate: 0 -2px;
 		}
@@ -219,7 +238,7 @@
 		animation-timing-function: var(--ease-standard);
 	}
 
-	/* 2 and 8. Scroll-linked parts, only where the engine has view timelines,
+	/* 2. The scroll-linked part, only where the engine has view timelines,
 	   and only on wide screens. The timeline declarations sit in their own
 	   rules: a minifier folds a timeline next to the `animation` shorthand
 	   into one declaration that browsers reject (see Section.astro). */
@@ -239,18 +258,6 @@
 				animation-timeline: view();
 				animation-range: exit 0% exit 100%;
 			}
-
-			/* 8. A slow drift inside each render frame. The image is scaled
-			   just enough that the drift never shows an edge. */
-			.section .render-figure:not([data-render='r6']) img {
-				scale: 1.06;
-				animation: figure-drift linear both;
-			}
-
-			.section .render-figure:not([data-render='r6']) picture img {
-				animation-timeline: view();
-				animation-range: cover 0% cover 100%;
-			}
 		}
 	}
 
@@ -259,10 +266,6 @@
 		to { transform: scale(1.15); filter: brightness(0.45); }
 	}
 
-	@keyframes figure-drift {
-		from { translate: 0 -3%; }
-		to { translate: 0 3%; }
-	}
 }
 
 /* A printed page shows everything, whatever was scrolled to. */

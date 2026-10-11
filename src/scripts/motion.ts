@@ -9,8 +9,8 @@
  *    band (Header.astro). This is legibility, not motion, so it runs under
  *    reduced motion too. Without JavaScript the gradient stays, as before.
  *
- * 2. One-shot reveals. Section headings, ledes, render figures, divider
- *    hairlines, the pillar tiles and the step ticks get `data-reveal` and
+ * 2. One-shot reveals. Section headings, render figures, divider
+ *    hairlines, the pillar cells and the step ticks get `data-reveal` and
  *    receive `.is-in` the first time they enter the viewport. Every hiding
  *    rule in src/styles/motion.css is gated on `html.motion-on`, which is
  *    only set here and never under prefers-reduced-motion, so no-JS, a failed
@@ -57,14 +57,13 @@ if (motionAllowed && main && 'IntersectionObserver' in window) {
 		targets.push(node);
 	};
 
-	// Headings and ledes only — not lists, not FAQ items, not every paragraph.
+	// Headings only — not ledes, not lists, not FAQ items, not every paragraph.
 	main.querySelectorAll('.section .heading-h2, .problem__statement, .founders__heading').forEach((el) =>
 		tag(el, 'heading'),
 	);
-	main.querySelectorAll('.section .lede').forEach((el) => tag(el, 'lede'));
 	main.querySelectorAll('.section .render-figure').forEach((el) => tag(el, 'curtain'));
 	main.querySelectorAll('.section--divided').forEach((el) => tag(el, 'divider'));
-	main.querySelectorAll('.index__row').forEach((el, i) => tag(el, 'tile', i));
+	main.querySelectorAll('.index__row').forEach((el) => tag(el, 'tile'));
 	main.querySelectorAll('.steps__item').forEach((el, i) => tag(el, 'tick', i));
 
 	const reveal = (el: Element) => el.classList.add('is-in');
@@ -72,6 +71,9 @@ if (motionAllowed && main && 'IntersectionObserver' in window) {
 		(entries) => {
 			for (const entry of entries) {
 				if (!entry.isIntersecting) continue;
+				// Entering from above (scrolling back up after a jump): show it
+				// as it is rather than open it from its far edge.
+				if (entry.boundingClientRect.top < 0) entry.target.classList.add('reveal-instant');
 				reveal(entry.target);
 				observer.unobserve(entry.target);
 			}

@@ -1,0 +1,25 @@
+---
+/**
+ * Display-size text with its closing full stop pulled in.
+ *
+ * Plus Jakarta Sans gives the full stop a wide left side bearing. At body
+ * size nobody sees it; at 56–72px it detaches ("ciudad .") and the heading
+ * looks unset. The text itself is unchanged — the stop is wrapped, not
+ * rewritten — so copy, accessible names and every text scan read the same.
+ */
+interface Props {
+	text: string;
+}
+
+const { text } = Astro.props;
+const stop = text.endsWith('.') && !text.endsWith('..');
+---
+
+{/* One line on purpose: no whitespace may separate the word from its stop. */}
+{stop ? <>{text.slice(0, -1)}<span class="typeset-stop">.</span></> : text}
+
+<style>
+	.typeset-stop {
+		margin-inline-start: -0.08em;
+	}
+</style>

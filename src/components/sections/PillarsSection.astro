@@ -1,4 +1,5 @@
 ---
+import Typeset from '../typography/Typeset.astro';
 import Section from '../layout/Section.astro';
 
 /**
@@ -7,12 +8,13 @@ import Section from '../layout/Section.astro';
  * under the planned-service note below — and pillar 08 ("Zona de limpieza")
  * is removed (§3.5).
  *
- * Redesign H (spec §3.4): presented as an asymmetric bento — two large
- * tiles, three medium, two large — each with a linework glyph. This is the one
- * place on the page that uses tiles; the specification moment the hairline
- * index was meant to be now reads as a product rather than a list. Everything
- * else on the page stays tile-free on purpose: tiles everywhere is the
- * template look the review rejected.
+ * Redesign H (spec §3.4): set on the bento's asymmetric grid — two wide
+ * cells, three medium, two wide — each with a linework glyph, but as cells
+ * under a hairline rather than filled cards. The first build used cards; on
+ * review seven bordered icon cards read as the software-template look the
+ * redesign set out to remove (spec §9a), so the grid keeps its rhythm and
+ * drops the boxes. The alternative (spec option B, sticky R2 beside a list)
+ * stays documented in the worklog.
  *
  * R2 (vertical lifting storage systems) opens the section, running off the
  * right edge of the page. It is the render that shows the single idea the
@@ -26,15 +28,20 @@ const c = getCopy(Astro.currentLocale).solution;
 
 /*
  * Tabler outline glyphs (the DS icon set, stroke 1.75 per the DS README),
- * inlined so `currentColor` resolves against the accent token. Keyed by the
+ * inlined so `currentColor` resolves against the text colour. Keyed by the
  * pillar's position, which is the same in every locale:
- *   bookmark (assigned spot) · qrcode (personal digital access) ·
+ *   bike (assigned spot) · qrcode (personal digital access) ·
  *   umbrella (closed and dry) · clipboard-list (access log) ·
- *   logout (take yours out) · barcode (frame-number inventory) ·
+ *   door-exit (take yours out) · barcode (frame-number inventory) ·
  *   calendar (monthly membership).
  */
 const GLYPHS: string[][] = [
-	['M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z'],
+	[
+		'M5 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0',
+		'M19 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0',
+		'M12 19l0 -4l-3 -3l5 -4l2 3l3 0',
+		'M17 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0',
+	],
 	[
 		'M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z',
 		'M7 17l0 .01',
@@ -59,9 +66,10 @@ const GLYPHS: string[][] = [
 		'M13 16l2 0',
 	],
 	[
-		'M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2',
-		'M9 12h12l-3 -3',
-		'M18 15l3 -3',
+		'M13 12v.01',
+		'M3 21h18',
+		'M5 21v-16a2 2 0 0 1 2 -2h7.5m2.5 10.5v7.5',
+		'M14 7h7m-3 -3l3 3l-3 3',
 	],
 	[
 		'M4 7v-1a2 2 0 0 1 2 -2h2',
@@ -96,7 +104,7 @@ const GLYPHS: string[][] = [
 	<div class="solution__intro">
 		<div class="solution__text">
 			<p class="eyebrow">{c.eyebrow}</p>
-			<h2 id="solucion-heading" class="heading-h2">{c.heading}</h2>
+			<h2 id="solucion-heading" class="heading-h2"><Typeset text={c.heading} /></h2>
 			<p class="lede">{c.lede}</p>
 			{/*
 			  No hub is in operation. The properties below are written in
@@ -168,15 +176,16 @@ const GLYPHS: string[][] = [
 	}
 
 	/* The bleeding image loses its right-hand radius: it is running off the
-	   page, not sitting in a frame. */
-	.solution__media :global(picture) {
+	   page, not sitting in a frame. Raised specificity: RenderFigure's own
+	   radius rule otherwise wins the tie. */
+	.solution__intro .solution__media :global(.render-figure picture) {
 		border-start-end-radius: 0;
 		border-end-end-radius: 0;
 	}
 
 	@media (min-width: 900px) {
 		.solution__intro {
-			grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 			gap: var(--space-16);
 			/* The text column starts at the top so its eyebrow shares the rail
 			   index's line; the image keeps its optical centring on its own. */
@@ -187,15 +196,22 @@ const GLYPHS: string[][] = [
 		.solution__media {
 			align-self: center;
 		}
+
+		/* Half a row: one step under the full-width section headings. */
+		.solution__text .heading-h2 {
+			font-size: var(--fluid-h2-split);
+		}
 	}
 
-	/* Bento --------------------------------------------------------------- */
+	/* Specification grid --------------------------------------------------- */
 
 	/*
 	  Six tracks: 3 + 3, 2 + 2 + 2, 3 + 3 from 1000px; two per row on a
 	  tablet, with the seventh pillar taking the full row; one column on a
-	  phone. Flat tiles with a hairline edge on the elevated surface — the DS
-	  card — and no shadow, spotlight, glass or glow.
+	  phone. Each pillar is a cell under a hairline — the drawing-sheet
+	  language of the rest of the page — not a filled card: seven bordered
+	  icon cards read as a software template, which is exactly what the
+	  redesign set out to remove.
 	*/
 	.index {
 		list-style: none;
@@ -203,44 +219,31 @@ const GLYPHS: string[][] = [
 		padding: 0;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		gap: var(--space-3);
+		gap: 0 var(--space-12);
 	}
 
 	.index__row {
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		gap: var(--space-8);
-		padding: var(--space-6);
-		background: var(--bg-elevated);
-		border: 1px solid var(--border-hairline);
-		border-radius: var(--radius-lg);
-		transition:
-			background-color var(--duration-base) var(--ease-standard),
-			border-color var(--duration-base) var(--ease-standard);
-	}
-
-	/* DS hover: a neutral surface lightens one graphite step. Pointer
-	   devices only — a tap should not leave a tile lit. */
-	@media (hover: hover) {
-		.index__row:hover {
-			background: var(--bg-elevated-2);
-			border-color: var(--border-hairline-strong);
-		}
+		gap: var(--space-6);
+		padding-block: var(--space-6) var(--space-10);
+		border-top: 1px solid var(--border-hairline-strong);
 	}
 
 	.index__top {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-4);
 	}
 
+	/* Linework in the text colour: the glyph names the property, it does
+	   not decorate it. Amber stays with the actions. */
 	.index__glyph {
 		flex: none;
-		width: 28px;
-		height: 28px;
-		color: var(--accent);
+		width: 24px;
+		height: 24px;
+		color: var(--text-secondary);
 	}
 
 	/* The pillar's own number, kept quiet: a reference, not a counter. */
@@ -274,16 +277,15 @@ const GLYPHS: string[][] = [
 		max-width: 44ch;
 	}
 
-	/* On a phone seven stacked cards became a wall. Each tile collapses to a
-	   single row instead — glyph, words, number — and the seven read as one
-	   compact specification. */
+	/* On a phone each pillar is one row — glyph, words, number — and the
+	   seven read as one compact specification. */
 	@media (max-width: 699px) {
 		.index__row {
 			display: grid;
-			grid-template-columns: 28px minmax(0, 1fr) auto;
+			grid-template-columns: 24px minmax(0, 1fr) auto;
 			align-items: start;
 			gap: var(--space-4);
-			padding: var(--space-5);
+			padding-block: var(--space-5) var(--space-6);
 		}
 
 		.index__top {
@@ -314,19 +316,13 @@ const GLYPHS: string[][] = [
 
 		.index__row {
 			grid-column: span 3;
-			min-height: 208px;
-			padding: var(--space-8);
 		}
 
 		.index__row:last-child {
 			grid-column: 1 / -1;
 		}
 
-		/* The two lead pillars carry the h3 step and a taller tile. */
-		.index__row--lead {
-			min-height: 248px;
-		}
-
+		/* The two lead pillars carry the h3 step. */
 		.index__row--lead .index__title {
 			font-size: var(--text-h3-size);
 			line-height: var(--text-h3-line);
@@ -346,7 +342,7 @@ const GLYPHS: string[][] = [
 		}
 
 		.index__row--lead {
-			min-height: 264px;
+			padding-bottom: var(--space-16);
 		}
 	}
 </style>

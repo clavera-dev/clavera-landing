@@ -106,8 +106,17 @@ const c = getCopy(Astro.currentLocale).hub;
 		border-radius: var(--radius-xl);
 	}
 
-	.hub__drawing :global(picture) {
-		border-radius: var(--radius-md);
+	/* The drawing is printed on the plate, not pasted onto it: no frame of
+	   its own, and its warm paper multiplies into the plate's. Raised
+	   specificity: RenderFigure's own radius rule otherwise wins the tie. */
+	.hub .hub__drawing :global(.render-figure picture) {
+		border-radius: 0;
+		box-shadow: none;
+		mix-blend-mode: multiply;
+	}
+
+	.hub .hub__drawing :global(.render-figure img) {
+		background: transparent;
 	}
 
 	.hub__legend {

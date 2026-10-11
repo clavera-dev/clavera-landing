@@ -35,8 +35,9 @@ const c = getCopy(Astro.currentLocale).survey;
 		flex-direction: column;
 		gap: var(--space-8);
 		padding-block: var(--space-10);
+		/* Top rule only: the footer's own rule follows close below, and two
+		   parallel lines a short gap apart read as a mistake. */
 		border-top: 1px solid var(--border-hairline);
-		border-bottom: 1px solid var(--border-hairline);
 	}
 
 	.survey__text {
@@ -48,6 +49,7 @@ const c = getCopy(Astro.currentLocale).survey;
 
 	.survey__heading {
 		color: var(--text-primary);
+		text-wrap: balance;
 	}
 
 	@media (min-width: 800px) {
@@ -56,6 +58,16 @@ const c = getCopy(Astro.currentLocale).survey;
 			align-items: center;
 			justify-content: space-between;
 			gap: var(--space-12);
+		}
+
+		/* The action keeps its one line; the text column gives way instead.
+		   It had wrapped to two lines inside its own box at 1024px. */
+		.survey > :last-child {
+			flex: none;
+		}
+
+		.survey :global(.button) {
+			white-space: nowrap;
 		}
 	}
 </style>

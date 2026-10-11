@@ -1,4 +1,5 @@
 ---
+import Typeset from '../typography/Typeset.astro';
 import Section from '../layout/Section.astro';
 import { getCopy } from '../../i18n';
 
@@ -19,7 +20,7 @@ const c = copy.problem;
 		<div class="problem__lead">
 			<p class="eyebrow">{c.eyebrow}</p>
 			<h2 id="problema-heading" class="problem__statement">
-				{c.statementLead}<br /><span class="problem__statement-dim">{c.statementDim}</span>
+				<Typeset text={c.statementLead} /><br /><span class="problem__statement-dim"><Typeset text={c.statementDim} /></span>
 			</h2>
 		</div>
 
@@ -58,13 +59,13 @@ const c = copy.problem;
 	}
 
 	/* The page's editorial moment (redesign H, spec §3.3): two sentences, two
-	   tones, no image. It keeps the hero's display scale on purpose — the
-	   spec's display-xl would set it at the size every section heading now
-	   has, and the one place where type does the talking would stop standing
-	   out from the headings around it. */
+	   tones, no image. It sits one notch above every section heading (64,
+	   RU 56) and one below the hero's 72: the spec's display-xl would set it
+	   at the section-heading size, and the hero's own scale made the first
+	   two screens equally loud. */
 	.problem__statement {
 		font-family: var(--font-display);
-		font-size: var(--fluid-display);
+		font-size: var(--fluid-statement);
 		line-height: 1.04;
 		letter-spacing: var(--text-display-2xl-tracking);
 		font-weight: var(--text-display-2xl-weight);
@@ -106,8 +107,9 @@ const c = copy.problem;
 		border-top: 1px solid var(--border-hairline);
 	}
 
-	/* The DS label voice in amber, not mono: these name moments of the day,
-	   they are not technical values. */
+	/* The DS label voice, not mono: these name moments of the day, they are
+	   not technical values. Neutral, not amber — the accent is kept for
+	   actions and the pilot rule. */
 	.problem__loop-label {
 		font-family: var(--font-sans);
 		font-size: var(--text-eyebrow-size);
@@ -115,7 +117,7 @@ const c = copy.problem;
 		letter-spacing: var(--text-eyebrow-tracking);
 		font-weight: var(--text-eyebrow-weight);
 		text-transform: uppercase;
-		color: var(--accent);
+		color: var(--text-tertiary);
 	}
 
 	.problem__loop-item:last-child {
@@ -136,7 +138,7 @@ const c = copy.problem;
 		color: var(--text-primary);
 		margin: 0;
 		padding-top: var(--space-8);
-		border-top: 2px solid var(--accent);
+		border-top: 1px solid var(--border-hairline-strong);
 		max-width: 34ch;
 	}
 

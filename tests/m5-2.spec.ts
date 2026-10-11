@@ -66,6 +66,10 @@ test.describe('M5.2 zone selector', () => {
 	const locale = LOCALES[0];
 
 	test('reserves the field\'s space before the script reveals it', async ({ page }) => {
+		// Layout, not motion: the hero copy rises in on load (src/styles/motion.css),
+		// so two measurements a moment apart would differ by the animation's
+		// progress. Reduced motion shows the settled layout from the first frame.
+		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto(locale.path);
 
 		for (const scope of ['#top', '#zonas']) {

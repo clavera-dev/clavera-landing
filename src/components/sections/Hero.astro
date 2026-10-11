@@ -15,6 +15,7 @@
  * The zone selector replaces the old "Me interesa el piloto" hero button
  * (owner handoff v1.1 §3.2, §4.2); the header CTA still links to #fundadores.
  */
+import Typeset from '../typography/Typeset.astro';
 import ZoneSelector from '../lead-form/ZoneSelector.astro';
 import { getRender, avifSrcset, webpSrcset, webpSrc } from '../../data/media';
 import { getCopy, localeHome, resolveLocale, renderAlt } from '../../i18n';
@@ -47,7 +48,7 @@ const { width, height } = r1.dimensions[1600];
 		<div class="shell shell--aligned hero__inner">
 			<p class="eyebrow hero__eyebrow">{copy.hero.eyebrow}</p>
 
-			<h1 id="hero-heading" class="hero__heading">{copy.hero.headingHtml}</h1>
+			<h1 id="hero-heading" class="hero__heading"><Typeset text={copy.hero.headingHtml} /></h1>
 
 			<p class="lede hero__lede">{copy.hero.lede}</p>
 
@@ -116,16 +117,19 @@ const { width, height } = r1.dimensions[1600];
 	   lit wordmark falls exactly where the headline sits, and two brand marks
 	   competing in the same place reads as an accident. Weighting the left of
 	   the frame darker separates them and leaves the corridor depth on the
-	   right fully lit. */
+	   right fully lit. Redesign H holds the darker band further right (to
+	   about 56 %): between 1024 and 1440px the sign sits behind the second
+	   line of the headline. */
 	@media (min-width: 900px) {
 		.hero__media picture::after {
 			background:
 				linear-gradient(
 					to right,
 					oklch(15% 0.004 95 / 0.92) 0%,
-					oklch(15% 0.004 95 / 0.78) 30%,
-					oklch(15% 0.004 95 / 0.3) 58%,
-					oklch(15% 0.004 95 / 0) 80%
+					oklch(15% 0.004 95 / 0.82) 32%,
+					oklch(15% 0.004 95 / 0.55) 56%,
+					oklch(15% 0.004 95 / 0.12) 76%,
+					oklch(15% 0.004 95 / 0) 86%
 				),
 				linear-gradient(
 					to top,
@@ -337,7 +341,8 @@ const { width, height } = r1.dimensions[1600];
 	/* On a phone the two calls to action read better as a stacked pair at full
 	   width than as two differently-sized buttons on separate lines, and the
 	   spec strip becomes a short stacked list — a wrapped inline row leaves a
-	   stray divider at the start of its second line. */
+	   stray divider at the start of its second line. Ticks, not hairline rows:
+	   three ruled rows under the buttons read as a menu. */
 	@media (max-width: 599px) {
 		.hero__actions {
 			flex-direction: column;
@@ -348,18 +353,25 @@ const { width, height } = r1.dimensions[1600];
 		.hero__facts {
 			flex-direction: column;
 			align-items: stretch;
-			gap: 0;
+			gap: var(--space-2);
 			width: 100%;
 		}
 
-		.hero__facts li {
-			padding: var(--space-3) 0;
+		.hero__facts li,
+		.hero__facts li:first-child {
+			position: relative;
+			padding: 0 0 0 var(--space-6);
 			border-left: 0;
-			border-top: 1px solid var(--border-hairline);
 		}
 
-		.hero__facts li:last-child {
-			border-bottom: 1px solid var(--border-hairline);
+		.hero__facts li::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: calc(var(--text-label-md-line) / 2 - 1px);
+			width: var(--space-3);
+			height: 2px;
+			background: var(--text-tertiary);
 		}
 	}
 

@@ -21,6 +21,7 @@ const c = getCopy(Astro.currentLocale).vehicles;
 	eyebrow={c.eyebrow}
 	heading={c.heading}
 	rhythm="tight"
+	divider
 >
 	<div class="vehicles">
 		<div class="vehicles__band bleed">
@@ -68,7 +69,7 @@ const c = getCopy(Astro.currentLocale).vehicles;
 		padding-inline: var(--edge-inner) var(--edge);
 	}
 
-	/* One flowing line of what fits, at heading scale, separated by amber
+	/* One flowing line of what fits, at heading scale, separated by quiet
 	   marks — the alternative to six identical pills. */
 	.vehicles__list {
 		list-style: none;
@@ -98,7 +99,7 @@ const c = getCopy(Astro.currentLocale).vehicles;
 		height: 0.34em;
 		margin-inline: 0.5em;
 		border-radius: var(--radius-pill);
-		background: var(--accent);
+		background: var(--text-tertiary);
 		/* Sits on the x-height rather than the baseline. */
 		transform: translateY(-0.28em);
 	}

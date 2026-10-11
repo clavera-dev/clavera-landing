@@ -1,4 +1,5 @@
 ---
+import Typeset from '../typography/Typeset.astro';
 import Section from '../layout/Section.astro';
 import RenderFigure from '../media/RenderFigure.astro';
 import { getCopy } from '../../i18n';
@@ -22,7 +23,7 @@ const c = getCopy(Astro.currentLocale).security;
 	<div class="security">
 		<div class="security__text">
 			<p class="eyebrow">{c.eyebrow}</p>
-			<h2 id="seguridad-heading" class="heading-h2">{c.heading}</h2>
+			<h2 id="seguridad-heading" class="heading-h2"><Typeset text={c.heading} /></h2>
 			<p class="lede">{c.lede}</p>
 
 			<ul class="security__list">
@@ -91,7 +92,7 @@ const c = getCopy(Astro.currentLocale).security;
 		border-bottom: 1px solid var(--border-hairline);
 	}
 
-	/* An amber tick instead of a bullet glyph. */
+	/* A neutral tick instead of a bullet glyph; amber is kept for actions. */
 	.security__list li::before {
 		content: '';
 		position: absolute;
@@ -99,7 +100,7 @@ const c = getCopy(Astro.currentLocale).security;
 		top: calc(var(--space-5) + 0.55em);
 		width: var(--space-4);
 		height: 2px;
-		background: var(--accent);
+		background: var(--text-tertiary);
 	}
 
 	@media (min-width: 900px) {
@@ -109,9 +110,11 @@ const c = getCopy(Astro.currentLocale).security;
 			align-items: start;
 		}
 
-		/* Crosses up over the surface boundary above. */
+		/* The portrait's top edge shares the eyebrow's line. It used to
+		   cross up over the surface boundary above; with the wider rhythm the
+		   overlap grew to read as a misalignment rather than a gesture. */
 		.security__media {
-			margin-top: calc(var(--rhythm) * -1 - var(--space-16));
+			margin-top: 0;
 		}
 	}
 

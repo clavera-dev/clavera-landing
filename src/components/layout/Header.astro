@@ -82,8 +82,8 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 	  edge. The fading scrim let headings and renders read through the
 	  header text once the page scrolled; over plain surfaces it has nothing
 	  to protect and only got in the way. The DS README's "translucent
-	  blurred background only after scrolling past the hero" — at 0.95 so
-	  nothing behind it competes with the logo and CTA.
+	  blurred background only after scrolling past the hero" — at 0.98, so
+	  only the faintest movement shows through and no text behind it reads.
 
 	  The state comes from src/scripts/motion.ts (html.header-solid). A page
 	  without a hero — the legal pages — has the band from the start, script
@@ -95,7 +95,7 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 		position: absolute;
 		inset: 0;
 		z-index: -1;
-		background: oklch(15% 0.004 95 / 0.95);
+		background: oklch(15% 0.004 95 / 0.98);
 		border-bottom: 1px solid var(--border-hairline);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
@@ -167,17 +167,17 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 		}
 	}
 
-	/* Set as the DS eyebrow label rather than mono: mono is for technical
-	   values (codes, frame numbers), and this is a section name. */
+	/* A quiet sentence-case label, not mono (mono is for technical values)
+	   and not uppercase tracked sans either: that is how navigation links
+	   look, and this line is not a link. */
 	.site-header__note {
 		display: none;
 		margin: 0;
 		font-family: var(--font-sans);
-		font-size: var(--text-eyebrow-size);
-		letter-spacing: var(--text-eyebrow-tracking);
-		font-weight: var(--text-eyebrow-weight);
-		text-transform: uppercase;
-		color: var(--text-secondary);
+		font-size: var(--text-label-sm-size);
+		letter-spacing: var(--text-label-sm-tracking);
+		font-weight: 500;
+		color: var(--text-tertiary);
 	}
 
 	/* The CTA *is* the header's control height — set it directly instead of

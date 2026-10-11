@@ -1,4 +1,5 @@
 ---
+import Typeset from '../typography/Typeset.astro';
 import Section from '../layout/Section.astro';
 import { getCopy } from '../../i18n';
 
@@ -6,11 +7,11 @@ const c = getCopy(Astro.currentLocale).cases;
 
 ---
 
-<Section id="casos" index={c.index} railLabel={c.rail} labelledby="casos-heading" rhythm="loose">
+<Section id="casos" index={c.index} railLabel={c.rail} labelledby="casos-heading" divider>
 	<div class="casos">
 		<div class="casos__head">
 			<p class="eyebrow">{c.eyebrow}</p>
-			<h2 id="casos-heading" class="heading-h2">{c.heading}</h2>
+			<h2 id="casos-heading" class="heading-h2"><Typeset text={c.heading} /></h2>
 		</div>
 
 		<ul class="casos__list">
@@ -68,7 +69,7 @@ const c = getCopy(Astro.currentLocale).cases;
 		top: 0.62em;
 		width: var(--space-4);
 		height: 2px;
-		background: var(--accent);
+		background: var(--text-tertiary);
 	}
 
 	@media (min-width: 900px) {
@@ -81,6 +82,11 @@ const c = getCopy(Astro.currentLocale).cases;
 		.casos__head {
 			position: sticky;
 			top: calc(var(--header-h) + var(--space-8));
+		}
+
+		/* Half a row: one step under the full-width section headings. */
+		.casos__head :global(.heading-h2) {
+			font-size: var(--fluid-h2-split);
 		}
 
 		.casos__list {

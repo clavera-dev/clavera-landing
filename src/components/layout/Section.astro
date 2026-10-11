@@ -11,6 +11,8 @@
  * pinned in the left margin on wide screens, borrowed from the numbered bays
  * visible in the approved renders.
  */
+import Typeset from '../typography/Typeset.astro';
+
 interface Props {
 	id: string;
 	/** Two-digit sheet index shown in the left rail, e.g. "03". */
@@ -96,7 +98,7 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 					{eyebrow && <p class="eyebrow">{eyebrow}</p>}
 					{heading && (
 						<HeadingTag id={headingId} class="heading-h2">
-							{heading}
+							<Typeset text={heading} />
 						</HeadingTag>
 					)}
 					<slot name="lede" />
@@ -128,13 +130,14 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 		padding-block: var(--space-12) var(--rhythm-tight);
 	}
 
-	/* The rule spans the sheet's content box, not the viewport. --edge-exact
-	   is measured from the section itself, so the rule lands on the same left
-	   and right edges as the text above and below it. */
+	/* The rule spans the sheet's content column, not the viewport. --edge-exact
+	   is measured from the section itself, and the rail is stepped over, so
+	   the rule lands on the same left and right edges as the text above and
+	   below it. */
 	.section--divided::before {
 		content: '';
 		position: absolute;
-		inset-inline: var(--edge-exact);
+		inset-inline: calc(var(--edge-exact) + var(--rail)) var(--edge-exact);
 		top: 0;
 		height: 1px;
 		background: var(--border-hairline);
