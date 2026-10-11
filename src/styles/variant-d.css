@@ -1,0 +1,496 @@
+/*
+  Variant D — "Hoja técnica" (experiment branch claude/visual-d-paper).
+
+  The page is read as a set of technical drawing sheets: paper register
+  everywhere, a faint drafting grid, sheet stamps instead of a mono rail,
+  framed plates for the renders, and two graphite "plates" as bookends (the
+  hero and the pilot block). Copy, legal text and structure are untouched;
+  this file only re-points tokens and restyles existing classes.
+
+  Motion is one idea: the renders "develop" from a grey print to colour as
+  they come into view (scroll-driven, CSS only, reduced-motion safe).
+*/
+
+/* ---------------------------------------------------------------------- */
+/* Register: paper by default                                             */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='d'] {
+	color-scheme: light;
+	/* Larger display steps than the DS scale: part of the experiment. */
+	--fluid-display: clamp(44px, 5.4vw + 0.75rem, 88px);
+	--fluid-h2: clamp(32px, 2.6vw + 0.75rem, 56px);
+	--d-ink: var(--graphite-950);
+	--d-line: oklch(0% 0 0 / 0.14);
+	--d-line-strong: oklch(0% 0 0 / 0.32);
+	--d-grid: oklch(0% 0 0 / 0.045);
+}
+
+html[data-variant='d'] body {
+	background: var(--bg-paper);
+	color: var(--text-on-paper);
+
+	--bg-base: var(--concrete-50);
+	--bg-surface: var(--white);
+	--bg-elevated: var(--white);
+	--bg-elevated-2: var(--concrete-100);
+	--text-primary: var(--text-on-paper);
+	--text-secondary: var(--text-on-paper-secondary);
+	--text-tertiary: var(--text-on-paper-tertiary);
+	--border-hairline: var(--d-line);
+	--border-hairline-strong: var(--d-line-strong);
+	--accent: var(--amber-700);
+	--accent-hover: var(--amber-700);
+	--accent-press: var(--amber-700);
+	--accent-on: var(--white);
+	--accent-subtle: oklch(52% 0.14 55 / 0.1);
+	--accent-subtle-strong: oklch(52% 0.14 55 / 0.28);
+	--focus-ring: var(--amber-700);
+	--shadow-e1: var(--shadow-paper-e1);
+	--shadow-e2: var(--shadow-paper-e2);
+	--shadow-glow-accent: 0 0 0 3px oklch(52% 0.14 55 / 0.28);
+	--shadow-focus: 0 0 0 3px oklch(52% 0.14 55 / 0.28);
+}
+
+/* Drafting grid behind everything: 64px major lines only. */
+html[data-variant='d'] body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background-image:
+		linear-gradient(to right, var(--d-grid) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--d-grid) 1px, transparent 1px);
+	background-size: 64px 64px;
+	background-position: center top;
+}
+
+html[data-variant='d'] a:hover {
+	color: var(--amber-700);
+}
+
+html[data-variant='d'] ::selection {
+	background: var(--amber-700);
+	color: var(--white);
+}
+
+/* The two graphite plates: the establishing shot and the pilot block. */
+html[data-variant='d'] .hero,
+html[data-variant='d'] #fundadores,
+html[data-variant='d'] .site-footer {
+	color-scheme: dark;
+	color: var(--concrete-50);
+	--bg-base: var(--graphite-950);
+	--bg-surface: var(--graphite-900);
+	--bg-elevated: var(--graphite-850);
+	--bg-elevated-2: var(--graphite-800);
+	--text-primary: var(--concrete-50);
+	--text-secondary: var(--concrete-300);
+	--text-tertiary: var(--concrete-500);
+	--border-hairline: oklch(100% 0 0 / 0.1);
+	--border-hairline-strong: oklch(100% 0 0 / 0.2);
+	--accent: var(--amber-500);
+	--accent-hover: var(--amber-400);
+	--accent-press: var(--amber-600);
+	--accent-on: var(--graphite-950);
+	--accent-subtle: oklch(72% 0.15 62 / 0.16);
+	--accent-subtle-strong: oklch(72% 0.15 62 / 0.28);
+	--focus-ring: var(--amber-500);
+}
+
+/* Surfaces lose their graphite meaning on paper: raised = white sheet. */
+html[data-variant='d'] .surface-raised,
+html[data-variant='d'] .surface-deep {
+	background: var(--bg-paper);
+}
+
+html[data-variant='d'] .surface-paper {
+	background: var(--white);
+	box-shadow: inset 0 1px 0 var(--d-line), inset 0 -1px 0 var(--d-line);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Header: a paper title bar, not a scrim                                 */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='d'] .site-header::before {
+	background: oklch(96.5% 0.002 80 / 0.92);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	mask-image: none;
+	-webkit-mask-image: none;
+	height: 100%;
+	border-bottom: 1px solid var(--d-line);
+}
+
+html[data-variant='d'] .site-header__note {
+	color: var(--text-on-paper-secondary);
+	border-color: var(--d-line-strong);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Hero: a framed plate on the sheet, not a full bleed                    */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='d'] .hero {
+	background: var(--graphite-950);
+	margin-top: var(--header-h);
+	outline: 1px solid var(--d-line-strong);
+	outline-offset: -1px;
+}
+
+@media (min-width: 900px) {
+	html[data-variant='d'] .hero {
+		margin-top: calc(var(--header-h) + var(--space-5));
+		margin-inline: var(--gutter);
+		min-height: min(84svh, 860px);
+	}
+
+	html[data-variant='d'] .hero__body {
+		padding-block: var(--space-16) var(--space-16);
+	}
+
+	html[data-variant='d'] .hero__disclosure {
+		right: var(--space-6);
+	}
+
+	/* The plate sits inside the sheet, so the aligned shell loses the
+	   viewport-based centring and takes a fixed inset instead. */
+	html[data-variant='d'] .hero .shell--aligned {
+		padding-inline-start: calc(var(--space-10) + var(--rail));
+		max-width: none;
+	}
+}
+
+html[data-variant='d'] .hero__heading {
+	font-size: clamp(44px, 4.6vw + 0.75rem, 80px);
+	max-width: 14ch;
+	line-height: 0.98;
+}
+
+/* One orchestrated moment: the hero prints. */
+@media (prefers-reduced-motion: no-preference) {
+	html[data-variant='d'] .hero__media img {
+		animation: d-print 1200ms var(--ease-out) both;
+	}
+
+	/* Text fades and rises; the controls only rise, so their contrast is
+	   never read mid-fade (axe runs right after load). */
+	html[data-variant='d'] .hero__inner > * {
+		animation: d-rise-only 560ms var(--ease-out) both;
+		animation-delay: calc(60ms + var(--d-i, 0) * 60ms);
+	}
+
+	html[data-variant='d'] .hero__inner > :nth-child(-n + 3) {
+		animation-name: d-rise;
+	}
+
+	html[data-variant='d'] .hero__inner > :nth-child(1) { --d-i: 0; }
+	html[data-variant='d'] .hero__inner > :nth-child(2) { --d-i: 1; }
+	html[data-variant='d'] .hero__inner > :nth-child(3) { --d-i: 2; }
+	html[data-variant='d'] .hero__inner > :nth-child(4) { --d-i: 3; }
+	html[data-variant='d'] .hero__inner > :nth-child(5) { --d-i: 4; }
+	html[data-variant='d'] .hero__inner > :nth-child(6) { --d-i: 5; }
+}
+
+@keyframes d-print {
+	from {
+		filter: grayscale(1) contrast(1.15);
+		opacity: 0.6;
+	}
+	to {
+		filter: grayscale(0) contrast(1);
+		opacity: 1;
+	}
+}
+
+@keyframes d-rise {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes d-rise-only {
+	from {
+		transform: translateY(14px);
+	}
+	to {
+		transform: none;
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+/* Sheet stamps: the rail becomes a title block                            */
+/* ---------------------------------------------------------------------- */
+
+@media (min-width: 1200px) {
+	html[data-variant='d'] .sheet__rail {
+		align-self: start;
+		position: sticky;
+		top: calc(var(--header-h) + var(--space-6));
+		width: calc(var(--rail) - var(--space-6));
+		border: 1px solid var(--d-line-strong);
+		padding: var(--space-3) var(--space-3) var(--space-4);
+		background: var(--bg-paper);
+	}
+
+	html[data-variant='d'] .sheet__index {
+		display: block;
+		font-family: var(--font-display);
+		font-size: 40px;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		line-height: 1;
+		color: var(--text-on-paper);
+	}
+
+	html[data-variant='d'] .sheet__label {
+		display: block;
+		margin-top: var(--space-3);
+		padding-top: var(--space-2);
+		border-top: 1px solid var(--d-line);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		line-height: 1.3;
+		letter-spacing: 0.04em;
+		text-transform: none;
+		color: var(--text-on-paper-secondary);
+	}
+
+	/* The plates keep their own ink. */
+	html[data-variant='d'] #fundadores .sheet__rail {
+		background: var(--graphite-950);
+		border-color: oklch(100% 0 0 / 0.24);
+	}
+
+	html[data-variant='d'] #fundadores .sheet__index {
+		color: var(--concrete-50);
+	}
+
+	html[data-variant='d'] #fundadores .sheet__label {
+		color: var(--concrete-300);
+		border-color: oklch(100% 0 0 / 0.14);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+/* Type: drawing notes instead of tracked caps                             */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='d'] .eyebrow {
+	font-family: var(--font-mono);
+	text-transform: none;
+	letter-spacing: 0.02em;
+	font-size: 13px;
+	color: var(--text-secondary);
+}
+
+html[data-variant='d'] .eyebrow::before {
+	width: var(--space-6);
+	height: 1px;
+	background: var(--accent);
+}
+
+html[data-variant='d'] .heading-h2 {
+	line-height: 1.02;
+	letter-spacing: -0.03em;
+}
+
+html[data-variant='d'] .numeral {
+	color: var(--text-on-paper);
+}
+
+html[data-variant='d'] #fundadores .numeral {
+	color: var(--accent);
+}
+
+/* Section dividers become dimension lines: a rule with end ticks. */
+html[data-variant='d'] .section--divided::before {
+	background:
+		linear-gradient(var(--d-line-strong), var(--d-line-strong)) left top / 1px 9px no-repeat,
+		linear-gradient(var(--d-line-strong), var(--d-line-strong)) right top / 1px 9px no-repeat,
+		linear-gradient(var(--d-line-strong), var(--d-line-strong)) left top / 100% 1px no-repeat;
+	height: 9px;
+}
+
+/* The accent rule on the pilot plate stays the LED. */
+html[data-variant='d'] .section--accent::after {
+	background: var(--amber-500);
+}
+
+html[data-variant='d'] #fundadores {
+	background: var(--graphite-950);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Plates: renders framed as drawing figures                               */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='d'] .render-figure {
+	position: relative;
+}
+
+html[data-variant='d'] .render-figure picture {
+	border-radius: 0;
+	box-shadow: 0 0 0 1px var(--d-line-strong);
+	background: var(--concrete-100);
+}
+
+html[data-variant='d'] .render-figure img {
+	background: var(--concrete-100);
+}
+
+/* Registration marks at two corners of each plate. */
+html[data-variant='d'] .render-figure::before,
+html[data-variant='d'] .render-figure::after {
+	content: '';
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	pointer-events: none;
+	border: 0 solid var(--amber-700);
+}
+
+html[data-variant='d'] .render-figure::before {
+	top: -7px;
+	left: -7px;
+	border-width: 0 0 1px 0;
+	transform: translate(0, 7px);
+	width: 18px;
+	border-color: var(--d-line-strong);
+}
+
+html[data-variant='d'] .render-figure::after {
+	top: -8px;
+	left: -1px;
+	width: 1px;
+	height: 18px;
+	border-width: 0 0 0 1px;
+	border-color: var(--d-line-strong);
+}
+
+html[data-variant='d'] .render-figure__caption {
+	font-family: var(--font-mono);
+	font-weight: 500;
+	letter-spacing: 0.02em;
+}
+
+/* The renders develop from a grey print to colour as they scroll in. */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		html[data-variant='d'] .section .render-figure img {
+			animation: d-develop linear both;
+		}
+
+		html[data-variant='d'] .section .render-figure img {
+			animation-timeline: view();
+			animation-range: entry 10% entry 70%;
+		}
+	}
+}
+
+@keyframes d-develop {
+	from {
+		filter: grayscale(1) contrast(1.1) brightness(1.05);
+	}
+	to {
+		filter: grayscale(0) contrast(1) brightness(1);
+	}
+}
+
+html[data-variant='d'] .solution__media picture,
+html[data-variant='d'] .hub__drawing picture {
+	border-radius: 0;
+}
+
+/* Hub sheet: the zoning plan is the one drawing that is already paper. */
+html[data-variant='d'] .hub__plan {
+	border-radius: 0;
+	border: 1px solid var(--d-line-strong);
+	background: var(--white);
+	box-shadow: var(--shadow-paper-e2);
+}
+
+html[data-variant='d'] .hub__drawing picture {
+	box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Controls on paper                                                       */
+/* ---------------------------------------------------------------------- */
+
+html[data-variant='d'] .button,
+html[data-variant='d'] .zone-selector__input,
+html[data-variant='d'] .zone-selector__list {
+	border-radius: 2px;
+}
+
+html[data-variant='d'] .button--primary {
+	background: var(--amber-700);
+	color: var(--white);
+}
+
+html[data-variant='d'] .hero .button--primary,
+html[data-variant='d'] #fundadores .button--primary {
+	background: var(--amber-500);
+	color: var(--graphite-950);
+}
+
+html[data-variant='d'] .button--ghost {
+	border-color: var(--d-line-strong);
+}
+
+html[data-variant='d'] .hero .button--ghost {
+	border-color: oklch(100% 0 0 / 0.32);
+}
+
+html[data-variant='d'] .zone-selector__input {
+	background: var(--white);
+	border-color: var(--d-line-strong);
+}
+
+html[data-variant='d'] .hero .zone-selector__input {
+	background: var(--graphite-850);
+	border-color: oklch(100% 0 0 / 0.2);
+}
+
+html[data-variant='d'] .zone-selector__list {
+	background: var(--white);
+	box-shadow: var(--shadow-paper-e2), 0 0 0 1px var(--d-line-strong);
+}
+
+html[data-variant='d'] .hero .zone-selector__list {
+	background: var(--graphite-900);
+}
+
+/* Comparison: the CLAVERA column is the one tinted plate on the sheet. */
+html[data-variant='d'] .comparison thead th {
+	text-transform: none;
+	letter-spacing: 0.02em;
+	font-size: 13px;
+}
+
+html[data-variant='d'] .comparison__own {
+	background: oklch(52% 0.14 55 / 0.08);
+}
+
+/* FAQ marks and the problem statement's closing rule use paper ink. */
+html[data-variant='d'] .problem__close {
+	border-color: var(--text-on-paper);
+}
+
+html[data-variant='d'] .problem__statement-dim {
+	color: var(--text-on-paper-tertiary);
+}
+
+/* Footer plate. */
+html[data-variant='d'] .site-footer {
+	background: var(--graphite-950);
+	border-top: 0;
+}
