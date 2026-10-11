@@ -139,33 +139,39 @@ Format: `line  heading`. Open a file with an offset/limit around the line you ne
 448  Plan-change protocol
 461  Decision log
 
-## docs/project/CLAVERA_WORKLOG.md (568 lines)
+## docs/project/CLAVERA_WORKLOG.md (593 lines)
 
 1  CLAVERA Landing — Worklog
-5  2026-10-08 — Token-economy rollout (branch `claude/token-economy-rules-fe6xlx`,
-9  2026-10-08 — Respuesta v1.5 applied (branch `agent/clavera-v1-5-check-20261008`)
-13  2026-10-07 — Pilot spec withdrawn, back to Handoff v1.1 + Respuesta v1.2 (branch
-17  2026-10-07 — Font hosting decided: self-host (branch `agent/clavera-figma-final-
-21  2026-10-07 — Russian display type in Onest (branch `agent/clavera-figma-final-20
-27  2026-10-06 — Independent review (C6) and fixes (branch)
-52  2026-10-06 — C9 local SEO (provisional) and C10 font facts (branch)
-56  2026-10-06 — M5.2 closed, M7 motion (provisional), M8 budget report, readiness c
-60  2026-10-06 — Figma design-system tokens integrated (branch, zero rendered change
-64  2026-10-04 — Owner's Figma design-system handoff recorded (document-only)
-70  2026-09-30 — M5.2 Firefox reduced-motion fix (`da3929d`) statically re-reviewed,
-74  2026-09-29 — Owner-decisions digest created (document-only)
-78  2026-09-29 — M4 session chain consolidated into a handoff; 4 superseded appendic
-82  2026-09-29 — M4.1 measured-evidence pack (document-only; no site/source edits)
-92  2026-09-28 — Owner response v1.2 integrated into M3.5.2 candidate (uncommitted)
-105  2026-09-28 — Codex independent review of M3.5.2 candidate (uncommitted; pending
-115  2026-09-28 (second pass) — Legal Spec confirmed; three legal routes built; RU he
-135  2026-09-28 — M3.5.2 owner handoff v1.1 reconciliation and beta corrections (unco
-178  2026-08-23 — M3.5.1 beta-conversion preparation (pending review; not accepted, n
-247  2026-08-23 — M3.5 implemented (beta candidate; not accepted, not deployed)
-286  2026-08-23 — Codex review corrections for expedited beta documentation
-307  2026-08-23 — Two-track release strategy approved; M3.5 added as next milestone (
-345  2026-08-21 — Taste audit skill registered (not run)
-377  2026-08-21 — M2.5 and M3 technically accepted
-407  2026-08-21 — Multilingual scope approved and foundation milestone
-480  2026-08-20 — Tool registry frozen
-490  2026-08-20 — Context recovery and precision-pass review
+5  2026-10-11 — Variant A: scroll-linked render settle instead of the curtain; calm
+11  2026-10-10 — Release candidate: PRs #12-#15 consolidated, Legal Spec v3.1 check
+15  2026-10-10 — C2 applied: legal meta descriptions and footer tap targets (branch
+19  2026-10-10 — SEO wiring: llms.txt, favicon and share-image config (branch `claud
+22  2026-10-10 — Deploy setup draft (branch `claude/project-thread-5knqwe`, config o
+26  2026-10-09 — Mobile speed: self-hosted fonts and a lighter hero image (branch `c
+30  2026-10-08 — Token-economy rollout (branch `claude/token-economy-rules-fe6xlx`,
+34  2026-10-08 — Respuesta v1.5 applied (branch `agent/clavera-v1-5-check-20261008`)
+38  2026-10-07 — Pilot spec withdrawn, back to Handoff v1.1 + Respuesta v1.2 (branch
+42  2026-10-07 — Font hosting decided: self-host (branch `agent/clavera-figma-final-
+46  2026-10-07 — Russian display type in Onest (branch `agent/clavera-figma-final-20
+52  2026-10-06 — Independent review (C6) and fixes (branch)
+77  2026-10-06 — C9 local SEO (provisional) and C10 font facts (branch)
+81  2026-10-06 — M5.2 closed, M7 motion (provisional), M8 budget report, readiness c
+85  2026-10-06 — Figma design-system tokens integrated (branch, zero rendered change
+89  2026-10-04 — Owner's Figma design-system handoff recorded (document-only)
+95  2026-09-30 — M5.2 Firefox reduced-motion fix (`da3929d`) statically re-reviewed,
+99  2026-09-29 — Owner-decisions digest created (document-only)
+103  2026-09-29 — M4 session chain consolidated into a handoff; 4 superseded appendic
+107  2026-09-29 — M4.1 measured-evidence pack (document-only; no site/source edits)
+117  2026-09-28 — Owner response v1.2 integrated into M3.5.2 candidate (uncommitted)
+130  2026-09-28 — Codex independent review of M3.5.2 candidate (uncommitted; pending
+140  2026-09-28 (second pass) — Legal Spec confirmed; three legal routes built; RU he
+160  2026-09-28 — M3.5.2 owner handoff v1.1 reconciliation and beta corrections (unco
+203  2026-08-23 — M3.5.1 beta-conversion preparation (pending review; not accepted, n
+272  2026-08-23 — M3.5 implemented (beta candidate; not accepted, not deployed)
+311  2026-08-23 — Codex review corrections for expedited beta documentation
+332  2026-08-23 — Two-track release strategy approved; M3.5 added as next milestone (
+370  2026-08-21 — Taste audit skill registered (not run)
+402  2026-08-21 — M2.5 and M3 technically accepted
+432  2026-08-21 — Multilingual scope approved and foundation milestone
+505  2026-08-20 — Tool registry frozen
+515  2026-08-20 — Context recovery and precision-pass review

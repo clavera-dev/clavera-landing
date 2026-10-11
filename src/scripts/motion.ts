@@ -46,15 +46,8 @@ if (!reduce && 'IntersectionObserver' in window) {
 				items.push(child);
 			});
 		});
-		main.querySelectorAll('.faq__item').forEach((el, i) => {
-			tag(el, i % 4);
-			items.push(el);
-		});
-		main.querySelectorAll('.render-figure').forEach((fig) => {
-			if (fig.closest('.hero')) return;
-			(fig as HTMLElement).dataset.revealImage = '';
-			items.push(fig);
-		});
+		// FAQ questions are controls and stay still; renders are never masked
+		// (their scroll-linked settle is CSS only, src/styles/motion.css).
 		const dividers = Array.from(main.querySelectorAll('.section--divided'));
 		items.push(...dividers);
 
@@ -82,7 +75,7 @@ if (!reduce && 'IntersectionObserver' in window) {
 
 		// Safety net: never leave content hidden if something is not observed.
 		window.setTimeout(() => {
-			document.querySelectorAll('[data-reveal]:not(.is-in), [data-reveal-image]:not(.is-in)').forEach((el) => {
+			document.querySelectorAll('[data-reveal]:not(.is-in)').forEach((el) => {
 				const r = el.getBoundingClientRect();
 				if (r.top < window.innerHeight * 1.2) el.classList.add('is-in');
 			});

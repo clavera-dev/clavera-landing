@@ -5,7 +5,25 @@
  * Everything that hides content is gated on `html.motion-on`, a class the
  * motion script adds itself (and never under prefers-reduced-motion), so a
  * failed script, no-JS and reduced-motion all show the static page.
- * Timing uses the design system's motion tokens (--ease-out, --duration-*).
+ * Timing uses the design system's motion tokens (--ease-out, --duration-*)
+ * for the hero and pointer feedback. The DS does not cover scroll reveals;
+ * they run on --motion-ease (the CSS `ease` curve) instead of --ease-out,
+ * which puts about 80 % of its movement into the first fifth of the time and,
+ * at the bottom edge of the screen, reads as a jolt.
+ *
+ * Owner review, 2026-10-11: images that open as they scroll in read as images
+ * still loading, and the motion was too quick. So:
+ *  - the render curtain is gone; a render is never masked or faded, its
+ *    pixels are all there from the first frame;
+ *  - instead, one slow, scroll-linked settle: a render eases from 108 % to
+ *    its true size as it travels up into the screen and is at rest, full
+ *    frame, by the time it reaches the middle. It follows the scroll, so it
+ *    stops when the reader stops and never runs ahead of them. It replaces
+ *    the figure drift, which had never run (the minifier folded its
+ *    timeline into the shorthand, see Section.astro) and left every render
+ *    cropped by 10 %;
+ *  - text rises less, more slowly, and FAQ questions no longer animate:
+ *    a control the reader is reaching for should not be moving.
  */
 
 /* Typography scale: section headings step up inside the DS scale
@@ -17,15 +35,16 @@
 
 @media (prefers-reduced-motion: no-preference) {
 	:root {
-		--motion-rise: 28px;
-		--motion-dur: 900ms;
-		--motion-ease: var(--ease-out);
+		--motion-rise: 16px;
+		--motion-dur: 1000ms;
+		--motion-ease: ease;
 	}
 
-	/* Hero: loads once, no JS ------------------------------------------- */
+	/* Hero: loads once, no JS. Unchanged on review: the DS curve and the
+	   original 28px rise. ------------------------------------------------ */
 
 	.hero__media picture img {
-		animation: hero-settle 2200ms var(--motion-ease) both;
+		animation: hero-settle 2200ms var(--ease-out) both;
 	}
 
 	.hero__eyebrow,
@@ -34,7 +53,7 @@
 	.hero .zone-selector,
 	.hero__actions,
 	.hero__facts {
-		animation: rise var(--motion-dur) var(--motion-ease) both;
+		animation: rise 900ms var(--ease-out) both;
 	}
 
 	.hero__eyebrow { animation-delay: 150ms; }
@@ -53,7 +72,7 @@
 	   fully opaque from the first frame, so contrast tools never sample a
 	   half-faded colour. */
 	@keyframes rise {
-		from { clip-path: inset(0 0 100% 0); transform: translateY(var(--motion-rise)); }
+		from { clip-path: inset(0 0 100% 0); transform: translateY(28px); }
 		to { clip-path: inset(-100px); transform: none; }
 	}
 
@@ -79,18 +98,8 @@
 	html.motion-on h2[data-reveal],
 	html.motion-on .problem__statement[data-reveal],
 	html.motion-on .founders__heading[data-reveal] {
-		--motion-rise: 44px;
-		transition-duration: 1100ms;
-	}
-
-	/* Image curtain: the picture opens top-to-bottom, content settles. */
-	html.motion-on [data-reveal-image] picture {
-		clip-path: inset(0 0 94% 0 round var(--radius-xl));
-		transition: clip-path 1300ms var(--motion-ease);
-	}
-
-	html.motion-on [data-reveal-image].is-in picture {
-		clip-path: inset(0 0 0 0 round var(--radius-xl));
+		--motion-rise: 24px;
+		transition-duration: 1200ms;
 	}
 
 	/* Hairlines draw rather than appear. */
@@ -104,20 +113,32 @@
 		transform: none;
 	}
 
-	/* Slow parallax on figures, compositor-only, where the browser can. */
+	/* Render settle: scroll-linked, compositor-only (scale), inside the
+	   picture's own overflow:hidden frame, where the engine has view
+	   timelines; elsewhere the render is simply there. The picture is the
+	   timeline subject, so the scaled image never moves its own trigger.
+	   Never on R6: the zoning drawing is documentation, not a photograph. */
 	@supports (animation-timeline: view()) {
-		.render-figure--cover img,
-		.render-figure--panel img {
-			scale: 1.1;
-			animation: figure-drift linear both;
-			animation-timeline: view();
-			animation-range: cover 0% cover 100%;
+		.render-figure:not([data-render='r6']) picture {
+			view-timeline-name: --render;
+		}
+
+		.render-figure:not([data-render='r6']) picture img {
+			animation: figure-settle ease-out both;
+		}
+
+		/* A separate rule on purpose: the CSS minifier folds a timeline
+		   declared next to the shorthand into `animation: … view()`, which
+		   browsers reject as a whole (see Section.astro). */
+		.render-figure:not([data-render='r6']) picture > img {
+			animation-timeline: --render;
+			animation-range: entry 0% cover 50%;
 		}
 	}
 
-	@keyframes figure-drift {
-		from { translate: 0 -4%; }
-		to { translate: 0 4%; }
+	@keyframes figure-settle {
+		from { scale: 1.08; }
+		to { scale: 1; }
 	}
 
 	/* Micro-interactions ------------------------------------------------- */
@@ -156,5 +177,18 @@
 			block-size: auto;
 			opacity: 1;
 		}
+	}
+}
+
+/* A printed page shows everything, whatever was scrolled to. */
+@media print {
+	html.motion-on [data-reveal],
+	html.motion-on .section--divided::before {
+		clip-path: none !important;
+		transform: none !important;
+	}
+
+	.render-figure picture img {
+		animation: none !important;
 	}
 }
