@@ -49,7 +49,8 @@ const c = getCopy(Astro.currentLocale).works;
 		border-top: 1px solid var(--border-hairline);
 	}
 
-	/* The tick where this step meets the rail. */
+	/* The tick where this step meets the rail. With motion allowed it draws
+	   in once, left to right, as the steps arrive (src/styles/motion.css). */
 	.steps__item::before {
 		content: '';
 		position: absolute;
@@ -58,6 +59,7 @@ const c = getCopy(Astro.currentLocale).works;
 		width: var(--space-10);
 		height: 2px;
 		background: var(--accent);
+		transform-origin: left center;
 	}
 
 	@media (max-width: 799px) {
@@ -66,6 +68,9 @@ const c = getCopy(Astro.currentLocale).works;
 		}
 	}
 
+	/* display-lg at every width (redesign H, spec §3.5): with section
+	   headings now at display-xl, numerals of the same size competed with
+	   the heading above them. */
 	.steps__n {
 		font-size: var(--text-display-lg-size);
 		line-height: 1;
@@ -85,10 +90,6 @@ const c = getCopy(Astro.currentLocale).works;
 
 		.steps__item {
 			padding-block: var(--space-10) 0;
-		}
-
-		.steps__n {
-			font-size: var(--text-display-xl-size);
 		}
 	}
 

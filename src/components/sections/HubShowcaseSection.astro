@@ -25,6 +25,13 @@ const c = getCopy(Astro.currentLocale).hub;
  *
  * The legend under the drawing names only what is literally visible in the
  * approved render, matching its alt text.
+ *
+ * Redesign H (spec §3.9): R4 used to sit in a 64 % column on the right with
+ * an empty left half and dead space under it — the composition hole of the
+ * old page. It now runs the full content width under the plan, cropped to a
+ * wide frame that keeps the lit sign, the lockers and the open baby-seat
+ * bay, with its caption beneath. The plan sheet is the page's third loud
+ * moment after the hero and the vehicles band.
  */
 ---
 
@@ -34,7 +41,7 @@ const c = getCopy(Astro.currentLocale).hub;
 	railLabel={c.rail}
 	eyebrow={c.eyebrow}
 	heading={c.heading}
-	rhythm="loose"
+	rhythm="default"
 >
 	<p slot="lede" class="lede">{c.lede}</p>
 
@@ -62,8 +69,9 @@ const c = getCopy(Astro.currentLocale).hub;
 		<div class="hub__wide">
 			<RenderFigure
 				id="r4"
-				variant="panel"
-				sizes="(min-width: 900px) 64vw, 100vw"
+				variant="cover"
+				sizes="(min-width: 1320px) 1100px, 92vw"
+				position="50% 38%"
 				caption
 			/>
 		</div>
@@ -74,7 +82,18 @@ const c = getCopy(Astro.currentLocale).hub;
 	.hub {
 		display: flex;
 		flex-direction: column;
-		gap: var(--rhythm-tight);
+		gap: var(--space-16);
+	}
+
+	/* A framed photograph at the content width: the natural 3:2 on a phone,
+	   a wide 2:1 crop from 900px. */
+	.hub__wide {
+		--figure-ratio: 3 / 2;
+	}
+
+	.hub__wide :global(picture) {
+		border-radius: var(--radius-xl);
+		box-shadow: 0 0 0 1px var(--border-hairline);
 	}
 
 	/* Plan sheet ---------------------------------------------------------- */
@@ -137,11 +156,8 @@ const c = getCopy(Astro.currentLocale).hub;
 			padding: var(--space-10);
 		}
 
-		/* The lockers render sits right of centre, so the section does not end
-		   on a full-width tile directly under the full-width plan sheet. */
 		.hub__wide {
-			width: 64%;
-			margin-left: auto;
+			--figure-ratio: 2 / 1;
 		}
 	}
 

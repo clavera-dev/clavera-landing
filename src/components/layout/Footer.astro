@@ -292,6 +292,22 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 		color: var(--accent);
 	}
 
+	/* Underline wipe (redesign H, spec §3.10): a 1px line draws in under the
+	   link from the left on hover, in the link's own colour. Drawn with a
+	   background so it adds no box and moves nothing. */
+	@media (hover: hover) {
+		.site-footer__col a {
+			background: linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat;
+			transition:
+				color var(--duration-fast) var(--ease-standard),
+				background-size var(--duration-slow) var(--ease-out);
+		}
+
+		.site-footer__col a:hover {
+			background-size: 100% 1px;
+		}
+	}
+
 	/* Reads as inactive text rather than as a link that failed to work. */
 	.site-footer__pending-item {
 		font-family: var(--font-sans);

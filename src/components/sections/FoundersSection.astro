@@ -88,9 +88,11 @@ const pilotLive = getPilotDestination(resolveLocale(Astro.currentLocale)) !== nu
 		gap: var(--space-6);
 	}
 
+	/* display-xl (redesign H, spec §3.10): the amber rule and the largest
+	   button carry this block; the hero keeps the page's only 72. */
 	.founders__heading {
 		font-family: var(--font-display);
-		font-size: var(--fluid-display);
+		font-size: var(--fluid-display-xl);
 		line-height: 1.04;
 		letter-spacing: var(--text-display-2xl-tracking);
 		font-weight: var(--text-display-2xl-weight);

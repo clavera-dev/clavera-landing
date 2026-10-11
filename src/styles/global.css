@@ -44,18 +44,28 @@
 
 	/* Fluid display steps. Both ends of every clamp are approved token sizes,
 	   so the type never leaves the design system's scale — it only moves
-	   between its own steps. */
+	   between its own steps.
+
+	   Redesign H (2026-10-11, handoff/clavera/redesign/03_SPEC_OPUS_REBUILD.md
+	   §4.1): the page needed contrast of scale, not more chrome. The hero
+	   reaches display-2xl (72) a little later, section headings climb from h2
+	   (28) to display-xl (56), and the lede settles at body-lg (20) on wide
+	   screens, so a heading reads at three and a half times the body size. */
 	--fluid-display: clamp(
 		var(--text-display-lg-size),
-		4.2vw + 1rem,
+		5vw + 0.5rem,
 		var(--text-display-2xl-size)
 	);
+	/* The page's second display step: the problem statement and the pilot
+	   heading. One step below the hero, so the hero stays the only 72. */
+	--fluid-display-xl: clamp(var(--text-h1-size), 4vw + 0.5rem, var(--text-display-xl-size));
 	--fluid-display-sm: clamp(var(--text-h1-size), 3vw + 0.75rem, var(--text-display-xl-size));
-	--fluid-h2: clamp(var(--text-h2-size), 2.2vw + 0.75rem, var(--text-display-lg-size));
+	--fluid-h2: clamp(var(--text-h2-size), 3.6vw + 0.4rem, var(--text-display-xl-size));
 	--fluid-lede: clamp(var(--text-body-md-size), 0.55vw + 0.9rem, var(--text-body-lg-size));
 
 	/* Section rhythm. Sections are deliberately not all the same height —
-	   these three steps are the page's pacing vocabulary. */
+	   these three steps are the page's pacing vocabulary. Wide screens get
+	   more air below (see the 900px block). */
 	--rhythm-tight: clamp(var(--space-16), 8vw, var(--space-24));
 	--rhythm: clamp(var(--space-20), 11vw, var(--space-32));
 	--rhythm-loose: clamp(var(--space-24), 14vw, 160px);
@@ -103,6 +113,32 @@
 }
 
 /*
+  Wide screens: the rhythm opens up (spec §4.2, about 15 % tighter than
+  variant C) and the lede settles on body-lg. Below 900px the phone and
+  tablet values above stay as they were.
+*/
+@media (min-width: 900px) {
+	:root {
+		--rhythm-tight: clamp(var(--space-20), 10vw, var(--space-32));
+		--rhythm: clamp(var(--space-24), 12vw, 144px);
+		--rhythm-loose: clamp(var(--space-32), 14vw, 176px);
+		--fluid-lede: var(--text-body-lg-size);
+	}
+}
+
+/*
+  Russian sets display type in Onest, which runs wider than Plus Jakarta Sans,
+  and its phrases are longer. The display steps are capped one notch lower so
+  the hero stays within four lines at 1024px and the call to action stays in
+  the first screen. Both caps sit between approved steps (spec §4.1).
+*/
+:root:lang(ru) {
+	--fluid-display: clamp(var(--text-display-lg-size), 5vw + 0.5rem, 64px);
+	--fluid-display-xl: clamp(var(--text-h1-size), 4vw + 0.5rem, 48px);
+	--fluid-h2: clamp(var(--text-h2-size), 3.6vw + 0.4rem, 48px);
+}
+
+/*
   The rail starts at 1200px, not 1100px. At 1100px it took 132px out of a
   990px content box — a 13% loss arriving as a jump. From 1200px up it is
   fluid, so the sheet margin grows with the page instead of snapping to a
@@ -129,8 +165,16 @@ body {
 	overflow-x: clip;
 }
 
+/*
+  Smooth scrolling only for in-page jumps the visitor starts. Clicking a link
+  focuses it, so :focus-within is true during that jump; arriving from
+  another page with a #fragment focuses nothing, and the browser jumps
+  straight to the target. A smooth scroll on load used to start towards a
+  target computed before the web fonts arrived and end several hundred
+  pixels past it once they did (structure.spec, RU at 1024px).
+*/
 @media (prefers-reduced-motion: no-preference) {
-	html {
+	html:focus-within {
 		scroll-behavior: smooth;
 	}
 }
@@ -435,6 +479,13 @@ video {
 	background: var(--accent);
 }
 
+/* Inside the page sections the rail label already names the section, so
+   the tick would be a second piece of chrome on the same line. It stays in
+   the hero, where it is the first mark the visitor sees (spec §4.1). */
+.section .eyebrow::before {
+	content: none;
+}
+
 .mono {
 	font-family: var(--font-mono);
 	font-size: var(--text-mono-sm-size);
@@ -491,8 +542,8 @@ h3 {
 .heading-h2 {
 	font-family: var(--font-display);
 	font-size: var(--fluid-h2);
-	line-height: 1.08;
-	letter-spacing: var(--text-display-lg-tracking);
+	line-height: 1.04;
+	letter-spacing: var(--text-display-2xl-tracking);
 	font-weight: var(--text-display-lg-weight);
 	margin: 0;
 	text-wrap: balance;
@@ -606,7 +657,8 @@ strong {
 		border-color var(--duration-fast) var(--ease-standard),
 		color var(--duration-fast) var(--ease-standard),
 		box-shadow var(--duration-base) var(--ease-standard),
-		transform var(--duration-fast) var(--ease-standard);
+		transform var(--duration-fast) var(--ease-standard),
+		translate var(--duration-base) var(--ease-standard);
 }
 
 .button--lg {
@@ -635,7 +687,7 @@ strong {
 
 .button--primary:active {
 	background: var(--accent-press);
-	transform: scale(0.98);
+	transform: scale(0.97);
 }
 
 .button--ghost {
@@ -650,7 +702,7 @@ strong {
 }
 
 .button--ghost:active {
-	transform: scale(0.98);
+	transform: scale(0.97);
 }
 
 /*

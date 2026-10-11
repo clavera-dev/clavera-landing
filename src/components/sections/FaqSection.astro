@@ -16,6 +16,11 @@ const c = getCopy(Astro.currentLocale).faq;
  *
  * Raised, so the tail alternates surfaces around the base "Sumate al piloto"
  * block (composition spec R-6 (a)).
+ *
+ * Redesign H (spec §3.10): one column of questions, each answer opening
+ * under its own question. On wide screens the heading holds the left column
+ * and the list the right one, so the list reads at a comfortable measure
+ * instead of running the full page width.
  */
 ---
 
@@ -25,32 +30,52 @@ const c = getCopy(Astro.currentLocale).faq;
 	railLabel={c.rail}
 	surface="raised"
 	divider
-	eyebrow={c.eyebrow}
-	heading={c.heading}
+	labelledby="faq-heading"
 >
-	<div class="faq">
-		{
-			c.items.map((faq) => (
-				<details class="faq__item">
-					<summary class="faq__q">
-						<span class="faq__q-text">{faq.q}</span>
-						<span class="faq__mark" aria-hidden="true" />
-					</summary>
-					<div class="faq__a">
-						<p class="body-md">{faq.a}</p>
-					</div>
-				</details>
-			))
-		}
+	<div class="faq-layout">
+		<header class="faq__head">
+			<p class="eyebrow">{c.eyebrow}</p>
+			<h2 id="faq-heading" class="heading-h2">{c.heading}</h2>
+		</header>
+
+		<div class="faq">
+			{
+				c.items.map((faq) => (
+					<details class="faq__item">
+						<summary class="faq__q">
+							<span class="faq__q-text">{faq.q}</span>
+							<span class="faq__mark" aria-hidden="true" />
+						</summary>
+						<div class="faq__a">
+							<p class="body-md">{faq.a}</p>
+						</div>
+					</details>
+				))
+			}
+		</div>
 	</div>
 </Section>
 
 <style>
-	/*
-	  Hairline rows rather than nine bordered boxes. On desktop the question
-	  holds the left column and its answer opens in the right one, so an open
-	  item reads as an annotated line instead of an expanding card.
-	*/
+	.faq-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-12);
+	}
+
+	.faq__head {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+	}
+
+	/* Measured in the heading's own size, so it wraps on words, never
+	   inside one. */
+	.faq__head .heading-h2 {
+		max-width: 14ch;
+	}
+
+	/* Hairline rows rather than bordered boxes. */
 	.faq {
 		border-top: 1px solid var(--border-hairline);
 	}
@@ -88,6 +113,13 @@ const c = getCopy(Astro.currentLocale).faq;
 		outline-offset: -2px;
 	}
 
+	/* The question text moves, not the row: the +/- marker and the hairline
+	   stay put while the words step in on hover (pointer devices, motion
+	   allowed — see src/styles/motion.css). */
+	.faq__q-text {
+		display: block;
+	}
+
 	/* A drawn plus/minus rather than a text glyph, so it stays optically
 	   centred at every size. */
 	.faq__mark {
@@ -121,32 +153,21 @@ const c = getCopy(Astro.currentLocale).faq;
 	}
 
 	.faq__a {
-		padding-bottom: var(--space-6);
+		padding-bottom: var(--space-8);
 		max-width: var(--measure);
 	}
 
 	@media (min-width: 900px) {
-		.faq__item {
-			display: grid;
-			grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
-			column-gap: var(--space-12);
-			align-items: start;
-		}
-
 		.faq__q {
-			grid-column: 1;
 			padding-block: var(--space-8);
 		}
+	}
 
-		.faq__q-text {
-			/* Preferred measure; a longer translated question wraps to more
-			   lines rather than colliding with the +/- marker. */
-			max-width: 28ch;
-		}
-
-		.faq__a {
-			grid-column: 2;
-			padding-block: var(--space-8);
+	@media (min-width: 1100px) {
+		.faq-layout {
+			grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+			gap: var(--space-16);
+			align-items: start;
 		}
 	}
 </style>

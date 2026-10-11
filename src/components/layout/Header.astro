@@ -20,7 +20,7 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 		</a>
 
 		<div class="site-header__end">
-			<p class="mono site-header__note" aria-hidden="true">{copy.header.note}</p>
+			<p class="site-header__note" aria-hidden="true">{copy.header.note}</p>
 			<a class="button button--primary" href={`${home}#fundadores`}>{copy.header.cta}</a>
 			{/*
 			  Last element of the navigation, per brief Part V — never first.
@@ -52,7 +52,9 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 	}
 
 	/* The scrim lives on a pseudo-element so the fade-out mask applies to the
-	   backdrop only — masking the header itself would fade its logo and CTA. */
+	   backdrop only — masking the header itself would fade its logo and CTA.
+	   This is the over-the-hero state: a gradient that keeps the photograph
+	   running up behind the header. */
 	.site-header::before {
 		content: '';
 		position: absolute;
@@ -72,6 +74,44 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 		mask-image: linear-gradient(to bottom, oklch(0% 0 0) 55%, transparent 100%);
 		-webkit-mask-image: linear-gradient(to bottom, oklch(0% 0 0) 55%, transparent 100%);
 		pointer-events: none;
+		transition: opacity var(--duration-slow) var(--ease-standard);
+	}
+
+	/*
+	  Past the hero (redesign H, spec §3.1): a solid band with a hairline
+	  edge. The fading scrim let headings and renders read through the
+	  header text once the page scrolled; over plain surfaces it has nothing
+	  to protect and only got in the way. The DS README's "translucent
+	  blurred background only after scrolling past the hero" — at 0.95 so
+	  nothing behind it competes with the logo and CTA.
+
+	  The state comes from src/scripts/motion.ts (html.header-solid). A page
+	  without a hero — the legal pages — has the band from the start, script
+	  or no script. Without JavaScript the landing keeps the gradient, as
+	  before.
+	*/
+	.site-header::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: oklch(15% 0.004 95 / 0.95);
+		border-bottom: 1px solid var(--border-hairline);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity var(--duration-slow) var(--ease-standard);
+	}
+
+	:global(html.header-solid) .site-header::after,
+	:global(body:not(:has(.hero))) .site-header::after {
+		opacity: 1;
+	}
+
+	:global(html.header-solid) .site-header::before,
+	:global(body:not(:has(.hero))) .site-header::before {
+		opacity: 0;
 	}
 
 	/* Symmetric padding around a fixed-height control row: the row's optical
@@ -127,8 +167,16 @@ const home = localeHome(resolveLocale(Astro.currentLocale));
 		}
 	}
 
+	/* Set as the DS eyebrow label rather than mono: mono is for technical
+	   values (codes, frame numbers), and this is a section name. */
 	.site-header__note {
 		display: none;
+		margin: 0;
+		font-family: var(--font-sans);
+		font-size: var(--text-eyebrow-size);
+		letter-spacing: var(--text-eyebrow-tracking);
+		font-weight: var(--text-eyebrow-weight);
+		text-transform: uppercase;
 		color: var(--text-secondary);
 	}
 

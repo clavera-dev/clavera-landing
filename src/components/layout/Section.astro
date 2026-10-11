@@ -76,9 +76,15 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 >
 	<div class="sheet">
 		{
+			/*
+			  Redesign H (spec §3.11): the rail keeps the section's label and
+			  drops its numeral. The sections are an argument, not a sequence,
+			  and numbering them read as template chrome; the owner rejected
+			  numbered stamps. To bring the numbers back, render
+			  <span class="sheet__index">{index}</span> before the label again.
+			*/
 			index && (
 				<div class="sheet__rail" aria-hidden="true">
-					<span class="sheet__index">{index}</span>
 					{railLabel && <span class="sheet__label">{railLabel}</span>}
 				</div>
 			)
@@ -188,33 +194,20 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 	/* Rail ---------------------------------------------------------------- */
 
 	/*
-	  No corrective top padding: the index is given the eyebrow's line box
-	  (16px) so the two share a line structurally. Every indexed section opens
-	  with an eyebrow on its first row, so the index always has that line to
-	  align to.
+	  Every railed section opens with an eyebrow on its first row, so the
+	  label always has that line to align to.
 	*/
 	.sheet__rail {
 		padding-right: var(--space-6);
 	}
 
-	.sheet__index {
-		display: block;
-		font-family: var(--font-mono);
-		font-size: var(--text-mono-md-size);
-		line-height: var(--text-eyebrow-line);
-		font-weight: 600;
-		font-variant-numeric: tabular-nums;
-		color: var(--accent);
-	}
-
 	.sheet__label {
 		display: block;
-		margin-top: var(--space-4);
 		font-family: var(--font-mono);
 		font-size: var(--text-mono-sm-size);
 		/* In vertical writing the line box is the label's *width*; at 1 it is
-		   the glyph column itself, so it starts on the index's left edge with
-		   no nudge. */
+		   the glyph column itself, so it sits on the rail's left edge with no
+		   nudge. */
 		line-height: 1;
 		letter-spacing: var(--text-mono-sm-tracking);
 		text-transform: uppercase;
@@ -251,6 +244,7 @@ const hasHeader = Boolean(eyebrow || heading || Astro.slots.has('lede'));
 
 	@media (min-width: 900px) {
 		.section__header {
+			gap: var(--space-6);
 			margin-bottom: var(--space-16);
 		}
 	}

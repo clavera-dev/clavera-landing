@@ -1,0 +1,278 @@
+/*
+  Redesign H — the motion layer (handoff/clavera/redesign/03_SPEC_OPUS_REBUILD.md
+  §5). This file is the complete inventory: if it is not here, it does not
+  move.
+
+    1  Hero load sequence          CSS keyframes, on load
+    2  Hero exit push and darken   CSS view timeline, desktop
+    3  Heading and lede rise       IntersectionObserver, once
+    4  Render curtain              IntersectionObserver, once
+    5  Hairline draw               IntersectionObserver, once
+    6  Pillar tiles mask in        IntersectionObserver, once, 60 ms stagger
+    7  Step ticks draw             IntersectionObserver, once, 150 ms stagger
+    8  Figure parallax ±3 %        CSS view timeline, desktop
+    9  Button lift and press       pointer
+    10 Link underline wipe         pointer (Footer.astro)
+    11 Render hover zoom 1.03      pointer
+    12 FAQ height                  click, interpolate-size
+    13 Locale cross-fade           cross-document view transition
+
+  Rules. Everything sits under prefers-reduced-motion: no-preference; the
+  global reduce rule in global.css zeroes whatever might slip through.
+  Anything that carries text is revealed with a mask (clip-path) plus a short
+  rise, never with opacity, so text is fully opaque on every frame and contrast
+  is never sampled mid-fade. Every hiding rule for the scroll reveals is gated
+  on html.motion-on, which only src/scripts/motion.ts sets — no JavaScript
+  means no hidden content. Nothing moves on its own, nothing loops, nothing
+  springs; timing comes from the DS motion tokens (--ease-out, --duration-*).
+*/
+
+@media (prefers-reduced-motion: no-preference) {
+	:root {
+		--reveal-rise: 28px;
+		--reveal-rise-heading: 44px;
+	}
+
+	/* 1. Hero load sequence ------------------------------------------------
+	   The establishing shot settles from 1.08 while the copy rises in order
+	   behind a mask. `backwards` fill: once each entrance ends nothing stays
+	   clipped, so the zone selector's suggestion list opens freely. The end
+	   inset of -100px leaves descenders and focus rings uncut. */
+	.hero__media picture img {
+		animation: hero-settle 1600ms var(--ease-out) backwards;
+	}
+
+	.hero__inner > * {
+		animation: hero-rise 800ms var(--ease-out) backwards;
+	}
+
+	.hero__inner > :nth-child(1) { animation-delay: 100ms; }
+	.hero__inner > :nth-child(2) { animation-delay: 200ms; animation-duration: 900ms; }
+	.hero__inner > :nth-child(3) { animation-delay: 380ms; }
+	.hero__inner > :nth-child(4) { animation-delay: 500ms; }
+	.hero__inner > :nth-child(5) { animation-delay: 600ms; }
+	.hero__inner > :nth-child(6) { animation-delay: 700ms; }
+
+	/* On a phone the copy is the first thing read; it arrives in half the
+	   time. */
+	@media (max-width: 899px) {
+		.hero__inner > :nth-child(1) { animation-delay: 50ms; }
+		.hero__inner > :nth-child(2) { animation-delay: 100ms; }
+		.hero__inner > :nth-child(3) { animation-delay: 190ms; }
+		.hero__inner > :nth-child(4) { animation-delay: 250ms; }
+		.hero__inner > :nth-child(5) { animation-delay: 300ms; }
+		.hero__inner > :nth-child(6) { animation-delay: 350ms; }
+	}
+
+	@keyframes hero-settle {
+		from { scale: 1.08; }
+		to { scale: 1; }
+	}
+
+	@keyframes hero-rise {
+		from { clip-path: inset(0 0 100% 0); translate: 0 var(--reveal-rise); }
+		to { clip-path: inset(-100px); translate: 0 0; }
+	}
+
+	/* 3–7. Scroll reveals (tagged by src/scripts/motion.ts) -----------------
+	   The hidden state has no transition, so tagging never animates
+	   anything backwards; only the way in is transitioned. */
+	html.motion-on [data-reveal='heading']:not(.is-in),
+	html.motion-on [data-reveal='lede']:not(.is-in) {
+		clip-path: inset(0 0 100% 0);
+		translate: 0 var(--reveal-rise);
+	}
+
+	html.motion-on [data-reveal='heading']:not(.is-in) {
+		translate: 0 var(--reveal-rise-heading);
+	}
+
+	html.motion-on [data-reveal='heading'].is-in,
+	html.motion-on [data-reveal='lede'].is-in {
+		clip-path: inset(-100px);
+		translate: 0 0;
+		transition:
+			clip-path 900ms var(--ease-out),
+			translate 900ms var(--ease-out);
+	}
+
+	/* The lede follows its heading a beat later and a little faster. */
+	html.motion-on [data-reveal='lede'].is-in {
+		transition-duration: 700ms;
+		transition-delay: 120ms;
+	}
+
+	/* 4. Render curtain: the frame opens top to bottom, once. The end inset
+	   of -2px keeps the panel's 1px hairline ring visible. */
+	html.motion-on [data-reveal='curtain']:not(.is-in) picture {
+		clip-path: inset(0 0 100% 0);
+	}
+
+	html.motion-on [data-reveal='curtain'].is-in picture {
+		clip-path: inset(-2px);
+		transition: clip-path 900ms var(--ease-out);
+	}
+
+	/* 5. Hairlines draw rather than appear. */
+	html.motion-on [data-reveal='divider']:not(.is-in)::before {
+		scale: 0 1;
+	}
+
+	html.motion-on [data-reveal='divider']::before {
+		transform-origin: left center;
+	}
+
+	html.motion-on [data-reveal='divider'].is-in::before {
+		scale: 1 1;
+		transition: scale 1000ms var(--ease-out);
+	}
+
+	/* 6. Pillar tiles open from the top, 60 ms apart. A mask, not a fade:
+	   the tile's text is never semi-transparent. */
+	html.motion-on [data-reveal='tile']:not(.is-in) {
+		clip-path: inset(0 0 100% 0 round var(--radius-lg));
+		translate: 0 16px;
+	}
+
+	html.motion-on [data-reveal='tile'].is-in {
+		clip-path: inset(-2px round var(--radius-lg));
+		translate: 0 0;
+		transition:
+			clip-path 600ms var(--ease-out),
+			translate 600ms var(--ease-out),
+			background-color var(--duration-base) var(--ease-standard),
+			border-color var(--duration-base) var(--ease-standard);
+		transition-delay: calc(var(--reveal-order, 0) * 60ms), calc(var(--reveal-order, 0) * 60ms), 0s, 0s;
+	}
+
+	/* 7. Each step's amber tick draws along the rail, 150 ms apart. */
+	html.motion-on [data-reveal='tick']:not(.is-in)::before {
+		scale: 0 1;
+	}
+
+	html.motion-on [data-reveal='tick'].is-in::before {
+		scale: 1 1;
+		transition: scale 900ms var(--ease-out);
+		transition-delay: calc(var(--reveal-order, 0) * 150ms + 150ms);
+	}
+
+	/* 9. Buttons lift 2px under a pointer and press to 0.97 (global.css). */
+	@media (hover: hover) {
+		.button:not(:disabled):hover {
+			translate: 0 -2px;
+		}
+
+		.button:not(:disabled):active {
+			translate: 0 0;
+		}
+
+		/* 11. Renders lean in a little under the pointer — slow, never on the
+		   zoning drawing, which is documentation. */
+		.section .render-figure img {
+			transition: transform 1200ms var(--ease-out);
+		}
+
+		.section .render-figure:not([data-render='r6']):hover img {
+			transform: scale(1.03);
+		}
+
+		/* 12 (hover part). The question steps in 8px; the row and its marker
+		   stay put. */
+		.faq__q-text {
+			transition: translate var(--duration-slow) var(--ease-out);
+		}
+
+		.faq__q:hover .faq__q-text {
+			translate: var(--space-2) 0;
+		}
+	}
+
+	/* 12. FAQ answers open with an animated height where the engine can
+	   interpolate to `auto`. Height only: the answer is clipped by the
+	   growing box, never faded. */
+	@supports (interpolate-size: allow-keywords) {
+		.faq {
+			interpolate-size: allow-keywords;
+		}
+
+		.faq__item::details-content {
+			block-size: 0;
+			overflow: clip;
+			transition:
+				block-size var(--duration-slower) var(--ease-out),
+				content-visibility var(--duration-slower) allow-discrete;
+		}
+
+		.faq__item[open]::details-content {
+			block-size: auto;
+		}
+	}
+
+	/* 13. Switching language cross-fades instead of flashing. */
+	@view-transition {
+		navigation: auto;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 420ms;
+		animation-timing-function: var(--ease-standard);
+	}
+
+	/* 2 and 8. Scroll-linked parts, only where the engine has view timelines,
+	   and only on wide screens. The timeline declarations sit in their own
+	   rules: a minifier folds a timeline next to the `animation` shorthand
+	   into one declaration that browsers reject (see Section.astro). */
+	@supports (animation-timeline: view()) {
+		@media (min-width: 900px) {
+			/* 2. Leaving the hero, the shot pushes in and darkens. The copy does
+			   not fade; it simply scrolls away over it. */
+			.hero__media {
+				overflow: hidden;
+			}
+
+			.hero__media picture {
+				animation: hero-exit linear both;
+			}
+
+			.hero .hero__media picture {
+				animation-timeline: view();
+				animation-range: exit 0% exit 100%;
+			}
+
+			/* 8. A slow drift inside each render frame. The image is scaled
+			   just enough that the drift never shows an edge. */
+			.section .render-figure:not([data-render='r6']) img {
+				scale: 1.06;
+				animation: figure-drift linear both;
+			}
+
+			.section .render-figure:not([data-render='r6']) picture img {
+				animation-timeline: view();
+				animation-range: cover 0% cover 100%;
+			}
+		}
+	}
+
+	@keyframes hero-exit {
+		from { transform: none; filter: brightness(1); }
+		to { transform: scale(1.15); filter: brightness(0.45); }
+	}
+
+	@keyframes figure-drift {
+		from { translate: 0 -3%; }
+		to { translate: 0 3%; }
+	}
+}
+
+/* A printed page shows everything, whatever was scrolled to. */
+@media print {
+	html.motion-on [data-reveal] {
+		clip-path: none !important;
+		translate: none !important;
+	}
+
+	html.motion-on [data-reveal] picture {
+		clip-path: none !important;
+	}
+}

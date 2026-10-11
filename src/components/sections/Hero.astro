@@ -60,7 +60,7 @@ const { width, height } = r1.dimensions[1600];
 			</div>
 
 			<ul class="hero__facts">
-				{copy.hero.facts.map((fact) => <li class="mono">{fact}</li>)}
+				{copy.hero.facts.map((fact) => <li>{fact}</li>)}
 			</ul>
 		</div>
 	</div>
@@ -178,6 +178,14 @@ const { width, height } = r1.dimensions[1600];
 		text-wrap: balance;
 	}
 
+	/* Russian words are longer: at 15ch "Твой велосипед заслуживает надёжного
+	   места в городе." broke into four short lines with one word each in the
+	   middle. 20ch lets it balance into three at desktop sizes while phones
+	   keep wrapping on the column width. */
+	:global(:root:lang(ru)) .hero__heading {
+		max-width: 20ch;
+	}
+
 	/* Over photography the tertiary eyebrow colour disappears; on this one
 	   section it steps up to secondary. */
 	.hero__eyebrow {
@@ -196,8 +204,13 @@ const { width, height } = r1.dimensions[1600];
 		margin-top: var(--space-2);
 	}
 
-	/* Spec strip instead of a row of pills: rectangular, hairline-divided,
-	   set in mono — the design system reserves pill radius for status badges. */
+	/*
+	  What the membership includes, stated as a quiet line of plain facts
+	  (redesign H, spec §3.2) — the Brompton "7-year frame warranty" strip,
+	  not a row of badges. Onest at label size in sentence case, divided by
+	  hairlines: the mono caps it replaced read as interface chrome and were
+	  the weakest line of the first screen. The strings are unchanged.
+	*/
 	.hero__facts {
 		list-style: none;
 		margin: var(--space-2) 0 0;
@@ -210,6 +223,11 @@ const { width, height } = r1.dimensions[1600];
 	.hero__facts li {
 		padding-inline: var(--space-5);
 		border-left: 1px solid var(--border-hairline-strong);
+		font-family: var(--font-sans);
+		font-size: var(--text-label-md-size);
+		line-height: var(--text-label-md-line);
+		letter-spacing: var(--text-label-md-tracking);
+		font-weight: var(--text-label-md-weight);
 		color: var(--text-secondary);
 	}
 

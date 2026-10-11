@@ -17,6 +17,11 @@ const c = getCopy(Astro.currentLocale).zones;
  * The small print under the selector states that no location has been chosen
  * and that choosing a zone implies no commitment to open, no date and no
  * availability.
+ *
+ * Redesign H (spec §3.10): same behaviour and the same prebuilt hrefs; only
+ * the composition changes. The selector opens up into a wide search row —
+ * the section's single action — instead of a narrow form in the left third
+ * of an empty band.
  */
 ---
 
@@ -29,14 +34,27 @@ const c = getCopy(Astro.currentLocale).zones;
 	eyebrow={c.eyebrow}
 	heading={c.heading}
 >
-	<ZoneSelector name="zonas" />
+	<div class="zones">
+		<ZoneSelector name="zonas" />
 
-	<p class="caption zones__disclaimer" data-zones-disclaimer>{c.disclaimer}</p>
+		<p class="caption zones__disclaimer" data-zones-disclaimer>{c.disclaimer}</p>
+	</div>
 </Section>
 
 <style>
+	.zones {
+		max-width: 48rem;
+	}
+
+	.zones :global(.zone-selector) {
+		max-width: none;
+		gap: var(--space-4);
+	}
+
 	.zones__disclaimer {
 		margin-top: var(--space-6);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--border-hairline);
 		max-width: var(--measure);
 	}
 </style>

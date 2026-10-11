@@ -150,14 +150,15 @@ for (const locale of LOCALES) {
 			});
 		});
 
-		test('ships no third-party or Typeform script — only the zone selector’s own', async ({
+		test('ships no third-party or Typeform script — only the page’s own', async ({
 			page,
 		}) => {
 			await page.goto(locale.path);
 
 			/*
-			  The zone selector is the page's one client script (handoff v1.1
-			  §3.2, §4.1). It is first-party, bundled by Astro, and may be inlined.
+			  Two first-party scripts, both bundled by Astro and possibly inlined:
+			  the zone selector's href swap (handoff v1.1 §3.2, §4.1) and the
+			  redesign's header-state and reveal script (src/scripts/motion.ts).
 			  A Typeform embed or an analytics tag would be the obvious way for
 			  this to regress.
 			*/
@@ -168,7 +169,7 @@ for (const locale of LOCALES) {
 					type: s.getAttribute('type'),
 				})),
 			);
-			expect(scripts.length, 'client scripts').toBeLessThanOrEqual(1);
+			expect(scripts.length, 'client scripts').toBeLessThanOrEqual(2);
 			for (const script of scripts) {
 				if (script.src !== null) {
 					expect(script.src, 'script is first-party').toMatch(/^\/_astro\//);

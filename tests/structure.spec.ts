@@ -49,6 +49,13 @@ for (const locale of LOCALES) {
 						// runs to the viewport edge.
 						if (el.closest('.table-wrap')) return;
 						if (el.closest('.bleed, .bleed-left, .bleed-right')) return;
+					// A photograph scaled inside its frame (the hero settle, the
+					// figure drift) is clipped by that frame; the frame is what
+					// has to stay on screen.
+					if (el.tagName === 'IMG' && el.parentElement?.tagName === 'PICTURE') {
+						const frame = el.parentElement.getBoundingClientRect();
+						if (frame.right <= vw + 2 && frame.left >= -2) return;
+					}
 
 						const rect = el.getBoundingClientRect();
 						if (rect.right > vw + 2 || rect.left < -2) {

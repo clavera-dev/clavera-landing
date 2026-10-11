@@ -72,7 +72,7 @@ const imgStyle =
 		: `object-position: ${objectPosition};`;
 ---
 
-<figure class:list={['render-figure', `render-figure--${variant}`, className]} style={figureStyle}>
+<figure class:list={['render-figure', `render-figure--${variant}`, className]} style={figureStyle} data-render={id}>
 	<picture>
 		<source type="image/avif" srcset={avifSrcset(render)} sizes={sizes} />
 		<source type="image/webp" srcset={webpSrcset(render)} sizes={sizes} />
