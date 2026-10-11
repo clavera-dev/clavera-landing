@@ -5,6 +5,13 @@
  * a larger type scale (still the DS steps), more vertical space, one calm
  * entrance, a cross-fade between languages, and polished micro-interactions.
  * No script. Motion is gated on prefers-reduced-motion: no-preference.
+ *
+ * Below the hero nothing animates in as you scroll: renders and hairlines
+ * are simply there (owner review, 2026-10-11 — an image that fades in as it
+ * scrolls into view reads as an image still loading). The scroll-linked
+ * render fade and hairline draw that used to sit here never ran: the CSS
+ * minifier folded each timeline into the `animation` shorthand, which
+ * browsers reject (see Section.astro). They were removed rather than fixed.
  */
 
 :root {
@@ -59,27 +66,6 @@
 	@keyframes quiet-rise {
 		from { clip-path: inset(0 0 100% 0); }
 		to { clip-path: inset(-100px); }
-	}
-
-	/* Below the fold, only the images and hairlines respond, softly. */
-	@supports (animation-timeline: view()) {
-		.render-figure {
-			animation: quiet-fade linear both;
-			animation-timeline: view();
-			animation-range: entry 0% entry 45%;
-		}
-
-		.section--divided::before {
-			transform-origin: left center;
-			animation: hairline linear both;
-			animation-timeline: view();
-			animation-range: entry 0% entry 50%;
-		}
-
-		@keyframes hairline {
-			from { transform: scaleX(0); }
-			to { transform: none; }
-		}
 	}
 
 	/* Micro-interactions ------------------------------------------------- */
