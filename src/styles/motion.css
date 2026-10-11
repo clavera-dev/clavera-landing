@@ -124,12 +124,14 @@
 		transition-property: background-color, border-color, color, box-shadow, transform;
 	}
 
-	.button:hover {
-		transform: translateY(-2px);
+	@media (hover: hover) {
+		.button:hover {
+			transform: translateY(-2px);
+		}
 	}
 
 	.button:active {
-		transform: scale(0.98);
+		transform: scale(0.97);
 	}
 
 	/* FAQ opens with an animated height where the engine can interpolate it. */
