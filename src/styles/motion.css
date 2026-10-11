@@ -59,17 +59,19 @@
 
 	/* Scroll reveals (tagged by motion.ts) ------------------------------- */
 
+	/* Masked rise (clip-path + transform), not a fade: text stays fully opaque,
+	   so contrast tools never see a half-transparent colour. */
 	html.motion-on [data-reveal] {
-		opacity: 0;
+		clip-path: inset(0 0 94% 0);
 		transform: translateY(var(--motion-rise));
 		transition:
-			opacity var(--motion-dur) var(--motion-ease),
+			clip-path var(--motion-dur) var(--motion-ease),
 			transform var(--motion-dur) var(--motion-ease);
 		transition-delay: calc(var(--i, 0) * 80ms);
 	}
 
 	html.motion-on [data-reveal].is-in {
-		opacity: 1;
+		clip-path: inset(-100px);
 		transform: none;
 	}
 
@@ -83,7 +85,7 @@
 
 	/* Image curtain: the picture opens top-to-bottom, content settles. */
 	html.motion-on [data-reveal-image] picture {
-		clip-path: inset(0 0 100% 0 round var(--radius-xl));
+		clip-path: inset(0 0 94% 0 round var(--radius-xl));
 		transition: clip-path 1300ms var(--motion-ease);
 	}
 

@@ -66,7 +66,7 @@ if (!reduce && 'IntersectionObserver' in window) {
 					io.unobserve(entry.target);
 				}
 			},
-			{ threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
+			{ threshold: 0, rootMargin: '0px 0px -8% 0px' },
 		);
 
 		// Anything already on screen is shown without a transition: the first
