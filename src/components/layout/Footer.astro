@@ -8,6 +8,7 @@ import {
 	LANGUAGE_CLAUSE_ES,
 } from '../../config/legal';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import SocialIcon from '../icon/SocialIcon.astro';
 
 interface Props {
 	/** See LanguageSwitcher.astro — overrides the switcher's targets on non-home pages. */
@@ -91,17 +92,17 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 				<div class="site-footer__col">
 					<p class="mono site-footer__col-title">{copy.footer.contactTitle}</p>
 					<ul>
-						<li><a href="mailto:hola@clavera.ar">hola@clavera.ar</a></li>
-						<li><a href="https://instagram.com/clavera.ar" rel="me">Instagram</a></li>
-						<li><a href="https://facebook.com/clavera.ar" rel="me">Facebook</a></li>
-						<li><a href="https://www.tiktok.com/@clavera.ar" rel="me">TikTok</a></li>
+						<li><a class="site-footer__contact" href="mailto:hola@clavera.ar"><SocialIcon name="envelope" />hola@clavera.ar</a></li>
+						<li><a class="site-footer__contact" href="https://instagram.com/clavera.ar" rel="me"><SocialIcon name="instagram" />Instagram</a></li>
+						<li><a class="site-footer__contact" href="https://facebook.com/clavera.ar" rel="me"><SocialIcon name="facebook-f" />Facebook</a></li>
+						<li><a class="site-footer__contact" href="https://www.tiktok.com/@clavera.ar" rel="me"><SocialIcon name="tiktok" />TikTok</a></li>
 						<li>
 							{
 								whatsapp === null ? (
 									<span class="site-footer__pending-item">{copy.footer.whatsappPending}</span>
 								) : (
-									<a href={whatsapp} rel="me noopener noreferrer" target="_blank">
-										WhatsApp Business
+									<a class="site-footer__contact" href={whatsapp} rel="me noopener noreferrer" target="_blank">
+										<SocialIcon name="whatsapp" />WhatsApp Business
 									</a>
 								)
 							}
@@ -286,6 +287,14 @@ const LegalTag = hasAnyLink(legalEntries) ? 'nav' : 'div';
 		line-height: var(--text-body-md-line);
 		color: var(--text-secondary);
 		transition: color var(--duration-fast) var(--ease-standard);
+	}
+
+	/* Contact rows with a glyph: icon + label on one baseline-centred line. The
+	   glyph follows the link colour (currentColor), so hover needs no extra rule. */
+	.site-footer__col a.site-footer__contact {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-3);
 	}
 
 	.site-footer__col a:hover {

@@ -1,0 +1,36 @@
+---
+import { SOCIAL_GLYPHS, type SocialIconName } from './social-glyphs';
+
+interface Props {
+	name: SocialIconName;
+	/** Rendered size in px. DS: 24 by default, 20 allowed in compact text. */
+	size?: 20 | 24;
+}
+
+const { name, size = 24 } = Astro.props;
+const glyph = SOCIAL_GLYPHS[name];
+---
+
+{/*
+  Decorative: every use sits next to a visible text label that already names the
+  platform, so the glyph is hidden from assistive tech. Colour comes from the
+  parent (`currentColor`), so DS tokens and hover states apply without extra rules.
+*/}
+<svg
+	class="social-icon"
+	viewBox="0 0 24 24"
+	width={size}
+	height={size}
+	fill="currentColor"
+	aria-hidden="true"
+	focusable="false"
+>
+	<path transform={glyph.transform} d={glyph.d}></path>
+</svg>
+
+<style>
+	.social-icon {
+		flex: none;
+		display: block;
+	}
+</style>
