@@ -15,3 +15,5 @@ accepted exception to the "2px linework" rule: platform marks are not redrawn.
 - Licences: `public/brand/icons/ATTRIBUTION.md`. Full cleaned set: handoff `icons/`.
 - Not shown in the UI yet: Threads, Telegram, YouTube, Google Maps, Website (no verified profile URLs).
   Phone has no glyph in the pack.
+
+Status: **accepted by the owner 2026-10-12.** Future site versions include this set by default. Threads, Telegram, YouTube, Google Maps and Website stay library-only until profile URLs exist.
